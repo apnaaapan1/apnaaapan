@@ -465,13 +465,6 @@ const OurStory = () => {
                 {/* Hover Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-3xl"></div>
                 
-                {/* Arrow Icon */}
-                <div className="absolute top-6 right-6 z-10">
-                  <svg className="w-6 h-6 text-[#1a2236] transform rotate-45 transition-all duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
-                  </svg>
-                </div>
-                
                 {/* Content Container */}
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex-1">
