@@ -3,31 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 const Header = () => {
   // Get current path to determine active page
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
-  const [openMenu, setOpenMenu] = useState(null); // 'ourStory' | 'work' | null
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(null); // 'ourStory' | 'work' | null
-  const closeTimeoutRef = useRef(null);
 
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
-
-  const clearCloseTimeout = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-  };
-
-  const handleGroupEnter = (menuKey) => {
-    clearCloseTimeout();
-    setOpenMenu(menuKey);
-  };
-
-  const handleGroupLeave = () => {
-    clearCloseTimeout();
-    closeTimeoutRef.current = setTimeout(() => setOpenMenu(null), 150);
-  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -147,7 +127,6 @@ const Header = () => {
             className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
             onClick={() => {
               setIsMobileMenuOpen((prev) => !prev);
-              setMobileSubmenuOpen(null);
             }}
           >
             <svg

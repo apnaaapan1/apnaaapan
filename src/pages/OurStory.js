@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -14,7 +14,6 @@ const photos = [
 const OurStory = () => {
   const wrapperRef = useRef(null);
   const cardsRef = useRef([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   // GSAP Horizontal Scroll Animation for Milestones
   useEffect(() => {
@@ -71,11 +70,10 @@ const OurStory = () => {
       anticipatePin: 1,
       refreshPriority: -1, // Better performance
       fastScrollEnd: true, // Optimize for fast scrolling
-      onUpdate: (self) => {
+      onUpdate: () => {
         // Update current index based on progress
-        const progress = self.progress;
-        const newIndex = Math.round(progress * (cards.length - 1));
-        setCurrentIndex(newIndex);
+        // Can be used here if needed for indicators or other UI elements
+        // For now, we're keeping the calculation but not storing it
       }
     });
 
@@ -95,7 +93,6 @@ const OurStory = () => {
       // Add labels for each card with better spacing
       tl.add("label0", 0);
       cards.forEach((card, i) => {
-        let progress = position;
         position += card.offsetWidth / distance;
         tl.add("label" + (i + 1), position);
       });
