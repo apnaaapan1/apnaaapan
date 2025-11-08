@@ -109,13 +109,27 @@ const BookingSection = () => {
             <div className="space-y-4 sm:space-y-6">
               {/* Month Navigation */}
               <div className="flex items-center justify-between">
-                <button className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <button 
+                  onClick={() => {
+                    const date = new Date(currentMonth + ' 1');
+                    date.setMonth(date.getMonth() - 1);
+                    setCurrentMonth(date.toLocaleString('default', { month: 'long', year: 'numeric' }));
+                  }}
+                  className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-800">{currentMonth}</h3>
-                <button className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <button 
+                  onClick={() => {
+                    const date = new Date(currentMonth + ' 1');
+                    date.setMonth(date.getMonth() + 1);
+                    setCurrentMonth(date.toLocaleString('default', { month: 'long', year: 'numeric' }));
+                  }}
+                  className="p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
                   <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -161,7 +175,9 @@ const BookingSection = () => {
             <div className="space-y-4 sm:space-y-6">
               {/* Selected Day */}
               <div className="text-center">
-                <h4 className="text-base sm:text-lg font-semibold text-gray-800">Mon 16</h4>
+                <h4 className="text-base sm:text-lg font-semibold text-gray-800">
+                  {selectedDate ? `Day ${selectedDate}` : 'Select a date'}
+                </h4>
               </div>
 
               {/* Time Format Toggle */}
