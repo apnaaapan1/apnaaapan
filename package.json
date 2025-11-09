@@ -28,7 +28,8 @@
     "eject": "react-scripts eject",
     "server": "node server.js",
     "dev": "concurrently \"npm run server\" \"npm start\"",
-    "dev:server": "nodemon server.js"
+    "dev:server": "nodemon server.js",
+    "test:contact": "node test-contact-api.js"
   },
   "eslintConfig": {
     "extends": [
