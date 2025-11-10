@@ -1,9 +1,64 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import OurServices from '../components/OurServices';
 import OurWinningProcess from '../components/OurWinningProcess';
 import BookingSection from '../components/BookingSection';
 
 const AboutUs = () => {
+  // State for tracking current image index in gallery section
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const scrollContainerRef = useRef(null);
+  
+  // Total number of images
+  const totalImages = 3;
+  
+  // Handle scroll event to update current index
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollContainerRef.current) {
+        const scrollLeft = scrollContainerRef.current.scrollLeft;
+        const cardWidth = 320 + 24; // 320px (w-80) + 24px (space-x-6)
+        const newIndex = Math.round(scrollLeft / cardWidth);
+        setCurrentImageIndex(Math.min(newIndex, totalImages - 1));
+      }
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, [totalImages]);
+  
+  // Function to scroll to previous image
+  const scrollToPrevious = () => {
+    if (currentImageIndex > 0) {
+      const newIndex = currentImageIndex - 1;
+      setCurrentImageIndex(newIndex);
+      if (scrollContainerRef.current) {
+        const cardWidth = 320 + 24; // 320px (w-80) + 24px (space-x-6)
+        scrollContainerRef.current.scrollTo({
+          left: newIndex * cardWidth,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+  
+  // Function to scroll to next image
+  const scrollToNext = () => {
+    if (currentImageIndex < totalImages - 1) {
+      const newIndex = currentImageIndex + 1;
+      setCurrentImageIndex(newIndex);
+      if (scrollContainerRef.current) {
+        const cardWidth = 320 + 24; // 320px (w-80) + 24px (space-x-6)
+        scrollContainerRef.current.scrollTo({
+          left: newIndex * cardWidth,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
   return (
     <main className="bg-[#EFE7D5] min-h-screen">
       {/* Centered Hero Section matching design */}
@@ -100,20 +155,58 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Culture Photos Section (reused from OurStory) */}
+      {/* Culture Photos Section with scrolling animation */}
       <section className="px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {['/images/image 12.png','/images/image 13.png','/images/image 14.png'].map((src, index) => (
-            <div key={index} className="relative rounded-2xl overflow-hidden bg-[#E8DFD0] aspect-[4/3]">
-              <img src={src} alt={`About gallery ${index+1}`} className="w-full h-full object-cover" />
-              <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">{index === 0 ? '●' : '○'}</span>
-              </div>
-              <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">→</span>
-              </div>
+        <div className="max-w-6xl mx-auto">
+          <div className="relative">
+            {/* Navigation Arrows */}
+            <button 
+              onClick={scrollToPrevious}
+              disabled={currentImageIndex === 0}
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${
+                currentImageIndex === 0 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : 'hover:bg-gray-50 cursor-pointer'
+              }`}
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button 
+              onClick={scrollToNext}
+              disabled={currentImageIndex === totalImages - 1}
+              className={`absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${
+                currentImageIndex === totalImages - 1 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : 'hover:bg-gray-50 cursor-pointer'
+              }`}
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            
+            {/* Image Cards Container */}
+            <div 
+              ref={scrollContainerRef}
+              className="flex space-x-6 overflow-x-auto pb-4 px-4 hide-scrollbar" 
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {['/images/image 12.png','/images/image 13.png','/images/image 14.png'].map((src, index) => (
+                <div key={index} className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg relative bg-[#E8DFD0]">
+                  <img src={src} alt={`About gallery ${index+1}`} className="w-full h-full object-cover" />
+                  <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                    <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">{index === 0 ? '●' : '○'}</span>
+                  </div>
+                  <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                    <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">→</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </section>
 

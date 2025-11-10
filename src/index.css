@@ -44,6 +44,11 @@ code {
   font-weight: 400;
 }
 
+/* Hide scrollbar for webkit browsers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Client Feedback Animation */
 @keyframes scrollLeft {
   0% {

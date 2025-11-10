@@ -11,6 +11,7 @@ import OurStory from './pages/OurStory';
 import AboutUs from './pages/AboutUs';
 import Work from './pages/Work';
 import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
 import WorkWithUs from './pages/WorkWithUs';
 import Services from './pages/Services';
@@ -21,6 +22,9 @@ function App() {
   const path = typeof window !== 'undefined' ? window.location.pathname : '/';
 
   const renderPage = () => {
+    if (path.startsWith('/blog/')) {
+      return <BlogDetail />;
+    }
     if (path === '/about-us') {
       return <AboutUs />;
     }
