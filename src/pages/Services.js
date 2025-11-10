@@ -1,8 +1,46 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ClientFeedback from '../components/ClientFeedback';
 
+const serviceContent = {
+  'social-media': {
+    title: 'Social Media Marketing',
+    headline: 'From Likes to Leads – We Turn Social into Sales.',
+    description:
+      "Our social media services go beyond posting pretty pictures. We combine storytelling, data, and platform-specific strategies to engage your audience and drive measurable results.",
+  },
+  'branding': {
+    title: 'Branding & Identity',
+    headline: 'Stand Out. Be Remembered. Grow with Clarity.',
+    description:
+      'We build distinctive brand systems—strategy, voice, and visuals—that sharpen positioning and create long-term recognition across every touchpoint.',
+  },
+  'design': {
+    title: 'Design & Creative',
+    headline: 'Design that Works Hard—Not Just Looks Good.',
+    description:
+      'From campaigns to presentations, we craft high-impact creative that tells stories, elevates perception, and drives business outcomes.',
+  },
+  'web-development': {
+    title: 'Web Development',
+    headline: 'Fast. Beautiful. Built to Convert.',
+    description:
+      'We design and develop responsive, SEO‑friendly websites with clean UX and robust performance to turn visitors into customers.',
+  },
+  'marketing': {
+    title: 'Marketing Strategy',
+    headline: 'Plan Smart. Execute Confidently. Grow Consistently.',
+    description:
+      'Channel strategy, GTM, and measurement frameworks that align teams, reduce waste, and compound growth.',
+  },
+};
+
 const Services = () => {
   const [expandedCards, setExpandedCards] = useState({});
+
+  // Resolve dynamic service slug (default to social-media when not provided)
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/services/social-media';
+  const slug = path.startsWith('/services/') ? path.replace('/services/', '') : 'social-media';
+  const svc = serviceContent[slug] || serviceContent['social-media'];
   // FAQ items for the accordion
   const faqItems = [
     {
@@ -85,17 +123,17 @@ const Services = () => {
             <div>
               <RevealOnScroll>
                 <h3 className="text-lg font-semibold text-[#F26B2A] mb-4 font-nexa-regular">
-                  Social Media Marketing
+                  {svc.title}
                 </h3>
               </RevealOnScroll>
               <RevealOnScroll>
                 <h1 className="text-4xl md:text-5xl font-bold text-[#0D1B2A] mb-6 leading-tight font-serif">
-                  From Likes to Leads – We Turn Social into Sales.
+                  {svc.headline}
                 </h1>
               </RevealOnScroll>
               <RevealOnScroll>
                 <p className="text-lg text-[#5B5B5B] leading-relaxed font-nexa-regular">
-                  Our social media services go beyond posting pretty pictures. We combine storytelling, data, and platform-specific strategies to engage your audience and drive measurable results.
+                  {svc.description}
                 </p>
               </RevealOnScroll>
             </div>

@@ -25,6 +25,9 @@ function App() {
     if (path.startsWith('/blog/')) {
       return <BlogDetail />;
     }
+    if (path.startsWith('/services/')) {
+      return <Services />;
+    }
     if (path === '/about-us') {
       return <AboutUs />;
     }
