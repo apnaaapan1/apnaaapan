@@ -3,40 +3,64 @@ import React from 'react';
 const ClientFeedback = () => {
   const testimonials = [
     {
-      name: "Crystal Maiden",
-      role: "UIUX Designer",
-      feedback: "I've used other kits, but this one is the best. The attention to detail and usability are truly amazing for all designers. I highly recommend it for any type of project.",
-      avatar: "👩‍🎨"
+      name: "Narendra Patel",
+      role: "Wood Designer",
+      feedback: "Our brand took off after teaming with Apnaaapan. From strategy to execution, they handled everything and helped us see consistent sales growth and real engagement. Highly recommended!",
+      avatar: "👨‍💼"
     },
     {
-      name: "Dazzle Healer",
-      role: "Front End Developer",
-      feedback: "I've used other kits, but this one is the best. The attention to detail and usability are truly amazing for all designers. I highly recommend it for any type of project.",
-      avatar: "👨‍💻"
+      name: "Vinod Kumawat",
+      role: "Amrita Naturals",
+      feedback: "Apnaaapan created marketing campaigns that spoke to our audience. We started seeing meaningful leads, not just vanity metrics, and felt genuinely supported throughout.",
+      avatar: "👨‍💼"
     },
     {
-      name: "Mirana Marci",
-      role: "3D Designer",
-      feedback: "This UI Kit saved me hours of work. It's intuitive, high-quality, and totally worth the price for all design needs. My projects look more professional and appealing now.",
-      avatar: "👩‍🎨"
+      name: "Ritika Maheshwari",
+      role: "Kavvya",
+      feedback: "With Apnaaapan's creative team, our products finally got noticed. Their approach is personal, data-driven, and built around our vision. We started seeing actual returns!",
+      avatar: "👩‍💼"
     },
     {
-      name: "Bimosaurus",
-      role: "Graphic Designer",
-      feedback: "Amazing work! The color schemes are vibrant, and the icons fit perfectly with all my projects, especially modern UI designs. It makes everything look polished and user-friendly instantly.",
-      avatar: "👨‍🎨"
+      name: "Kavita Sharma",
+      role: "Pakkey Rang",
+      feedback: "The team at Apnaaapan understands branding and digital growth. Every campaign felt customized, which made our message stand out and our audience truly connect with us.",
+      avatar: "👩‍💼"
     },
     {
-      name: "Crystal Maiden",
-      role: "UIUX Designer",
-      feedback: "This UI Kit is incredibly helpful for my design process. The and illustrations are clean, modern, and save me a lot of It's perfect for beginners and professionals alike.",
-      avatar: "👩‍🎨"
+      name: "Yash Vijayvergiya",
+      role: "GoLead",
+      feedback: "We saw a huge shift in our online presence and traffic. Apnaaapan aligned marketing with our goals, constantly refining strategies to keep us moving forward.",
+      avatar: "👨‍💼"
     },
     {
-      name: "Dazzle Healer",
-      role: "Front End Developer",
-      feedback: "The attention to detail and usability are truly amazing for all designers. I highly recommend it for any type of project.",
-      avatar: "👨‍💻"
+      name: "Nivedita",
+      role: "Divya Jadi Boutique",
+      feedback: "Apnaaapan's smart paid ads and fresh content quickly expanded our reach. Their process, communication, and insights helped us convert new audiences into lasting customers!",
+      avatar: "👩‍💼"
+    },
+    {
+      name: "Abhishek Maheshwari",
+      role: "CRSK",
+      feedback: "Three months with Apnaaapan doubled our engagement rates. Strategic guidance and creative flair made digital marketing enjoyable—and results visible.",
+      avatar: "👨‍💼"
+    },
+    {
+      name: "Sahil Khan",
+      role: "Cloudy Sharks",
+      feedback: "The team's influencer campaigns and storytelling gave our brand fresh energy online. We could see real conversations and leads, not just surface-level numbers.",
+      avatar: "👨‍💼"
+    },
+    {
+      name: "Navdeep Mehta",
+      role: "Smiloshine",
+      feedback: "Our business found a voice, not just visibility. Apnaaapan gave us custom strategies and genuinely cared about our brand's unique goals and story.",
+      avatar: "👨‍💼"
+    },
+    {
+      name: "Kavya Naturals",
+      role: "Kavya Naturals",
+      feedback: "We worked closely with Apnaaapan on social media and growth. Sales increased, feedback improved, and their team was always transparent and proactive.",
+      avatar: "👩‍💼"
     }
   ];
 

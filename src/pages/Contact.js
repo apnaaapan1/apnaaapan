@@ -419,7 +419,7 @@ const Contact = () => {
 
       {/* WhatsApp Icon - Fixed in bottom-right corner */}
       <a
-        href="https://wa.me/917611021025"
+        href="https://wa.me/919587773274"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"

@@ -11,7 +11,8 @@ const companyLogos = [
 const OurWorkSection = () => {
   const projectCards = [
     {
-      title: 'Safal',
+      title: 'Pakkey Rang',
+      tags: ['UI', 'Branding', 'Website', 'Social Media'],
       hasButton: true,
       hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
@@ -19,15 +20,17 @@ const OurWorkSection = () => {
       topBgColor: 'bg-blue-500'
     },
     {
-      title: 'Kavvya',
-      hasButton: false,
-      hasDescription: true,
+      title: 'Amrita Naturals',
+      tags: ['Branding', 'Website', 'Social Media', 'Packaging'],
+      hasButton: true,
+      hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
       clientLogo: '/images/kavvya.png',
       topBgColor: 'bg-orange-500'
     },
     {
-      title: 'Safal',
+      title: 'Phylaxis.ai',
+      tags: ['Social Media', 'Traffic Gen', 'Content Creation'],
       hasButton: true,
       hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
@@ -35,7 +38,8 @@ const OurWorkSection = () => {
       topBgColor: 'bg-yellow-400'
     },
     {
-      title: 'Safal',
+      title: 'Grey Weave',
+      tags: ['UI', 'Website'],
       hasButton: true,
       hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
@@ -43,7 +47,8 @@ const OurWorkSection = () => {
       topBgColor: 'bg-blue-500'
     },
     {
-      title: 'Safal',
+      title: 'Smiloshine',
+      tags: ['Social Media', 'Ads'],
       hasButton: true,
       hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
@@ -52,8 +57,9 @@ const OurWorkSection = () => {
     },
     {
       title: 'Kavvya',
-      hasButton: false,
-      hasDescription: true,
+      tags: ['Website', 'Social Media', 'Product Shoot'],
+      hasButton: true,
+      hasDescription: false,
       hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
       clientLogo: '/images/kavvya.png',
       topBgColor: 'bg-orange-500'
@@ -97,7 +103,7 @@ const OurWorkSection = () => {
         {/* Main Section Title */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-gray-800">
-            Our Client & Work
+            Our Clients and Work
           </h2>
         </div>
 
@@ -157,15 +163,11 @@ const OurWorkSection = () => {
                 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
-                  <span className="bg-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                    Branding
-                  </span>
-                  <span className="bg-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                    UI
-                  </span>
-                  <span className="bg-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                    UX
-                  </span>
+                  {card.tags && card.tags.map((tag, tagIndex) => (
+                    <span key={tagIndex} className="bg-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
 
                 {/* Description or Button */}

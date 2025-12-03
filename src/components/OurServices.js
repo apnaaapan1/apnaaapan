@@ -8,28 +8,28 @@ gsap.registerPlugin(ScrollTrigger);
 const services = [
   {
     id: "01",
-    title: "Branding & Identity.",
-    description: "Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics."
+    title: "Branding & Identity",
+    description: "We build brands that are purposeful and memorable. From logo to tone, every detail is designed to resonate, earn trust, and drive consistent growth in your market."
   },
   {
     id: "02",
-    title: "Design & Creative.",
-    description: "Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics."
+    title: "Design & Creative",
+    description: "Creativity meets strategy here. Our design work is visually striking and built to perform—whether it's product, packaging, or campaign assets, we deliver standout creative that converts."
   },
   {
     id: "03",
-    title: "Social Media & Marketing.",
-    description: "Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics."
+    title: "Social Media & Marketing",
+    description: "We create and manage social platforms that tell your story, win engagement, and generate leads. Every campaign is data-driven, authentic, and focused on business outcomes."
   },
   {
     id: "04",
-    title: "Web Development.",
-    description: "Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics."
+    title: "Web Development",
+    description: "We develop websites that are intuitive, fast, and built for conversions. From landing pages to e-commerce, each project combines sleek design with flawless function."
   },
   {
     id: "05",
-    title: "Marketing Strategy.",
-    description: "Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics."
+    title: "Marketing Strategy",
+    description: "Your growth, planned and delivered. We develop and execute custom marketing strategies that reach your audience, maximize ROI, and accelerate your journey from launch to success."
   }
 ];
 
@@ -144,7 +144,7 @@ const OurServices = ({ showHeader = true, items }) => {
                 Our Services
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-[#22223b] mb-3 sm:mb-4 md:mb-6 lg:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Whatever we take on, whether it's a product, website, or brand, it's never just for show. It's designed to work hard, deliver real value, and never coast on aesthetics. We believe in creating solutions that not only look great but perform exceptionally well, driving meaningful results for our clients and their businesses.
+                Every product, website, and brand we craft at Apnaaapan is built for results—not just appearances. We deliver solutions that perform, engage, and drive real growth for your business. Our approach ensures you get standout visuals and measurable impact, making every project work smarter and harder for you.
               </p>
               <button 
                 onClick={() => window.location.href = '/services'}

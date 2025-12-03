@@ -9,7 +9,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 1",
       title: "Discovery & Analysis",
-      description: "Through Discovery & Analysis, we deeply assess your brand, audience, and market landscape. These insights enable us to craft effective, data-driven strategies tailored to your business goals.",
+      description: "We dig deep to understand your brand, audience, and market. This foundation guides strategy—so your growth starts smart, targeted, and built to scale from day one.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-500",
       image: "/images/step1.png",
@@ -18,7 +18,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 2",
       title: "Strategy Development",
-      description: "Strategy Development focuses on creating customized digital marketing plans. We align insights with your goals to ensure targeted, measurable, and sustainable growth.",
+      description: "Using insights from analysis, we develop a custom marketing plan that aligns with your goals and audience—setting the stage for sustainable growth and memorable brand impact.",
       bgColor: "bg-yellow-400",
       tagColor: "bg-yellow-500",
       image: "/images/step2.png",
@@ -27,7 +27,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 3",
       title: "Launch & Execution",
-      description: "Launch & Execution involves implementing your digital marketing strategy with precision. We coordinate all elements to ensure a seamless rollout, optimizing campaigns for maximum impact and engagement.",
+      description: "We execute across every channel—socials, content, campaigns—to capture attention and drive results, ensuring your brand launches strong and keeps gaining momentum.",
       bgColor: "bg-blue-400",
       tagColor: "bg-blue-500",
       image: "/images/step3.png",
@@ -36,7 +36,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 4",
       title: "Optimization",
-      description: "Optimization focuses on continuously refining your digital marketing efforts for better performance. We analyze data, adjust strategies, and enhance campaigns to maximize ROI and achieve your business objectives.",
+      description: "We constantly track performance, fine-tune strategies, and update campaigns, so your ROI grows and every marketing move brings you closer to your next milestone.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-400",
       image: "/images/step4.png",
