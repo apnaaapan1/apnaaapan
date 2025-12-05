@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import OurWorkSection from './components/OurWorkSection';
@@ -17,80 +18,45 @@ import WorkWithUs from './pages/WorkWithUs';
 import Services from './pages/Services';
 import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
+import usePageTracking from './hooks/usePageTracking';
 
 function App() {
-  const path = typeof window !== 'undefined' ? window.location.pathname : '/';
-
-  const renderPage = () => {
-    if (path.startsWith('/blog/')) {
-      return <BlogDetail />;
-    }
-    if (path.startsWith('/services/')) {
-      return <Services />;
-    }
-    if (path === '/about-us') {
-      return <AboutUs />;
-    }
-    if (path === '/our-story') {
-      return <OurStory />;
-    }
-    
-    if (path === '/work') {
-      return <Work />;
-    }
-    
-    if (path === '/blog') {
-      return <Blog />;
-    }
-    
-    if (path === '/contact') {
-      return <Contact />;
-    }
-    
-    if (path === '/work-with-us') {
-      return <WorkWithUs />;
-    }
-    
-    if (path === '/services') {
-      return <Services />;
-    }
-
-    if (path === '/partner-with-us') {
-      return <PartnerWithUs />;
-    }
-
-    if (path === '/with-apnaaapan') {
-      return <WithApnaaapan />;
-    }
-
-    return (
-      <>
-        {/* Hero Section Component */}
-        <HeroSection />
-
-        {/* Our Work Section Component */}
-        <OurWorkSection />
-
-        {/* Our Winning Process Section Component */}
-        <OurWinningProcess />
-
-        {/* Client Feedback Section Component */}
-        <ClientFeedback />
-
-        {/* Our Services Section Component */}
-        <OurServices />
-
-        {/* Booking Section Component */}
-        <BookingSection />
-      </>
-    );
-  };
+  // Track page views on route changes
+  usePageTracking();
 
   return (
     <div className="min-h-screen bg-[#EFE7D5]">
       <Header />
       <div className="pt-14 sm:pt-16 md:pt-20">
-        {renderPage()}
+        <Routes>
+          {/* Home Page */}
+          <Route 
+            path="/" 
+            element={
+              <>
+                <HeroSection />
+                <OurWorkSection />
+                <OurWinningProcess />
+                <ClientFeedback />
+                <OurServices />
+                <BookingSection />
+              </>
+            } 
+          />
+          
+          {/* Other Pages */}
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/our-story" element={<OurStory />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogDetail />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/work-with-us" element={<WorkWithUs />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/services/:slug" element={<Services />} />
+          <Route path="/partner-with-us" element={<PartnerWithUs />} />
+          <Route path="/with-apnaaapan" element={<WithApnaaapan />} />
+        </Routes>
         <Footer />
       </div>
     </div>

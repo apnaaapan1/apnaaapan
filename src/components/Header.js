@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  // Get current path to determine active page
-  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+  // Get current path using React Router
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [showHeader, setShowHeader] = useState(true);
@@ -37,7 +40,7 @@ const Header = () => {
 
   // Function to handle logo click - redirect to home page
   const handleLogoClick = () => {
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
@@ -57,8 +60,8 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-8 relative">
           {/* Our Story (simple link, submenu removed) */}
           <div className="relative">
-            <a 
-              href="/our-story" 
+            <Link 
+              to="/our-story" 
               className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
                 currentPath === '/our-story' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
               }`}
@@ -69,12 +72,12 @@ const Header = () => {
               {currentPath === '/our-story' && (
                 <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
               )}
-            </a>
+            </Link>
           </div>
 
           {/* Work (simple link, submenu removed) */}
-          <a 
-            href="/work" 
+          <Link 
+            to="/work" 
             className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
               currentPath === '/work' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
             }`}
@@ -83,10 +86,10 @@ const Header = () => {
             {currentPath === '/work' && (
               <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
             )}
-          </a>
+          </Link>
 
-          <a 
-            href="/contact" 
+          <Link 
+            to="/contact" 
             className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
               currentPath === '/contact' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
             }`}
@@ -96,9 +99,9 @@ const Header = () => {
             {currentPath === '/contact' && (
               <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
             )}
-          </a>
-          <a 
-            href="/with-apnaaapan" 
+          </Link>
+          <Link 
+            to="/with-apnaaapan" 
             className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
               currentPath === '/with-apnaaapan' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
             }`}
@@ -108,18 +111,18 @@ const Header = () => {
             {currentPath === '/with-apnaaapan' && (
               <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
             )}
-          </a>
+          </Link>
         </div>
         
         {/* CTA Button + Mobile Menu Button - Right */}
         <div className="flex items-center gap-3">
-          <a 
-            href="/work-with-us" 
+          <Link 
+            to="/work-with-us" 
             className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-3.5 py-2 md:px-6 md:py-2.5 rounded-full font-nexa-bold text-xs md:text-sm flex items-center gap-2 hover:shadow-lg transition-all duration-200 hover:scale-105 whitespace-nowrap"
           >
             <span className="text-white text-xs">⭐</span>
             <span>Work with US</span>
-          </a>
+          </Link>
           <button
             type="button"
             aria-label="Toggle menu"
@@ -151,13 +154,13 @@ const Header = () => {
       >
         <div className="px-4 py-3 space-y-1">
           {/* Our Story (simple link) */}
-          <a href="/our-story" className="block py-3 text-[#3B3B3B] font-dm-sans-medium">Our Story</a>
+          <Link to="/our-story" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Our Story</Link>
 
           {/* Work (simple link on mobile, submenu removed) */}
-          <a href="/work" className="block py-3 text-[#3B3B3B] font-dm-sans-medium">Work</a>
+          <Link to="/work" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Work</Link>
 
-          <a href="/contact" className="block py-3 text-[#3B3B3B] font-dm-sans-medium">Contact Us</a>
-          <a href="/with-apnaaapan" className="block py-3 text-[#3B3B3B] font-dm-sans-medium">With.Apnaaapan</a>
+          <Link to="/contact" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>
+          <Link to="/with-apnaaapan" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>With.Apnaaapan</Link>
         </div>
       </div>
     </header>

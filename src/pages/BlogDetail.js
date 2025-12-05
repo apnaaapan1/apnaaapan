@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const blogPosts = {
   'the-power-of-social-media-for-your-brand': {
@@ -16,7 +17,7 @@ const blogPosts = {
     readTime: '10 Min',
     heroImage: '/images/istockphoto-104251890-612x612 1.png',
     content: [
-      'It’s not about vanity metrics. Sustainable growth comes from nurturing real relationships and delivering value at every touchpoint.',
+      "It's not about vanity metrics. Sustainable growth comes from nurturing real relationships and delivering value at every touchpoint.",
       'Turn engagement into advocacy by recognizing your audience, responding quickly, and creating moments worth sharing.',
       'Build a retention loop: useful content → participation → recognition → belonging. Loyalty follows naturally.',
     ],
@@ -24,8 +25,7 @@ const blogPosts = {
 };
 
 const BlogDetail = () => {
-  const path = typeof window !== 'undefined' ? window.location.pathname : '/';
-  const slug = path.startsWith('/blog/') ? path.replace('/blog/', '') : '';
+  const { slug } = useParams();
   const post = blogPosts[slug];
 
   if (!post) {
