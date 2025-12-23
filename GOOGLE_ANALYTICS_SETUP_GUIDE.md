@@ -235,3 +235,7 @@ Once setup is complete:
 
 **Congratulations!** 🎉 Your Google Analytics is now set up and tracking your website visitors. All data will appear in your Google Analytics dashboard.
 
+
+
+
+

@@ -18,6 +18,7 @@ import WorkWithUs from './pages/WorkWithUs';
 import Services from './pages/Services';
 import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
+import AdminPanel from './pages/AdminPanel';
 import usePageTracking from './hooks/usePageTracking';
 
 function App() {
@@ -56,6 +57,8 @@ function App() {
           <Route path="/services/:slug" element={<Services />} />
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
           <Route path="/with-apnaaapan" element={<WithApnaaapan />} />
+          {/* Admin Panel (basic protected by ADMIN_SECRET header on API) */}
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
         <Footer />
       </div>

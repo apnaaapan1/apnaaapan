@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 const app = express();
@@ -15,12 +17,110 @@ app.use(express.json());
 // MongoDB Atlas connection
 // Note: If your MongoDB URI already includes the database name, DATABASE_NAME will override it
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://apnaaapan_user:apnaaapan_user@cluster0.libx8iw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const DATABASE_NAME = process.env.DATABASE_NAME || 'apnapan_contacts';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'apnaaapan_user';
 
 // Email configuration
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL;
+
+// Admin Panel Configuration
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
+
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  timeout: 60000 // 60 seconds timeout
+});
+
+// Multer configuration for handling file uploads (memory storage)
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.'));
+    }
+  }
+});
+
+// Blog API - MongoDB connection caching
+let blogsDbClient = null;
+
+async function getBlogsDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('blogs'),
+  };
+}
+
+function isAdmin(req) {
+  if (!ADMIN_SECRET) return false;
+  const headerSecret =
+    req.headers['x-admin-token'] ||
+    req.headers['X-Admin-Token'] ||
+    req.headers['x-admin-secret'] ||
+    req.headers['X-Admin-Secret'];
+  return headerSecret === ADMIN_SECRET;
+}
+
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
+function sanitizeBlogInput(body) {
+  const {
+    title,
+    slug,
+    readTime,
+    heroImage,
+    content,
+    status,
+  } = body || {};
+
+  // Auto-generate slug from title if not provided
+  const finalSlug = slug && typeof slug === 'string' && slug.trim() 
+    ? slug.trim().toLowerCase() 
+    : generateSlug(title || '');
+
+  return {
+    title: typeof title === 'string' ? title.trim() : '',
+    slug: finalSlug,
+    readTime: typeof readTime === 'string' ? readTime.trim() : '',
+    heroImage: typeof heroImage === 'string' ? heroImage.trim() : '',
+    content: Array.isArray(content)
+      ? content.map((p) => (typeof p === 'string' ? p.trim() : '')).filter(Boolean)
+      : [],
+    status: status === 'draft' ? 'draft' : 'published',
+  };
+}
 
 // Contact form API endpoint
 app.post('/api/contact', async (req, res) => {
@@ -223,6 +323,339 @@ This is an automated email from your website's contact form.
       message: errorMessage,
       error: errorCode,
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// Admin Login API endpoint
+app.post('/api/admin-login', async (req, res) => {
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD || !ADMIN_SECRET) {
+    console.error('ADMIN_LOGIN: Admin credentials or secret are not configured in environment.');
+    return res.status(500).json({
+      message: 'Admin authentication is not configured on the server.',
+      error: 'ADMIN_CONFIG_MISSING',
+    });
+  }
+
+  const { email, password } = req.body || {};
+
+  if (!email || !password) {
+    return res.status(400).json({
+      message: 'Email and password are required.',
+      error: 'MISSING_CREDENTIALS',
+    });
+  }
+
+  const isValid =
+    email === ADMIN_EMAIL &&
+    password === ADMIN_PASSWORD;
+
+  if (!isValid) {
+    return res.status(401).json({
+      message: 'Invalid admin credentials.',
+      error: 'INVALID_CREDENTIALS',
+    });
+  }
+
+  // Return a static token derived from ADMIN_SECRET; client will send it with blog admin requests.
+  return res.status(200).json({
+    message: 'Login successful.',
+    token: ADMIN_SECRET,
+  });
+});
+
+// Image Upload API endpoint (Admin only)
+app.post('/api/upload-image', upload.single('image'), async (req, res) => {
+  // Admin-only endpoint
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: 'No image file provided',
+        error: 'NO_FILE',
+      });
+    }
+
+    // Check if Cloudinary is configured
+    console.log('Checking Cloudinary config...');
+    console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME ? '✓' : '✗');
+    console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY ? '✓' : '✗');
+    console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET ? '✓' : '✗');
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      return res.status(500).json({
+        message: 'Cloudinary is not configured. Please add credentials to .env file.',
+        error: 'CLOUDINARY_NOT_CONFIGURED',
+      });
+    }
+
+    console.log('Uploading file:', req.file.originalname, 'Size:', req.file.size);
+
+    // Upload to Cloudinary using buffer with increased timeout
+    const uploadPromise = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'apnaaapan_blogs',
+          resource_type: 'image',
+          timeout: 60000, // 60 seconds
+          chunk_size: 6000000 // 6MB chunks
+        },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            reject(error);
+          } else {
+            console.log('Cloudinary upload success:', result.public_id);
+            resolve(result);
+          }
+        }
+      );
+      uploadStream.end(req.file.buffer);
+    });
+
+    const result = await uploadPromise;
+
+    return res.status(200).json({
+      message: 'Image uploaded successfully',
+      url: result.secure_url,
+      publicId: result.public_id,
+    });
+  } catch (error) {
+    console.error('Image upload error:', error);
+    return res.status(500).json({
+      message: 'Failed to upload image',
+      error: 'UPLOAD_ERROR',
+      details: error.message,
+    });
+  }
+});
+
+// Blogs API endpoint
+app.get('/api/blogs', async (req, res) => {
+  try {
+    const { db, collection } = await getBlogsDb();
+
+    const { slug, includeDrafts } = req.query || {};
+    const isAdminRequest = isAdmin(req);
+
+    const filter = {};
+
+    if (slug) {
+      filter.slug = slug;
+    }
+
+    if (!isAdminRequest || includeDrafts !== 'true') {
+      // Public: only published
+      filter.status = 'published';
+    }
+
+    if (slug) {
+      const doc = await collection.findOne(filter);
+      if (!doc) {
+        return res.status(404).json({ message: 'Blog not found' });
+      }
+      return res.status(200).json({
+        blog: {
+          id: doc._id.toString(),
+          title: doc.title,
+          slug: doc.slug,
+          readTime: doc.readTime,
+          heroImage: doc.heroImage,
+          content: doc.content,
+          status: doc.status,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+        },
+      });
+    }
+
+    const docs = await collection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return res.status(200).json({
+      blogs: docs.map((doc) => ({
+        id: doc._id.toString(),
+        title: doc.title,
+        slug: doc.slug,
+        readTime: doc.readTime,
+        heroImage: doc.heroImage,
+        content: doc.content,
+        status: doc.status,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      })),
+    });
+  } catch (error) {
+    console.error('BLOGS API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch blogs',
+      error: 'BLOGS_GET_ERROR',
+    });
+  }
+});
+
+app.post('/api/blogs', async (req, res) => {
+  // Admin-only endpoint
+  if (!isAdmin(req)) {
+    console.log('BLOGS API: Admin check failed. Headers:', req.headers);
+    console.log('BLOGS API: ADMIN_SECRET exists?', !!ADMIN_SECRET);
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    console.log('BLOGS API: Creating blog...');
+    const { db, collection } = await getBlogsDb();
+    const blog = sanitizeBlogInput(req.body);
+
+    console.log('BLOGS API: Blog data:', blog);
+
+    if (!blog.title) {
+      return res.status(400).json({
+        message: 'Title is required',
+        error: 'MISSING_FIELDS',
+      });
+    }
+
+    // Ensure unique slug
+    const existing = await collection.findOne({ slug: blog.slug });
+    if (existing) {
+      return res.status(409).json({
+        message: 'Slug already exists. Please choose another.',
+        error: 'DUPLICATE_SLUG',
+      });
+    }
+
+    const now = new Date();
+    const doc = {
+      ...blog,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const result = await collection.insertOne(doc);
+    console.log('BLOGS API: Blog created successfully with ID:', result.insertedId);
+
+    return res.status(201).json({
+      message: 'Blog created successfully',
+      id: result.insertedId.toString(),
+    });
+  } catch (error) {
+    console.error('BLOGS API POST error:', error.message);
+    console.error('BLOGS API POST error stack:', error.stack);
+    return res.status(500).json({
+      message: 'Failed to create blog',
+      error: 'BLOGS_CREATE_ERROR',
+      details: error.message,
+    });
+  }
+});
+
+app.put('/api/blogs', async (req, res) => {
+  // Admin-only endpoint
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { db, collection } = await getBlogsDb();
+    const { id } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({
+        message: 'Blog id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const blog = sanitizeBlogInput(req.body);
+
+    const update = {
+      $set: {
+        title: blog.title,
+        slug: blog.slug,
+        readTime: blog.readTime,
+        heroImage: blog.heroImage,
+        content: blog.content,
+        status: blog.status,
+        updatedAt: new Date(),
+      },
+    };
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(id) },
+      update
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        message: 'Blog not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Blog updated successfully',
+    });
+  } catch (error) {
+    console.error('BLOGS API PUT error:', error);
+    return res.status(500).json({
+      message: 'Failed to update blog',
+      error: 'BLOGS_UPDATE_ERROR',
+    });
+  }
+});
+
+app.delete('/api/blogs', async (req, res) => {
+  // Admin-only endpoint
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { db, collection } = await getBlogsDb();
+    const { id } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({
+        message: 'Blog id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: 'Blog not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Blog deleted successfully',
+    });
+  } catch (error) {
+    console.error('BLOGS API DELETE error:', error);
+    return res.status(500).json({
+      message: 'Failed to delete blog',
+      error: 'BLOGS_DELETE_ERROR',
     });
   }
 });

@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+// Use localhost:5000 in development (Express server), relative path in production (Vercel)
+const getApiUrl = (endpoint) => {
+  if (process.env.NODE_ENV === 'production') {
+    return endpoint;
+  }
+  // In development, use Express server on port 5000
+  return `http://localhost:5000${endpoint}`;
+};
+
 // Mobile-only scroll reveal wrapper for text blocks
 const RevealOnScroll = ({ children }) => {
   const containerRef = useRef(null);
@@ -49,28 +58,71 @@ const RevealOnScroll = ({ children }) => {
 };
 
 const Blog = () => {
-  // State for pagination
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchBlogs() {
+      try {
+        setLoading(true);
+        setError('');
+        const res = await fetch(getApiUrl('/api/blogs'));
+        if (!res.ok) {
+          throw new Error('Failed to fetch blogs');
+        }
+        const data = await res.json();
+        if (isMounted) {
+          setBlogs(Array.isArray(data.blogs) ? data.blogs : []);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setError('Unable to load blogs right now.');
+          setLoading(false);
+        }
+      }
+    }
+    fetchBlogs();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const featured = blogs[0] || null;
+  const sideBlogs = blogs.slice(1, 3);
+
+  // Pagination for the grid after top 3 posts
+  const BLOGS_PER_PAGE = 6;
+  const remainingBlogs = blogs.slice(3);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 4;
+  const totalPages = Math.max(1, Math.ceil(remainingBlogs.length / BLOGS_PER_PAGE));
 
-  // Function to handle page change
+  // Reset page if data changes and current page is out of range
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    const nextPage = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(nextPage);
   };
 
-  // Function to go to previous page
   const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    handlePageChange(currentPage - 1);
   };
 
-  // Function to go to next page
   const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    handlePageChange(currentPage + 1);
   };
+
+  const startIdx = (currentPage - 1) * BLOGS_PER_PAGE;
+  const endIdx = startIdx + BLOGS_PER_PAGE;
+  const paginatedBlogs = remainingBlogs.slice(startIdx, endIdx);
 
   return (
     <main className="bg-[#EFE7D5] min-h-screen relative">
@@ -124,94 +176,85 @@ const Blog = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 md:gap-8 lg:gap-12">
           {/* Featured Blog Post - Left Section */}
           <div className="lg:col-span-3">
-              <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
+            {featured ? (
+              <a href={`/blog/${featured.slug}`} className="block">
                 <div className="mb-6">
                   {/* Image Box */}
                   <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-6 group cursor-pointer transition-all duration-300 hover:shadow-2xl">
                     <div className="relative overflow-hidden">
                       <img
-                        src="/images/work/Tsczi1maYoHHENT2Fu6ychsMM 1.png"
-                        alt="White banner with Reach Talent logo in stone archway"
+                        src={featured.heroImage || '/images/work/Tsczi1maYoHHENT2Fu6ychsMM 1.png'}
+                        alt={featured.title}
                         className="w-full h-56 sm:h-72 md:h-[28rem] object-cover transition-all duration-500 group-hover:scale-110"
                       />
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   </div>
-                
+
                   {/* Text Content */}
                   <RevealOnScroll>
                     <div className="text-left">
-                      <div className="text-gray-500 text-sm font-medium mb-3">10 Min</div>
+                      <div className="text-gray-500 text-sm font-medium mb-3">
+                        {featured.readTime || '10 Min'}
+                      </div>
                       <h3 className="text-2xl font-bold text-[#0D1B2A] mb-3">
-                        The Power of Social Media for Your Brand
+                        {featured.title}
                       </h3>
                       <p className="text-gray-600 text-base leading-relaxed">
-                        Discover how social media can shape your brand's voice, build real connections, and drive meaningful growth. From visibility to engagement, it's more than just posts-i...
+                        {Array.isArray(featured.content) && featured.content.length > 0
+                          ? `${featured.content[0].slice(0, 180)}${featured.content[0].length > 180 ? '...' : ''}`
+                          : 'Discover stories, insights, and ideas from the world of Apnaaapan.'}
                       </p>
                     </div>
                   </RevealOnScroll>
                 </div>
               </a>
+            ) : (
+              <div className="mb-6">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-6 h-56 sm:h-72 md:h-[28rem] animate-pulse" />
+              </div>
+            )}
           </div>
 
           {/* Right Side - Two Smaller Blog Posts */}
           <div className="lg:col-span-2 space-y-4">
-            {/* First Blog Post Preview */}
-            <a href="/blog/from-likes-to-loyalty" className="flex flex-col sm:flex-row h-auto sm:h-48 md:h-56 mb-4 group cursor-pointer">
-              {/* Image Box Only */}
-              <div className="rounded-2xl overflow-hidden shadow-lg sm:mr-4 mb-3 sm:mb-0 flex-shrink-0 transition-all duration-300 hover:shadow-xl">
-                <div className="relative overflow-hidden">
-                  <img
-                    src="/images/istockphoto-104251890-612x612 1.png"
-                    alt="Modern open-plan office space with cubicles and bright lighting"
-                    className="w-full sm:w-40 h-40 sm:h-40 object-cover transition-all duration-500 group-hover:scale-110"
-                  />
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {sideBlogs.map((blog) => (
+              <a
+                key={blog.id}
+                href={`/blog/${blog.slug}`}
+                className="flex flex-col sm:flex-row h-auto sm:h-48 md:h-56 mb-4 group cursor-pointer"
+              >
+                {/* Image Box Only */}
+                <div className="rounded-2xl overflow-hidden shadow-lg sm:mr-4 mb-3 sm:mb-0 flex-shrink-0 transition-all duration-300 hover:shadow-xl">
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={blog.heroImage || '/images/istockphoto-104251890-612x612 1.png'}
+                      alt={blog.title}
+                      className="w-full sm:w-40 h-40 sm:h-40 object-cover transition-all duration-500 group-hover:scale-110"
+                    />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
                 </div>
-              </div>
-              {/* Text Content Outside Box */}
-              <RevealOnScroll>
-                <div className="flex-1 flex flex-col justify-center">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    From Likes to Loyalty
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful growth. From visibilit...
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </a>
-
-            {/* Second Blog Post Preview */}
-            <a href="/blog/from-likes-to-loyalty" className="flex flex-col sm:flex-row h-auto sm:h-48 md:h-56 group cursor-pointer">
-              {/* Image Box Only */}
-              <div className="rounded-2xl overflow-hidden shadow-lg sm:mr-4 mb-3 sm:mb-0 flex-shrink-0 transition-all duration-300 hover:shadow-xl">
-                <div className="relative overflow-hidden">
-                  <img
-                    src="/images/desk-setup-idea-3 1.png"
-                    alt="Minimalist home office setup"
-                    className="w-full sm:w-40 h-40 sm:h-40 object-cover transition-all duration-500 group-hover:scale-110"
-                  />
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              </div>
-              {/* Text Content Outside Box */}
-              <RevealOnScroll>
-                <div className="flex-1 flex flex-col justify-center">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    From Likes to Loyalty
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful growth. From visibilit...
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </a>
+                {/* Text Content Outside Box */}
+                <RevealOnScroll>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="text-gray-500 text-sm font-medium mb-2">
+                      {blog.readTime || '10 Min'}
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {Array.isArray(blog.content) && blog.content.length > 0
+                        ? `${blog.content[0].slice(0, 140)}${blog.content[0].length > 140 ? '...' : ''}`
+                        : 'Discover how brands grow through thoughtful content and strategy.'}
+                    </p>
+                  </div>
+                </RevealOnScroll>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -227,125 +270,59 @@ const Blog = () => {
           </RevealOnScroll>
         </div>
 
-        {/* Blog Posts Grid - 2 rows of 3 columns */}
+        {/* Blog Posts Grid - paginated */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8 mb-16">
-          {/* Card 1 - Top Left */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <RevealOnScroll>
-                <div className="text-left">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    The Power of Social Media...
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                  </p>
+          {loading ? (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((idx) => (
+                <div key={idx} className="block">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
+                    <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-gray-100 rounded-t-2xl border border-gray-100 animate-pulse" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-gray-300 text-sm font-medium mb-2">10 Min</div>
+                    <div className="h-5 bg-gray-200 rounded mb-2 w-3/4" />
+                    <div className="h-4 bg-gray-200 rounded w-full" />
+                  </div>
                 </div>
-              </RevealOnScroll>
-            </div>
-          </a>
-          
-          {/* Card 2 - Top Middle */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <RevealOnScroll>
-                <div className="text-left">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    The Power of Social Media...
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                  </p>
+              ))}
+            </>
+          ) : paginatedBlogs.length === 0 ? (
+            <div className="col-span-full text-center text-gray-600">No more blogs to display.</div>
+          ) : (
+            paginatedBlogs.map((blog) => (
+              <a key={blog.id} href={`/blog/${blog.slug}`} className="block">
+                <div>
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
+                    <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100">
+                      {blog.heroImage && (
+                        <img
+                          src={blog.heroImage}
+                          alt={blog.title}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <RevealOnScroll>
+                    <div className="text-left">
+                      <div className="text-gray-500 text-sm font-medium mb-2">
+                        {blog.readTime || '10 Min'}
+                      </div>
+                      <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
+                        {blog.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {Array.isArray(blog.content) && blog.content.length > 0
+                          ? `${blog.content[0].slice(0, 120)}${blog.content[0].length > 120 ? '...' : ''}`
+                          : 'Discover how social media can shape your brand\'s voice, build real connections, and drive meaningful growth.'}
+                      </p>
+                    </div>
+                  </RevealOnScroll>
                 </div>
-              </RevealOnScroll>
-            </div>
-          </a>
-          
-          {/* Card 3 - Top Right */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <RevealOnScroll>
-                <div className="text-left">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    The Power of Social Media...
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </div>
-          </a>
-          
-          {/* Card 4 - Bottom Left */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <RevealOnScroll>
-                <div className="text-left">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    The Power of Social Media...
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </div>
-          </a>
-          
-          {/* Card 5 - Bottom Middle */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <RevealOnScroll>
-                <div className="text-left">
-                  <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                    The Power of Social Media...
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                  </p>
-                </div>
-              </RevealOnScroll>
-            </div>
-          </a>
-          
-          {/* Card 6 - Bottom Right */}
-          <a href="/blog/the-power-of-social-media-for-your-brand" className="block">
-            <div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100"></div>
-              </div>
-              <div className="text-left">
-                <div className="text-gray-500 text-sm font-medium mb-2">10 Min</div>
-                <h3 className="text-lg font-bold text-[#0D1B2A] mb-2">
-                  The Power of Social Media...
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                </p>
-              </div>
-            </div>
-          </a>
+              </a>
+            ))
+          )}
         </div>
 
         {/* Pagination Controls */}
@@ -367,7 +344,7 @@ const Blog = () => {
 
           {/* Page Numbers */}
           <div className="flex items-center space-x-2">
-            {[1, 2, 3, 4].map((page) => (
+            {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
