@@ -1,5 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+const getApiUrl = (endpoint) => {
+  if (process.env.NODE_ENV === 'production') {
+    return endpoint;
+  }
+  return `http://localhost:5000${endpoint}`;
+};
+
+const POSITIONS_API = getApiUrl('/api/positions');
+
 const WorkWithUs = () => {
   // State for tracking current image index in Life at Apnaaapan section
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -7,6 +16,11 @@ const WorkWithUs = () => {
   
   // State for scroll animations
   const [visibleElements, setVisibleElements] = useState(new Set());
+
+  // State for open positions
+  const [positions, setPositions] = useState([]);
+  const [positionsLoading, setPositionsLoading] = useState(false);
+  const [positionsError, setPositionsError] = useState('');
   
   // Total number of images
   const totalImages = 4;
@@ -32,6 +46,44 @@ const WorkWithUs = () => {
     animatedElements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchPositions = async () => {
+      try {
+        setPositionsLoading(true);
+        setPositionsError('');
+        const res = await fetch(POSITIONS_API);
+        if (!res.ok) {
+          throw new Error('Failed to load positions');
+        }
+        const data = await res.json();
+        if (!isMounted) return;
+        const safePositions = Array.isArray(data.positions) ? data.positions : [];
+        setPositions(safePositions);
+
+        // Ensure freshly rendered cards are visible even if they mount after observer setup
+        const newIds = safePositions.map((position, index) => `job-card-${position.id || index}`);
+        setVisibleElements((prev) => new Set([...prev, ...newIds, 'job-card-empty']));
+      } catch (error) {
+        console.error('Error fetching positions:', error);
+        if (isMounted) {
+          setPositionsError('Unable to load open positions right now.');
+        }
+      } finally {
+        if (isMounted) {
+          setPositionsLoading(false);
+        }
+      }
+    };
+
+    fetchPositions();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
   
   // Function to scroll to previous image
@@ -352,71 +404,72 @@ const WorkWithUs = () => {
           </div>
           
           <div className="space-y-6 sm:space-y-8 w-full">
-            {/* Job Card 1 */}
-            <div 
-              id="job-card-1"
-              data-animate
-              className={`bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg relative ${getAnimationClasses('job-card-1')}`}
-            >
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0D1B2A] leading-tight">
-                  Sales Development Representative
-                </h3>
-                <button className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-4 sm:px-6 py-3 sm:py-3 rounded-full font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-200 hover:scale-105 w-full sm:w-auto">
-                  <span>Apply Now</span>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-              <p className="text-base sm:text-lg text-[#5B5B5B] leading-relaxed">
-                Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum.
-              </p>
-            </div>
+            {positionsLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={`job-card-skeleton-${index}`}
+                  className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg animate-pulse"
+                >
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
+                    <div className="h-7 sm:h-8 w-48 bg-gray-200 rounded" />
+                    <div className="h-10 w-32 bg-gray-200 rounded-full" />
+                  </div>
+                  <div className="h-16 bg-gray-200 rounded" />
+                </div>
+              ))
+            ) : positions && positions.length > 0 ? (
+              positions.map((position, index) => {
+                const cardId = `job-card-${position.id || index}`;
+                const applyHref = position.applyUrl || 'mailto:hr@apnaaapan.com';
 
-            {/* Job Card 2 */}
-            <div 
-              id="job-card-2"
-              data-animate
-              className={`bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg relative ${getAnimationClasses('job-card-2')}`}
-            >
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0D1B2A] leading-tight">
-                  Sales Development Representative
-                </h3>
-                <button className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-4 sm:px-6 py-3 sm:py-3 rounded-full font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-200 hover:scale-105 w-full sm:w-auto">
-                  <span>Apply Now</span>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
+                return (
+                  <div
+                    key={cardId}
+                    id={cardId}
+                    data-animate
+                    className={`bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg relative ${getAnimationClasses(cardId)}`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0D1B2A] leading-tight">
+                        {position.title}
+                      </h3>
+                      <a
+                        href={applyHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-4 sm:px-6 py-3 sm:py-3 rounded-full font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-200 hover:scale-105 w-full sm:w-auto"
+                      >
+                        <span>Apply Now</span>
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                    <p className="text-base sm:text-lg text-[#5B5B5B] leading-relaxed">
+                      {position.description || 'More details coming soon.'}
+                    </p>
+                  </div>
+                );
+              })
+            ) : (
+              <div
+                id="job-card-empty"
+                data-animate
+                className={`bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg relative ${getAnimationClasses('job-card-empty')}`}
+              >
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0D1B2A] leading-tight">
+                    No open roles right now
+                  </h3>
+                  <div className="bg-gray-200 text-gray-600 px-4 sm:px-6 py-3 sm:py-3 rounded-full font-semibold flex items-center justify-center space-x-2 w-full sm:w-auto">
+                    <span>Check back soon</span>
+                  </div>
+                </div>
+                <p className="text-base sm:text-lg text-[#5B5B5B] leading-relaxed">
+                  {positionsError || 'We are not actively hiring at the moment. Feel free to reach out and we will contact you when a suitable role opens.'}
+                </p>
               </div>
-              <p className="text-base sm:text-lg text-[#5B5B5B] leading-relaxed">
-                Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum.
-              </p>
-            </div>
-
-            {/* Job Card 3 */}
-            <div 
-              id="job-card-3"
-              data-animate
-              className={`bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg relative ${getAnimationClasses('job-card-3')}`}
-            >
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 space-y-4 sm:space-y-0">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0D1B2A] leading-tight">
-                  Sales Development Representative
-                </h3>
-                <button className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-4 sm:px-6 py-3 sm:py-3 rounded-full font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-200 hover:scale-105 w-full sm:w-auto">
-                  <span>Apply Now</span>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-              <p className="text-base sm:text-lg text-[#5B5B5B] leading-relaxed">
-                Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum.
-              </p>
-            </div>
+            )}
           </div>
         </div>
       </div>

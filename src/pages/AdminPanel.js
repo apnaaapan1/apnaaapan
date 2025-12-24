@@ -12,6 +12,7 @@ const getApiUrl = (endpoint) => {
 const API_BASE = getApiUrl('/api/blogs');
 const API_ADMIN_LOGIN = getApiUrl('/api/admin-login');
 const API_UPLOAD_IMAGE = getApiUrl('/api/upload-image');
+const API_POSITIONS = getApiUrl('/api/positions');
 
 const initialFormState = {
   id: '',
@@ -23,16 +24,28 @@ const initialFormState = {
   status: 'published',
 };
 
+const initialPositionForm = {
+  id: '',
+  title: '',
+  description: '',
+  applyUrl: '',
+  status: 'published',
+};
+
 const AdminPanel = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [adminToken, setAdminToken] = useState('');
   const [blogs, setBlogs] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [positionsLoading, setPositionsLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [positionSaving, setPositionSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [form, setForm] = useState(initialFormState);
+  const [positionForm, setPositionForm] = useState(initialPositionForm);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecking, setAuthChecking] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -46,6 +59,7 @@ const AdminPanel = () => {
       setEmail(savedEmail || '');
       setIsAuthenticated(true);
       fetchBlogs(savedToken);
+      fetchPositions(savedToken);
     }
   }, []);
 
@@ -66,6 +80,26 @@ const AdminPanel = () => {
       setError('Unable to load blogs. Please check the server/API.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPositions = async (tokenForHeader) => {
+    const token = tokenForHeader || adminToken;
+    try {
+      setPositionsLoading(true);
+      setError('');
+      const headers = token ? { 'x-admin-token': token } : undefined;
+      const res = await fetch(`${API_POSITIONS}?includeDrafts=true`, { headers });
+      if (!res.ok) {
+        throw new Error('Failed to fetch positions');
+      }
+      const data = await res.json();
+      setPositions(data.positions || []);
+    } catch (err) {
+      console.error(err);
+      setError('Unable to load open positions. Please check the server/API.');
+    } finally {
+      setPositionsLoading(false);
     }
   };
 
@@ -99,7 +133,7 @@ const AdminPanel = () => {
       window.sessionStorage.setItem('apnaaapan_admin_email', email);
 
       setIsAuthenticated(true);
-      await fetchBlogs(token);
+      await Promise.all([fetchBlogs(token), fetchPositions(token)]);
 
       if (!silent) {
         setSuccess('Logged in successfully.');
@@ -120,7 +154,9 @@ const AdminPanel = () => {
     setAdminToken('');
     setPassword('');
     setBlogs([]);
+    setPositions([]);
     setForm(initialFormState);
+    setPositionForm(initialPositionForm);
     setError('');
     setSuccess('Logged out.');
     // Clear session storage (and localStorage for backward compatibility)
@@ -202,6 +238,14 @@ const AdminPanel = () => {
     }));
   };
 
+  const handlePositionInputChange = (e) => {
+    const { name, value } = e.target;
+    setPositionForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleEdit = (blog) => {
     setForm({
       id: blog.id,
@@ -217,8 +261,25 @@ const AdminPanel = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handlePositionEdit = (position) => {
+    setPositionForm({
+      id: position.id,
+      title: position.title || '',
+      description: position.description || '',
+      applyUrl: position.applyUrl || '',
+      status: position.status || 'published',
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleNew = () => {
     setForm(initialFormState);
+    setError('');
+    setSuccess('');
+  };
+
+  const handlePositionNew = () => {
+    setPositionForm(initialPositionForm);
     setError('');
     setSuccess('');
   };
@@ -291,6 +352,59 @@ const AdminPanel = () => {
     }
   };
 
+  const handlePositionSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!adminToken || !isAuthenticated) {
+      setError('You must be logged in as admin to perform this action.');
+      return;
+    }
+
+    if (!positionForm.title) {
+      setError('Position title is required.');
+      return;
+    }
+
+    const payload = {
+      id: positionForm.id || undefined,
+      title: positionForm.title,
+      description: positionForm.description,
+      applyUrl: positionForm.applyUrl,
+      status: positionForm.status,
+    };
+
+    const isUpdate = Boolean(positionForm.id);
+
+    try {
+      setPositionSaving(true);
+      const res = await fetch(API_POSITIONS, {
+        method: isUpdate ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Request failed');
+      }
+
+      setSuccess(isUpdate ? 'Position updated successfully.' : 'Position created successfully.');
+      setPositionForm(isUpdate ? positionForm : initialPositionForm);
+      await fetchPositions();
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Failed to save position.');
+    } finally {
+      setPositionSaving(false);
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!adminToken || !isAuthenticated) {
       setError('You must be logged in as admin to perform this action.');
@@ -323,6 +437,41 @@ const AdminPanel = () => {
       setError(err.message || 'Failed to delete blog.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePositionDelete = async (id) => {
+    if (!adminToken || !isAuthenticated) {
+      setError('You must be logged in as admin to perform this action.');
+      return;
+    }
+
+    const confirmDelete = window.confirm('Are you sure you want to delete this position?');
+    if (!confirmDelete) return;
+
+    try {
+      setPositionSaving(true);
+      setError('');
+      setSuccess('');
+      const res = await fetch(API_POSITIONS, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken,
+        },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to delete position.');
+      }
+      setSuccess('Position deleted successfully.');
+      await fetchPositions();
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Failed to delete position.');
+    } finally {
+      setPositionSaving(false);
     }
   };
 
@@ -596,6 +745,160 @@ const AdminPanel = () => {
                     <button
                       type="button"
                       onClick={() => handleDelete(blog.id)}
+                      className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        )}
+
+        {isAuthenticated && (
+        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-[#0D1B2A]">
+              {positionForm.id ? 'Edit Position' : 'Create New Position'}
+            </h2>
+            <button
+              type="button"
+              onClick={handlePositionNew}
+              className="text-sm text-[#4A70B0] hover:underline"
+            >
+              + New
+            </button>
+          </div>
+
+          <form onSubmit={handlePositionSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={positionForm.title}
+                  onChange={handlePositionInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
+                <select
+                  name="status"
+                  value={positionForm.status}
+                  onChange={handlePositionInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={positionForm.description}
+                onChange={handlePositionInputChange}
+                rows={4}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                placeholder="Brief summary for this role"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Apply URL
+              </label>
+              <input
+                type="text"
+                name="applyUrl"
+                value={positionForm.applyUrl}
+                onChange={handlePositionInputChange}
+                placeholder="https:// or mailto: link"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Add a direct apply link (ATS, form, or mailto). Left empty will default to mailto:hr@apnaaapan.com.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={positionSaving}
+              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            >
+              {positionSaving ? 'Saving...' : positionForm.id ? 'Update Position' : 'Create Position'}
+            </button>
+          </form>
+        </div>
+        )}
+
+        {isAuthenticated && (
+        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Positions</h2>
+            <button
+              type="button"
+              onClick={() => fetchPositions()}
+              className="text-sm text-[#4A70B0] hover:underline"
+            >
+              Refresh
+            </button>
+          </div>
+
+          {positionsLoading ? (
+            <p className="text-sm text-gray-600">Loading positions...</p>
+          ) : positions.length === 0 ? (
+            <p className="text-sm text-gray-600">No positions found yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {positions.map((position) => (
+                <div
+                  key={position.id}
+                  className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-[#0D1B2A]">
+                        {position.title}
+                      </h3>
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                          position.status === 'published'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        {position.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {position.applyUrl || 'mailto:hr@apnaaapan.com'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handlePositionEdit(position)}
+                      className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePositionDelete(position.id)}
                       className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
                     >
                       Delete
