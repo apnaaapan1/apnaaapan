@@ -21,6 +21,7 @@ import WithApnaaapan from './pages/WithApnaaapan';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminBlogs from './pages/AdminBlogs';
 import AdminPositions from './pages/AdminPositions';
+import AdminWork from './pages/AdminWork';
 import usePageTracking from './hooks/usePageTracking';
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/blogs" element={<AdminBlogs />} />
           <Route path="/admin/positions" element={<AdminPositions />} />
+          <Route path="/admin/work" element={<AdminWork />} />
         </Routes>
         <Footer />
       </div>

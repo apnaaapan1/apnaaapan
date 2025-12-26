@@ -1,75 +1,70 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Project data with different categories
-  const projects = [
-    {
-      id: 1,
-      title: "Reach Talent",
-      description: "Flexible Talent Management Solution",
-      image: "/images/work/Tsczi1maYoHHENT2Fu6ychsMM 1.png",
-      alt: "Reach Talent Banner",
-      categories: ["Brand identity", "UI/UX"],
-      tags: ["Branding", "UI", "UX"]
-    },
-    {
-      id: 2,
-      title: "Prive E-commerce",
-      description: "Powerful Subscription Management Platform",
-      image: "/images/work/LMpi7r3NpJLF313efaiD60o18jw 1.png",
-      alt: "Prive E-commerce Interface",
-      categories: ["E-commerce", "Web development"],
-      tags: ["E-commerce", "Web", "UI"]
-    },
-    {
-      id: 3,
-      title: "Creative Brand Studio",
-      description: "Comprehensive Brand Identity Design",
-      image: "/images/work/Tsczi1maYoHHENT2Fu6ychsMM 1.png",
-      alt: "Creative Brand Studio",
-      categories: ["Brand identity", "Graphic Design"],
-      tags: ["Branding", "Design", "Creative"]
-    },
-    {
-      id: 4,
-      title: "Social Media Hub",
-      description: "Integrated Marketing Campaign Platform",
-      image: "/images/work/LMpi7r3NpJLF313efaiD60o18jw 1.png",
-      alt: "Social Media Hub",
-      categories: ["Social Media & Marketing", "UI/UX"],
-      tags: ["Marketing", "Social", "UI"]
-    },
-    {
-      id: 5,
-      title: "WebFlow Pro",
-      description: "Advanced Web Development Solutions",
-      image: "/images/work/Tsczi1maYoHHENT2Fu6ychsMM 1.png",
-      alt: "WebFlow Pro",
-      categories: ["Web development", "UI/UX"],
-      tags: ["Web", "Development", "UI"]
-    },
-    {
-      id: 6,
-      title: "Design System Pro",
-      description: "Comprehensive UI/UX Design System",
-      image: "/images/work/LMpi7r3NpJLF313efaiD60o18jw 1.png",
-      alt: "Design System Pro",
-      categories: ["UI/UX", "Graphic Design"],
-      tags: ["UI", "UX", "Design"]
+  // Build API URL similarly to AdminPanel without altering UI
+  const getApiUrl = (endpoint) => {
+    if (process.env.NODE_ENV === 'production') {
+      return endpoint;
     }
-  ];
+    return `http://localhost:5000${endpoint}`;
+  };
 
-  // Filter categories
-  const categories = ["All", "Brand identity", "UI/UX", "Web development", "E-commerce", "Social Media & Marketing", "Graphic Design"];
+  useEffect(() => {
+    let mounted = true;
+    const fetchWork = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const res = await fetch(getApiUrl('/api/work'));
+        if (!res.ok) {
+          throw new Error('Failed to load work posts');
+        }
+        const data = await res.json();
+        if (mounted) {
+          setProjects(Array.isArray(data.work) ? data.work : []);
+        }
+      } catch (e) {
+        if (mounted) {
+          setError(e.message || 'Unable to fetch work posts');
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    fetchWork();
+    return () => { mounted = false; };
+  }, []);
 
-  // Filter projects based on active filter
-  const filteredProjects = activeFilter === 'All' 
-    ? projects 
-    : projects.filter(project => project.categories.includes(activeFilter));
+  // Helper to normalize category values for uniqueness/filtering
+  const normalizeCategory = (c) => (c || '').trim().toLowerCase().replace(/\s+/g, ' ');
 
-  // Handle filter button click
+  // Build categories dynamically from projects, de-duplicated by normalized value, keep 'All'
+  const categories = useMemo(() => {
+    const map = new Map(); // normalized -> display label (first seen)
+    projects.forEach((p) => {
+      (p.categories || []).forEach((label) => {
+        const norm = normalizeCategory(label);
+        if (norm && !map.has(norm)) {
+          map.set(norm, label);
+        }
+      });
+    });
+    return ['All', ...Array.from(map.values())];
+  }, [projects]);
+
+  const filteredProjects = useMemo(() => {
+    if (activeFilter === 'All') return projects;
+    const target = normalizeCategory(activeFilter);
+    return projects.filter((project) =>
+      (project.categories || []).some((c) => normalizeCategory(c) === target)
+    );
+  }, [projects, activeFilter]);
+
   const handleFilterClick = (category) => {
     setActiveFilter(category);
   };
@@ -127,15 +122,25 @@ const Work = () => {
             ))}
           </div>
 
+          {/* Error/Loading states (UI spacing preserved) */}
+          {error && (
+            <div className="text-center mb-6">
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
+
           {/* Project Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto px-2 md:px-0">
-            {filteredProjects.map((project) => (
+            {loading && (
+              <div className="col-span-1 md:col-span-2 text-center text-gray-600">Loading...</div>
+            )}
+            {!loading && filteredProjects.map((project) => (
               <div key={project.id} className="animate-fadeIn">
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                   <div className="aspect-video bg-gray-200 relative overflow-hidden">
                     <img 
                       src={project.image} 
-                      alt={project.alt} 
+                      alt={project.alt || project.title} 
                       className="w-full h-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-110"
                     />
                   </div>
@@ -144,7 +149,7 @@ const Work = () => {
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 md:mb-2">{project.title}</h3>
                   <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">{project.description}</p>
                                        <div className="flex flex-wrap gap-2">
-                       {project.tags.map((tag, index) => (
+                       {(project.tags || []).map((tag, index) => (
                          <span 
                            key={index}
                            className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full"
@@ -159,7 +164,7 @@ const Work = () => {
           </div>
 
           {/* No projects message */}
-          {filteredProjects.length === 0 && (
+          {!loading && filteredProjects.length === 0 && (
             <div className="text-center py-16">
               <p className="text-gray-500 text-lg">No projects found for the selected category.</p>
             </div>

@@ -96,6 +96,27 @@ async function getPositionsDb() {
   };
 }
 
+// Work posts API - share same Mongo client
+async function getWorkDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('work_posts'),
+  };
+}
+
 function isAdmin(req) {
   if (!ADMIN_SECRET) return false;
   const headerSecret =
@@ -150,6 +171,26 @@ function sanitizePositionInput(body) {
     title: typeof title === 'string' ? title.trim() : '',
     description: typeof description === 'string' ? description.trim() : '',
     applyUrl: typeof applyUrl === 'string' ? applyUrl.trim() : '',
+    status: status === 'draft' ? 'draft' : 'published',
+  };
+}
+
+function sanitizeWorkInput(body) {
+  const { title, description, image, alt, categories, tags, status } = body || {};
+  const safeCategories = Array.isArray(categories)
+    ? categories.map((c) => (typeof c === 'string' ? c.trim() : '')).filter(Boolean)
+    : [];
+  const safeTags = Array.isArray(tags)
+    ? tags.map((t) => (typeof t === 'string' ? t.trim() : '')).filter(Boolean)
+    : [];
+
+  return {
+    title: typeof title === 'string' ? title.trim() : '',
+    description: typeof description === 'string' ? description.trim() : '',
+    image: typeof image === 'string' ? image.trim() : '',
+    alt: typeof alt === 'string' ? alt.trim() : '',
+    categories: safeCategories,
+    tags: safeTags,
     status: status === 'draft' ? 'draft' : 'published',
   };
 }
@@ -429,25 +470,32 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
 
     console.log('Uploading file:', req.file.originalname, 'Size:', req.file.size);
 
-    // Upload to Cloudinary using buffer with increased timeout
+    // Upload to Cloudinary using direct upload method with longer timeout
     const uploadPromise = new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'apnaaapan_blogs',
-          resource_type: 'image',
-          timeout: 60000, // 60 seconds
-          chunk_size: 6000000 // 6MB chunks
+          folder: 'apnaaapan_work',
+          resource_type: 'auto',
+          timeout: 300000, // 5 minutes timeout (increased significantly)
         },
         (error, result) => {
           if (error) {
-            console.error('Cloudinary upload error:', error);
+            console.error('❌ Cloudinary upload error:', error.message || error);
+            console.error('Error code:', error.http_code);
             reject(error);
           } else {
-            console.log('Cloudinary upload success:', result.public_id);
+            console.log('✅ Cloudinary upload success:', result.public_id);
             resolve(result);
           }
         }
       );
+      
+      // Handle stream errors
+      uploadStream.on('error', (err) => {
+        console.error('❌ Upload stream error:', err);
+        reject(err);
+      });
+      
       uploadStream.end(req.file.buffer);
     });
 
@@ -459,11 +507,22 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
       publicId: result.public_id,
     });
   } catch (error) {
-    console.error('Image upload error:', error);
+    console.error('❌ Image upload error:', error.message);
+    console.error('Full error:', error);
+    
+    let errorMsg = 'Failed to upload image';
+    if (error.message && error.message.includes('Timeout')) {
+      errorMsg = 'Upload timeout - Cloudinary took too long to respond. Please try again with a smaller image or check your internet connection.';
+    } else if (error.message && error.message.includes('Unauthorized')) {
+      errorMsg = 'Cloudinary authentication failed. Check API credentials.';
+    } else if (error.message && error.message.includes('ENOTFOUND')) {
+      errorMsg = 'Cannot reach Cloudinary. Check internet connection.';
+    }
+    
     return res.status(500).json({
-      message: 'Failed to upload image',
+      message: errorMsg,
       error: 'UPLOAD_ERROR',
-      details: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 });
@@ -727,6 +786,184 @@ app.get('/api/positions', async (req, res) => {
     return res.status(500).json({
       message: 'Failed to fetch positions',
       error: 'POSITIONS_GET_ERROR',
+    });
+  }
+});
+
+// Work Posts API endpoint (for Work page)
+app.get('/api/work', async (req, res) => {
+  try {
+    const { collection } = await getWorkDb();
+
+    const { includeDrafts } = req.query || {};
+    const isAdminRequest = isAdmin(req);
+
+    const filter = {};
+
+    if (!isAdminRequest || includeDrafts !== 'true') {
+      filter.status = 'published';
+    }
+
+    const docs = await collection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return res.status(200).json({
+      work: docs.map((doc) => ({
+        id: doc._id.toString(),
+        title: doc.title,
+        description: doc.description,
+        image: doc.image,
+        alt: doc.alt,
+        categories: doc.categories || [],
+        tags: doc.tags || [],
+        status: doc.status,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      })),
+    });
+  } catch (error) {
+    console.error('WORK API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch work posts',
+      error: 'WORK_GET_ERROR',
+    });
+  }
+});
+
+app.post('/api/work', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { collection } = await getWorkDb();
+    const work = sanitizeWorkInput(req.body);
+
+    if (!work.title || !work.image) {
+      return res.status(400).json({
+        message: 'Title and image are required',
+        error: 'MISSING_FIELDS',
+      });
+    }
+
+    const now = new Date();
+    const doc = {
+      ...work,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const result = await collection.insertOne(doc);
+    return res.status(201).json({
+      message: 'Work post created successfully',
+      id: result.insertedId.toString(),
+    });
+  } catch (error) {
+    console.error('WORK API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to create work post',
+      error: 'WORK_CREATE_ERROR',
+    });
+  }
+});
+
+app.put('/api/work', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { id } = req.body || {};
+    if (!id) {
+      return res.status(400).json({
+        message: 'Work post id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const work = sanitizeWorkInput(req.body);
+    const { collection } = await getWorkDb();
+
+    const update = {
+      $set: {
+        title: work.title,
+        description: work.description,
+        image: work.image,
+        alt: work.alt,
+        categories: work.categories,
+        tags: work.tags,
+        status: work.status,
+        updatedAt: new Date(),
+      },
+    };
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(id) },
+      update
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        message: 'Work post not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Work post updated successfully',
+    });
+  } catch (error) {
+    console.error('WORK API PUT error:', error);
+    return res.status(500).json({
+      message: 'Failed to update work post',
+      error: 'WORK_UPDATE_ERROR',
+    });
+  }
+});
+
+app.delete('/api/work', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { id } = req.body || {};
+    if (!id) {
+      return res.status(400).json({
+        message: 'Work post id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const { collection } = await getWorkDb();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: 'Work post not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Work post deleted successfully',
+    });
+  } catch (error) {
+    console.error('WORK API DELETE error:', error);
+    return res.status(500).json({
+      message: 'Failed to delete work post',
+      error: 'WORK_DELETE_ERROR',
     });
   }
 });
