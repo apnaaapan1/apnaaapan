@@ -1,16 +1,26 @@
-import { MongoClient } from 'mongodb';
-import nodemailer from 'nodemailer';
+const { MongoClient } = require('mongodb');
+const nodemailer = require('nodemailer');
 
-// MongoDB Atlas connection string - you'll need to replace this with your actual connection string
-const MONGODB_URI = process.env.MONGODB_URI = 'mongodb+srv://apnaaapan_user:apnaaapan_user@cluster0.libx8iw.mongodb.net/?appName=Cluster0';
+// MongoDB Atlas connection string from environment
+const MONGODB_URI = process.env.MONGODB_URI;
 const DATABASE_NAME = process.env.DATABASE_NAME || 'apnaaapan_user';
 
-// Email configuration
-const EMAIL_USER = process.env.EMAIL_USER = 'r66408650@gmail.com'; // Your email
-const EMAIL_PASS = process.env.EMAIL_PASS = 'stcv jhty rvtv otxx'; // Your email password or app password
-const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL = 'r66408650@gmail.com'; // Email where you want to receive contact form submissions
+// Email configuration from environment
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
