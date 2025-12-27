@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
 
     // POST - Create new review
     if (req.method === 'POST') {
-      const { name, role, feedback, avatar, rating, order, status } = req.body;
+      const { name, role, feedback, avatar, imageUrl, rating, order, status } = req.body;
 
       if (!name || !feedback) {
         return res.status(400).json({ success: false, message: 'Name and feedback are required' });
@@ -70,6 +70,7 @@ module.exports = async (req, res) => {
         role: (role || '').trim(),
         feedback: feedback.trim(),
         avatar: avatar || '👤',
+        imageUrl: imageUrl || '',
         rating: rating || 5,
         order: order || 0,
         status: status || 'active',
@@ -89,7 +90,7 @@ module.exports = async (req, res) => {
 
     // PUT - Update existing review
     if (req.method === 'PUT') {
-      const { id, name, role, feedback, avatar, rating, order, status } = req.body;
+      const { id, name, role, feedback, avatar, imageUrl, rating, order, status } = req.body;
 
       if (!id) {
         return res.status(400).json({ success: false, message: 'Review ID is required' });
@@ -107,6 +108,7 @@ module.exports = async (req, res) => {
       if (role !== undefined) updateData.role = role.trim();
       if (feedback !== undefined) updateData.feedback = feedback.trim();
       if (avatar !== undefined) updateData.avatar = avatar;
+      if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
       if (rating !== undefined) updateData.rating = rating;
       if (order !== undefined) updateData.order = order;
       if (status !== undefined) updateData.status = status;
