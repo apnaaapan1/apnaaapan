@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+const { MongoClient, ObjectId } = require('mongodb');
 
 // Reuse existing env vars for DB
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -66,7 +66,17 @@ function sanitizeBlogInput(body) {
   };
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token, x-admin-secret');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   const { method, query } = req;
 
   // Public endpoints: GET

@@ -32,7 +32,8 @@ const upload = multer({
   },
 });
 
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
+  // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -61,7 +62,6 @@ module.exports = async (req, res) => {
         return res.status(413).json({
           message: 'File too large. Max 10MB allowed.',
           error: 'FILE_TOO_LARGE',
-          maxBytes: 10 * 1024 * 1024,
         });
       }
       return res.status(400).json({
@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
       // Check Cloudinary config
       if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
         return res.status(500).json({
-          message: 'Cloudinary is not configured. Please add credentials to environment variables.',
+          message: 'Cloudinary is not configured',
           error: 'CLOUDINARY_NOT_CONFIGURED',
         });
       }
@@ -114,22 +114,10 @@ module.exports = async (req, res) => {
         publicId: result.public_id,
       });
     } catch (error) {
-      let errorMsg = 'Failed to upload image';
-      if (error.message && error.message.includes('Timeout')) {
-        errorMsg = 'Upload timeout - please try again or use a smaller image.';
-      }
       return res.status(500).json({
-        message: errorMsg,
+        message: 'Failed to upload image',
         error: 'UPLOAD_ERROR',
-        details: error.message,
       });
     }
   });
-};
-
-// Disable body parser for multer
-module.exports.config = {
-  api: {
-    bodyParser: false,
-  },
 };
