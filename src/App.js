@@ -20,6 +20,7 @@ import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminBlogs from './pages/AdminBlogs';
+import AdminReviews from './pages/AdminReviews';
 import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
 import usePageTracking from './hooks/usePageTracking';
@@ -63,6 +64,7 @@ function App() {
           {/* Admin Panel: Dashboard + sections */}
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/blogs" element={<AdminBlogs />} />
+          <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/positions" element={<AdminPositions />} />
           <Route path="/admin/work" element={<AdminWork />} />
         </Routes>

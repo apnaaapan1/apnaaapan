@@ -111,8 +111,8 @@ export default function AdminBlogs() {
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size must be less than 5MB');
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image size must be less than 10MB');
       return;
     }
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
@@ -287,7 +287,7 @@ export default function AdminBlogs() {
                       <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleImageUpload} disabled={uploading} className="hidden" />
                       {uploading ? 'Uploading...' : 'Upload Image'}
                     </label>
-                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 5MB)</span>
+                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 10MB)</span>
                   </div>
                   <input type="text" name="heroImage" value={form.heroImage} onChange={handleInputChange} placeholder="Or paste image URL here" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" required />
                   <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>

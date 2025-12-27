@@ -112,7 +112,7 @@ export default function AdminWork() {
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setError('Image size must be less than 5MB'); return; }
+    if (file.size > 10 * 1024 * 1024) { setError('Image size must be less than 10MB'); return; }
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) { setError('Only JPG, PNG, GIF, and WebP images are allowed'); return; }
     try {
@@ -194,7 +194,7 @@ export default function AdminWork() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Request failed');
       setSuccess(isUpdate ? 'Work post updated successfully.' : 'Work post created successfully.');
-      setForm(isUpdate ? form : initialFormState);
+      setForm(initialFormState); // Always reset form after success
       await fetchWork();
     } catch (err) { setError(err.message || 'Failed to save work post.'); }
     finally { setSaving(false); }
@@ -279,7 +279,7 @@ export default function AdminWork() {
                       <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleImageUpload} disabled={uploading} className="hidden" />
                       {uploading ? 'Uploading...' : 'Upload Image'}
                     </label>
-                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 5MB)</span>
+                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 10MB)</span>
                   </div>
                   <input type="text" name="image" value={form.image} onChange={handleInputChange} placeholder="Or paste image URL here" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" required />
                   <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>
@@ -300,9 +300,20 @@ export default function AdminWork() {
                   <input type="text" name="tagsText" value={form.tagsText} onChange={handleInputChange} placeholder="e.g. Branding, UI, UX" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" />
                   <p className="text-xs text-gray-500 mt-1">Comma-separated list. Displayed as badges under each project.</p>
                 </div>
-                <button type="submit" disabled={saving} className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
-                  {saving ? 'Saving...' : form.id ? 'Update Work Post' : 'Create Work Post'}
-                </button>
+                <div className="flex gap-3">
+                  <button type="submit" disabled={saving} className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+                    {saving ? 'Saving...' : form.id ? 'Update Work Post' : 'Create Work Post'}
+                  </button>
+                  {form.id && (
+                    <button
+                      type="button"
+                      onClick={handleNew}
+                      className="px-5 py-2.5 rounded-lg bg-gray-200 text-[#0D1B2A] text-sm font-semibold hover:bg-gray-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 

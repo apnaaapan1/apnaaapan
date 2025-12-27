@@ -41,7 +41,8 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  // Increase limit to 10MB to allow larger photos; front-end will also validate
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -114,6 +115,27 @@ async function getWorkDb() {
   return {
     db,
     collection: db.collection('work_posts'),
+  };
+}
+
+// Reviews API - share same Mongo client
+async function getReviewsDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('reviews'),
   };
 }
 
@@ -438,7 +460,7 @@ app.post('/api/admin-login', async (req, res) => {
 });
 
 // Image Upload API endpoint (Admin only)
-app.post('/api/upload-image', upload.single('image'), async (req, res) => {
+app.post('/api/upload-image', (req, res) => {
   // Admin-only endpoint
   if (!isAdmin(req)) {
     return res.status(401).json({
@@ -447,84 +469,77 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
     });
   }
 
-  try {
-    if (!req.file) {
+  // Run multer and capture errors to always return JSON (avoid HTML error pages)
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          message: 'File too large. Max 10MB allowed.',
+          error: 'FILE_TOO_LARGE',
+          maxBytes: 10 * 1024 * 1024,
+        });
+      }
       return res.status(400).json({
-        message: 'No image file provided',
-        error: 'NO_FILE',
+        message: err.message || 'Upload error',
+        error: 'UPLOAD_MULTER_ERROR',
       });
     }
 
-    // Check if Cloudinary is configured
-    console.log('Checking Cloudinary config...');
-    console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME ? '✓' : '✗');
-    console.log('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY ? '✓' : '✗');
-    console.log('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET ? '✓' : '✗');
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          message: 'No image file provided',
+          error: 'NO_FILE',
+        });
+      }
 
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      return res.status(500).json({
-        message: 'Cloudinary is not configured. Please add credentials to .env file.',
-        error: 'CLOUDINARY_NOT_CONFIGURED',
-      });
-    }
+      // Check if Cloudinary is configured
+      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        return res.status(500).json({
+          message: 'Cloudinary is not configured. Please add credentials to .env file.',
+          error: 'CLOUDINARY_NOT_CONFIGURED',
+        });
+      }
 
-    console.log('Uploading file:', req.file.originalname, 'Size:', req.file.size);
-
-    // Upload to Cloudinary using direct upload method with longer timeout
-    const uploadPromise = new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'apnaaapan_work',
-          resource_type: 'auto',
-          timeout: 300000, // 5 minutes timeout (increased significantly)
-        },
-        (error, result) => {
-          if (error) {
-            console.error('❌ Cloudinary upload error:', error.message || error);
-            console.error('Error code:', error.http_code);
-            reject(error);
-          } else {
-            console.log('✅ Cloudinary upload success:', result.public_id);
-            resolve(result);
+      // Upload to Cloudinary
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'apnaaapan_work',
+            resource_type: 'auto',
+            timeout: 300000, // 5 minutes timeout
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
           }
-        }
-      );
-      
-      // Handle stream errors
-      uploadStream.on('error', (err) => {
-        console.error('❌ Upload stream error:', err);
-        reject(err);
+        );
+        uploadStream.on('error', (e) => reject(e));
+        uploadStream.end(req.file.buffer);
       });
-      
-      uploadStream.end(req.file.buffer);
-    });
 
-    const result = await uploadPromise;
+      const result = await uploadPromise;
 
-    return res.status(200).json({
-      message: 'Image uploaded successfully',
-      url: result.secure_url,
-      publicId: result.public_id,
-    });
-  } catch (error) {
-    console.error('❌ Image upload error:', error.message);
-    console.error('Full error:', error);
-    
-    let errorMsg = 'Failed to upload image';
-    if (error.message && error.message.includes('Timeout')) {
-      errorMsg = 'Upload timeout - Cloudinary took too long to respond. Please try again with a smaller image or check your internet connection.';
-    } else if (error.message && error.message.includes('Unauthorized')) {
-      errorMsg = 'Cloudinary authentication failed. Check API credentials.';
-    } else if (error.message && error.message.includes('ENOTFOUND')) {
-      errorMsg = 'Cannot reach Cloudinary. Check internet connection.';
+      return res.status(200).json({
+        message: 'Image uploaded successfully',
+        url: result.secure_url,
+        publicId: result.public_id,
+      });
+    } catch (error) {
+      let errorMsg = 'Failed to upload image';
+      if (error.message && error.message.includes('Timeout')) {
+        errorMsg = 'Upload timeout - please try again or use a smaller image.';
+      }
+      return res.status(500).json({
+        message: errorMsg,
+        error: 'UPLOAD_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      });
     }
-    
-    return res.status(500).json({
-      message: errorMsg,
-      error: 'UPLOAD_ERROR',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    });
-  }
+  });
 });
 
 // Blogs API endpoint
@@ -1099,6 +1114,224 @@ app.delete('/api/positions', async (req, res) => {
     return res.status(500).json({
       message: 'Failed to delete position',
       error: 'POSITIONS_DELETE_ERROR',
+    });
+  }
+});
+
+// ============================================
+// REVIEWS API ENDPOINTS
+// ============================================
+
+// GET - Fetch all reviews (public: only active, admin: all if query param 'all=true')
+app.get('/api/reviews', async (req, res) => {
+  try {
+    const { collection } = await getReviewsDb();
+    const { all } = req.query;
+    const isAdminRequest = isAdmin(req);
+
+    const filter = {};
+    
+    // If admin token provided and 'all' query param, return all reviews
+    if (!(all && isAdminRequest)) {
+      filter.status = 'active';
+    }
+
+    const reviews = await collection
+      .find(filter)
+      .sort({ order: 1, createdAt: -1 })
+      .toArray();
+
+    return res.status(200).json({
+      success: true,
+      reviews: reviews.map((doc) => ({
+        _id: doc._id.toString(),
+        name: doc.name,
+        role: doc.role || '',
+        feedback: doc.feedback,
+        avatar: doc.avatar || '👤',
+        imageUrl: doc.imageUrl || '',
+        rating: doc.rating || 5,
+        order: doc.order || 0,
+        status: doc.status || 'active',
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt
+      }))
+    });
+  } catch (error) {
+    console.error('REVIEWS API GET error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch reviews',
+      error: error.message
+    });
+  }
+});
+
+// POST - Create new review (admin only)
+app.post('/api/reviews', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Unauthorized'
+    });
+  }
+
+  try {
+    const { name, role, feedback, avatar, imageUrl, rating, order, status } = req.body;
+
+    if (!name || !feedback) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name and feedback are required'
+      });
+    }
+
+    const { collection } = await getReviewsDb();
+
+    const newReview = {
+      name: name.trim(),
+      role: (role || '').trim(),
+      feedback: feedback.trim(),
+      avatar: avatar || '👤',
+      imageUrl: imageUrl || '',
+      rating: rating || 5,
+      order: order || 0,
+      status: status || 'active',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await collection.insertOne(newReview);
+    newReview._id = result.insertedId.toString();
+
+    return res.status(201).json({
+      success: true,
+      message: 'Review created successfully',
+      review: newReview
+    });
+  } catch (error) {
+    console.error('REVIEWS API POST error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create review',
+      error: error.message
+    });
+  }
+});
+
+// PUT - Update existing review (admin only)
+app.put('/api/reviews', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Unauthorized'
+    });
+  }
+
+  try {
+    const { id, name, role, feedback, avatar, imageUrl, rating, order, status } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Review ID is required'
+      });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid review ID'
+      });
+    }
+
+    const { collection } = await getReviewsDb();
+
+    const updateData = {
+      updatedAt: new Date()
+    };
+
+    if (name !== undefined) updateData.name = name.trim();
+    if (role !== undefined) updateData.role = role.trim();
+    if (feedback !== undefined) updateData.feedback = feedback.trim();
+    if (avatar !== undefined) updateData.avatar = avatar;
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
+    if (rating !== undefined) updateData.rating = rating;
+    if (order !== undefined) updateData.order = order;
+    if (status !== undefined) updateData.status = status;
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Review not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Review updated successfully'
+    });
+  } catch (error) {
+    console.error('REVIEWS API PUT error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update review',
+      error: error.message
+    });
+  }
+});
+
+// DELETE - Delete review (admin only)
+app.delete('/api/reviews', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(403).json({
+      success: false,
+      message: 'Unauthorized'
+    });
+  }
+
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Review ID is required'
+      });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid review ID'
+      });
+    }
+
+    const { collection } = await getReviewsDb();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Review not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Review deleted successfully'
+    });
+  } catch (error) {
+    console.error('REVIEWS API DELETE error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete review',
+      error: error.message
     });
   }
 });
