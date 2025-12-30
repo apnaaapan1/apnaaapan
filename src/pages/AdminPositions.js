@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const getApiUrl = (endpoint) => {
   if (process.env.NODE_ENV === 'production') {
@@ -144,7 +145,7 @@ export default function AdminPositions() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Request failed');
       setSuccess(isUpdate ? 'Position updated successfully.' : 'Position created successfully.');
-      setPositionForm(isUpdate ? positionForm : initialPositionForm);
+      setPositionForm(initialPositionForm);
       await fetchPositions();
     } catch (err) { setError(err.message || 'Failed to save position.'); }
     finally { setPositionSaving(false); }
@@ -173,6 +174,12 @@ export default function AdminPositions() {
   return (
     <main className="bg-[#EFE7D5] min-h-screen">
       <section className="max-w-5xl mx-auto px-6 md:px-8 lg:px-10 py-20 md:py-24">
+        <Link 
+          to="/admin" 
+          className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-lg bg-[#EFE7D5] text-[#0D1B2A] text-sm font-medium hover:bg-[#e0d8c5] transition-colors border border-[#d4c9b0]"
+        >
+          ← Back to Dashboard
+        </Link>
         <h1 className="text-3xl md:text-4xl font-bold text-[#0D1B2A] mb-6">Admin – Open Positions</h1>
         {!isAuthenticated && (
           <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mb-8">
@@ -222,9 +229,20 @@ export default function AdminPositions() {
                   <input type="text" name="applyUrl" value={positionForm.applyUrl} onChange={handlePositionInputChange} placeholder="https:// or mailto: link" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" />
                   <p className="text-xs text-gray-500 mt-1">Add a direct apply link (ATS, form, or mailto). Left empty will default to mailto:hr@apnaaapan.com.</p>
                 </div>
-                <button type="submit" disabled={positionSaving} className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
-                  {positionSaving ? 'Saving...' : positionForm.id ? 'Update Position' : 'Create Position'}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button type="submit" disabled={positionSaving} className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+                    {positionSaving ? 'Saving...' : positionForm.id ? 'Update Position' : 'Create Position'}
+                  </button>
+                  {positionForm.id && (
+                    <button 
+                      type="button" 
+                      onClick={handlePositionNew} 
+                      className="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-200 text-[#0D1B2A] text-sm font-semibold hover:bg-gray-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const getApiUrl = (endpoint) => {
   if (process.env.NODE_ENV === 'production') {
@@ -195,6 +195,12 @@ export default function AdminReviews() {
   return (
     <main className="bg-[#EFE7D5] min-h-screen">
       <section className="max-w-7xl mx-auto px-6 md:px-8 lg:px-10 py-20 md:py-24">
+        <Link 
+          to="/admin" 
+          className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-lg bg-[#EFE7D5] text-[#0D1B2A] text-sm font-medium hover:bg-[#e0d8c5] transition-colors border border-[#d4c9b0]"
+        >
+          ← Back to Dashboard
+        </Link>
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-[#0D1B2A] mb-2">Manage Client Reviews</h1>
