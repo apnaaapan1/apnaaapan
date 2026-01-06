@@ -154,6 +154,30 @@ const WithApnaaapan = () => {
 
       {/* Curiosity Manifesto Section */}
       <section className="mt-24 mb-24">
+        <style>{`
+          .flip-card {
+            perspective: 1000px;
+          }
+          .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+          }
+          .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+          }
+          .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+          }
+          .flip-card-back {
+            transform: rotateY(180deg);
+          }
+        `}</style>
         <div className="max-w-6xl mx-auto text-center px-2">
           <h3 className="font-serif text-[#0D1B2A] mb-10" style={{fontWeight:700, fontSize:'clamp(28px,3.5vw,44px)'}}>
             The Curiosity Manifesto
@@ -161,28 +185,82 @@ const WithApnaaapan = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 place-items-center">
             {/* Card: What */}
-            <div className="rounded-3xl w-[min(340px,86vw)] h-[420px] md:h-[440px] flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
-                 style={{background:'#E24E15'}}>
-              {/* quotes */}
-              <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="text-white font-serif" style={{fontSize:'clamp(26px,3.2vw,40px)'}}>What</div>
+            <div className="flip-card" style={{width:'min(340px,86vw)', height:'420px'}}>
+              <div className="flip-card-inner rounded-3xl" style={{background:'#E24E15'}}>
+                {/* Front */}
+                <div className="flip-card-front flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)] rounded-3xl" style={{background:'#E24E15'}}>
+                  <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="text-white font-serif text-center" style={{lineHeight:'1.8'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1.5rem', fontSize:'clamp(22px,3.2vw,36px)'}}>WHAT</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>Not a brand.</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>Not a club.</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>A live wire of curiosity.</div>
+                  </div>
+                </div>
+                {/* Back */}
+                <div className="flip-card-back flex items-center justify-center p-6 rounded-3xl" style={{background:'#E24E15'}}>
+                  <div className="text-white font-serif text-center" style={{fontSize:'clamp(14px,2vw,16px)', lineHeight:'1.6'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1rem'}}>WHAT</div>
+                    <div>with.apnaaapan is a community built on questions, contradictions, and uncomfortable clarity.</div>
+                    <div style={{marginTop:'0.8rem'}}>We don't chase the algorithm.</div>
+                    <div>We chase the moment something clicks and refuses to go back to how it was.</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Card: Why */}
-            <div className="rounded-3xl w-[min(340px,86vw)] h-[420px] md:h-[440px] flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
-                 style={{background:'#5C80C3'}}>
-              <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="text-white font-serif" style={{fontSize:'clamp(26px,3.2vw,40px)'}}>Why</div>
+            <div className="flip-card" style={{width:'min(340px,86vw)', height:'420px'}}>
+              <div className="flip-card-inner rounded-3xl" style={{background:'#5C80C3'}}>
+                {/* Front */}
+                <div className="flip-card-front flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)] rounded-3xl" style={{background:'#5C80C3'}}>
+                  <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="text-white font-serif text-center" style={{lineHeight:'1.8'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1.5rem', fontSize:'clamp(22px,3.2vw,36px)'}}>WHY</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>Because everything felt loud.</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>And yet, nothing felt alive.</div>
+                  </div>
+                </div>
+                {/* Back */}
+                <div className="flip-card-back flex items-center justify-center p-6 rounded-3xl" style={{background:'#5C80C3'}}>
+                  <div className="text-white font-serif text-center" style={{fontSize:'clamp(14px,2vw,16px)', lineHeight:'1.6'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1rem'}}>WHY</div>
+                    <div>The timelines were full, but empty.</div>
+                    <div style={{marginTop:'0.8rem'}}>Everyone was creating, posting, scaling but no one was cracking open anymore.</div>
+                    <div style={{marginTop:'0.8rem'}}>We missed curiosity. The kind that asks why even when it feels awkward.</div>
+                    <div style={{marginTop:'0.8rem'}}>So this became a place for that version of you, the one who doesn't pretend to know.</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Card: How */}
-            <div className="rounded-3xl w-[min(340px,86vw)] h-[420px] md:h-[440px] flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
-                 style={{background:'#F2BC09'}}>
-              <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>“”</div>
-              <div className="text-white font-serif" style={{fontSize:'clamp(26px,3.2vw,40px)'}}>How</div>
+            <div className="flip-card" style={{width:'min(340px,86vw)', height:'420px'}}>
+              <div className="flip-card-inner rounded-3xl" style={{background:'#F2BC09'}}>
+                {/* Front */}
+                <div className="flip-card-front flex items-center justify-center relative shadow-[0_12px_40px_rgba(0,0,0,0.12)] rounded-3xl" style={{background:'#F2BC09'}}>
+                  <div className="absolute left-6 top-5 text-white/90 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="absolute right-6 bottom-5 text-white/90 rotate-180 select-none" style={{fontSize:'54px', lineHeight:1}}>""</div>
+                  <div className="text-white font-serif text-center" style={{lineHeight:'1.8'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1.5rem', fontSize:'clamp(22px,3.2vw,36px)'}}>HOW</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>By playing first.</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>Pausing next.</div>
+                    <div style={{fontSize:'clamp(16px,2.5vw,20px)'}}>And pulling things apart.</div>
+                  </div>
+                </div>
+                {/* Back */}
+                <div className="flip-card-back flex items-center justify-center p-6 rounded-3xl" style={{background:'#F2BC09'}}>
+                  <div className="text-white font-serif text-center" style={{fontSize:'clamp(14px,2vw,16px)', lineHeight:'1.6'}}>
+                    <div style={{fontWeight:'bold', marginBottom:'1rem'}}>HOW</div>
+                    <div>This isn't plug-and-play self-improvement.</div>
+                    <div style={{marginTop:'0.8rem'}}>It's messy workshops, ruined plans, sticky notes everywhere, and "idk but let's try."</div>
+                    <div style={{marginTop:'0.8rem'}}>Labs, not lecture halls. Collabs that feel like experiments.</div>
+                    <div style={{marginTop:'0.8rem'}}>We don't hand you answers, we make you ask better questions.</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -279,7 +357,7 @@ const WithApnaaapan = () => {
       <section className="mt-2 mb-24">
         <div className="max-w-6xl mx-auto px-2">
           <h3 className="font-serif text-[#0D1B2A] mb-8" style={{fontWeight:700, fontSize:'clamp(32px,4vw,56px)'}}>
-            What’s Next
+            What Happened
           </h3>
 
           {/* Timeline */}
@@ -292,14 +370,14 @@ const WithApnaaapan = () => {
             {/* Row 1: Date + Card */}
             <div className="hidden md:flex items-center relative pl-8">
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-black/70" />
-              <span className="text-[#2E2E2E]">Aug 20</span>
+              <span className="text-[#2E2E2E]">Mar 12, 2025</span>
             </div>
             <div>
               {/* Card 1 */}
               <div className="relative rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-black/10">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-6">
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl leading-none">😍</div>
+                    <div className="text-2xl leading-none">✨</div>
                     <div>
                       <div className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(20px,2.6vw,28px)'}}>
                         Curiosity Meetup at HQ
@@ -309,42 +387,22 @@ const WithApnaaapan = () => {
                   </div>
 
                   <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <span className="inline-flex items-center rounded-full bg-[#E84F1F] text-white px-3 py-1 text-sm font-semibold shadow-sm">04:30 PM</span>
-                    <a href="#rsvp1" className="ml-auto sm:ml-0 inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
+                    <a href="#details" className="ml-auto sm:ml-0 inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
                       <span className="text-white">➤</span>
-                      <span>RSVP NOW</span>
+                      <span>READ MORE</span>
                     </a>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Row 2: Date + Card */}
-            <div className="hidden md:flex items-center relative pl-8">
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-black/70" />
-              <span className="text-[#2E2E2E]">Aug 25</span>
-            </div>
-            <div>
-              {/* Card 2 */}
-              <div className="relative rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-black/10">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-6">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl leading-none">💬</div>
-                    <div>
-                      <div className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(20px,2.6vw,28px)'}}>
-                        Storytelling Workshop
-                      </div>
-                      <div className="text-[#5B5B5B] mt-1" style={{fontSize:'14px'}}>By Apnaaapan Team</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <span className="inline-flex items-center rounded-full bg-[#E84F1F] text-white px-3 py-1 text-sm font-semibold shadow-sm">01:00 PM</span>
-                    <a href="#rsvp2" className="ml-auto sm:ml-0 inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
-                      <span className="text-white">➤</span>
-                      <span>RSVP NOW</span>
-                    </a>
-                  </div>
+                {/* Expanded content */}
+                <div className="px-6 pb-6 text-[#2C2C2C] leading-relaxed" style={{fontSize:'clamp(14px,1.8vw,16px)'}}>
+                  <p>It started as a gathering.</p>
+                  <p style={{marginTop:'0.8rem'}}>It ended as a feeling.</p>
+                  <p style={{marginTop:'1rem'}}>From ideas on the wall to conversations that lingered, this wasn't an event, it was a shared pause.</p>
+                  <p style={{marginTop:'1rem'}}>People came with questions. Left with sparks.</p>
+                  <p style={{marginTop:'1rem'}}>Belonging wasn't asked for.</p>
+                  <p style={{marginTop:'1rem'}}>It was quietly built, between stories, laughter, and moments that didn't need names.</p>
+                  <p style={{marginTop:'1rem'}}>This was with.apnaaapan, in motion.</p>
                 </div>
               </div>
             </div>
@@ -369,10 +427,14 @@ const WithApnaaapan = () => {
           <div className="grid grid-cols-1 md:[grid-template-columns:minmax(0,1fr)_minmax(0,1.6fr)] gap-8 items-start">
             {/* Left Card */}
             <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-9 md:min-h-[260px]">
-              <div className="font-serif text-[#0D1B2A] leading-tight mb-8" style={{fontWeight:700, fontSize:'clamp(24px,3vw,34px)'}}>
-                <div>What are you</div>
-                <div>curious about today?</div>
+              <div className="font-serif text-[#0D1B2A] leading-tight mb-4" style={{fontWeight:700, fontSize:'clamp(24px,3vw,34px)'}}>
+                What are you curious about today?
               </div>
+              <p className="text-[#4F4F4F] leading-relaxed mb-8" style={{fontSize:'clamp(14px,2vw,16px)'}}>
+                Not what you know.<br/>
+                Not what you're good at.<br/>
+                What's pulling at you quietly?
+              </p>
               <button className="inline-flex items-center justify-center w-[200px] h-[46px] rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
                       style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
                 I’m In!
@@ -382,12 +444,12 @@ const WithApnaaapan = () => {
             {/* Right Card */}
             <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-10 md:min-h-[360px]">
               <div className="font-serif text-[#0D1B2A] leading-tight mb-4" style={{fontWeight:700, fontSize:'clamp(24px,3vw,34px)'}}>
-                Be a Part!
+                Be a Part
               </div>
               <ul className="text-[#4F4F4F] space-y-2 mb-5" style={{fontSize:'14px'}}>
                 <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Connect with curious minds</li>
-                <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Participate in meaningful discussions</li>
-                <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Contribute and lead projects</li>
+                <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Join conversations that don't rush to conclusions</li>
+                <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Build, contribute, and lead projects together</li>
               </ul>
 
               {/* Roles */}

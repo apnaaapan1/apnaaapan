@@ -120,7 +120,7 @@ const OurStory = () => {
               Our Story
             </h1>
             <p className="mt-8 text-sm md:text-base leading-6 text-[#2C2C2C] max-w-xl">
-              At Apnaaapan, we believe in advertising as a catalyst for significant business growth. Originally rooted in entertainment, our services have expanded to encompass comprehensive digital marketing solutions that drive real results for our clients.
+              Apnaaapan didn't start in a boardroom. It started in lockdown. In 2020, during the third year of engineering, time felt slow. Classes were online. Days felt repetitive. And from a small town in Pali, Rajasthan, curiosity had nowhere to go. So it went inward. Into creativity. Into learning things that weren't part of the syllabus. What began as small freelance work, websites, apps, social media slowly became something more. Not a plan. Just momentum. After graduation came a full-time job at an MNC. Stable. Secure. Predictable. And then, a choice. In January 2023, that job was left behind. Jaipur became home. Along with three friends, Apnaaapan turned from a solo effort into a shared dream.
             </p>
           </div>
 
@@ -166,10 +166,21 @@ const OurStory = () => {
             </h2>
             <div className="space-y-4">
               <p className="text-lg md:text-xl leading-7 text-[#2C2C2C]" style={{ fontFamily: 'NexaRegular' }}>
-                We are a collective of creatives, strategists, editors, videographers and more.
-              </p>
-              <p className="text-lg md:text-xl leading-7 text-[#2C2C2C]" style={{ fontFamily: 'NexaRegular' }}>
-                The work we do inspires our culture and we are constantly evolving to create a dynamic and successful working environment where everyone feels heard and supported.
+                We're not built like a typical agency.
+                <br />
+                And we never wanted to be.
+                <br />
+                We're a collective of creatives, strategists, editors, designers, and marketers who care deeply about the work we do and the people we do it with.
+                <br />
+                Our culture grows from the work itself.
+                <br />
+                It evolves as we do.
+                <br />
+                And it's shaped by listening, collaboration, and mutual respect.
+                <br />
+                Here, everyone is heard.
+                <br />
+                And everyone belongs.
               </p>
             </div>
           </div>
@@ -202,7 +213,7 @@ const OurStory = () => {
         {/* Bottom Row - Co-Founder and Additional Description */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-12 md:mt-16 lg:mt-16">
           {/* Left Column - Co-Founder Profile */}
-          <div className="lg:col-span-7 flex justify-center lg:justify-start">
+          <div className="lg:col-span-5 flex justify-center lg:justify-start">
             <div className="relative">
               <div className="w-72 h-88 sm:w-80 sm:h-96 md:w-96 md:h-[28rem] lg:w-[28rem] lg:h-[32rem] rounded-2xl overflow-hidden shadow-lg">
                 <img
@@ -211,7 +222,7 @@ const OurStory = () => {
                   className="w-full h-full object-cover"
                 />
                 {/* Badges positioned at bottom-left of image */}
-                  <div className="absolute -bottom-3 left-4 sm:left-6 flex flex-row gap-2 sm:gap-3">
+                <div className="absolute -bottom-3 left-4 sm:left-6 flex flex-row gap-2 sm:gap-3">
                   <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md" style={{ fontFamily: 'NexaBold' }}>
                     <span className="mr-2 text-white">⭐</span>
                     Co-Founder
@@ -220,15 +231,15 @@ const OurStory = () => {
                     <span className="mr-2 text-white">⭐</span>
                     Karthik Patel
                   </span>
-                  </div>
                 </div>
               </div>
+            </div>
           </div>
 
           {/* Right Column - Additional Description */}
-          <div className="lg:col-span-5 lg:pl-8 flex flex-col justify-center">
+          <div className="lg:col-span-7 lg:pl-8 flex flex-col justify-center">
             <p className="text-lg md:text-xl leading-7 text-[#2C2C2C]" style={{ fontFamily: 'NexaRegular' }}>
-              We're not just a team—we're a blend of creators, thinkers, and doers who believe in the power of meaningful work. Whether it's crafting a bold visual, shaping a sharp message, or producing a story that sticks, we work together with intention. Every voice matters here, and every idea has a place. It's this mix of energy, empathy, and ambition that keeps us moving forward—and makes what we do truly stand out.
+              Four people. One intent. Build something honest. Over the next two years, the work grew. Local brands. National clients. International projects. But the feeling stayed the same, personal, close, human. By the end of 2024, Apnaaapan had roots in three cities: Ahmedabad. Jaipur. Pali. In 2025, the journey circled back home. Eight months in Pali, building quietly with the team with 20+ people. Then Jaipur again, this time from the Startup India office. And now, in 2026, Apnaaapan is entering its second chapter. With new energy. New backing. But the same core. Because Apnaaapan was never about becoming corporate. It was always about people. The name itself means our own. Our own market. Our own space. Our own way of doing things. That feeling: of trust, belonging, and care, has stayed constant from day one. In the team. In the culture. And in the experience we create for every brand we work with. Six years later, that's still what we're building. in a way that feels honest and human. Over the years, our services expanded. From small creative projects to full-scale digital marketing and branding. But the intention stayed the same: build things that actually work.
             </p>
           </div>
         </div>
@@ -382,7 +393,7 @@ const OurStory = () => {
                 </div>
               </div>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl leading-6 sm:leading-7 md:leading-8 text-[#2C2C2C] max-w-5xl" style={{ fontFamily: 'NexaRegular' }}>
-                We genuinely care about your goals. Every team here, from design to marketing, works with one focus: making sure you win. We don't believe in one-size-fits-all solutions. Instead, we listen, we understand, and we build what actually works for you. It's not just about delivering work—it's about delivering impact.
+                We care. Truly. Every team here, design, content, marketing, works with one shared intent: helping you win in a way that feels right for your brand. No templates. No shortcuts. No one-size-fits-all solutions. We listen first. We understand next. Then we build what actually works. Because impact matters more than output. Through it all, Apnaaapan stays what it set out to be: our own.
               </p>
             </div>
           </div>
@@ -420,29 +431,39 @@ const OurStory = () => {
         >
           {[
             {
+              id: "2020",
+              title: "Where It Quietly Began",
+              description: "Lockdown. A small town. Too much time and a curious mind. Apnaaapan started as freelance work, learning by doing, one project at a time."
+            },
+            {
+              id: "2021",
+              title: "Finding the Rhythm",
+              description: "More work came in. Skills sharpened. Websites, apps, social media, slowly turning curiosity into capability."
+            },
+            {
+              id: "2022",
+              title: "Choosing Growth Over Comfort",
+              description: "By the final year, it was clear this wasn't just a side project anymore. The idea of building something of our own started feeling real."
+            },
+            {
               id: "2023",
-              title: "The Beginning",
-              description: "Launched Apnaaapan with a vision to offer client-first creative solutions."
+              title: "Taking the Leap",
+              description: "A full-time job was left behind. Jaipur became home. With a small team and a lot of belief, Apnaaapan became a company."
             },
             {
               id: "2024",
-              title: "First 100 Clients",
-              description: "Successfully delivered 50+ branding and marketing projects across industries."
+              title: "Growing Without Losing Ourselves",
+              description: "Clients grew, from local to national to international. Three cities. Many projects. But the work stayed personal. The culture stayed close."
             },
             {
               id: "2025",
-              title: "Major Brand Wins",
-              description: "Partnered with leading national clients & launched 360° campaigns."
+              title: "Coming Back to the Core",
+              description: "Eight months in Pali. Building quietly. Then Jaipur again, this time from the Startup India office: stronger, clearer, steadier."
             },
             {
               id: "2026",
-              title: "Global Expansion",
-              description: "Expanded our services internationally and established partnerships worldwide."
-            },
-            {
-              id: "2027",
-              title: "Innovation Hub",
-              description: "Launched our innovation lab to develop cutting-edge marketing technologies."
+              title: "The Second Chapter",
+              description: "New backing. New systems. Same intent. Apnaaapan begins again, focused on trust, people, and work that truly lasts."
             }
           ].map((milestone, index) => (
             <div 

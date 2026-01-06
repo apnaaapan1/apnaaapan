@@ -4,9 +4,9 @@ import ClientFeedback from '../components/ClientFeedback';
 const serviceContent = {
   'social-media': {
     title: 'Social Media Marketing',
-    headline: 'From Likes to Leads – We Turn Social into Sales.',
+    headline: 'From scrolling to sales, we turn attention into action',
     description:
-      "Our social media services go beyond posting pretty pictures. We combine storytelling, data, and platform-specific strategies to engage your audience and drive measurable results.",
+      "Social media here goes deeper than posting nice things.\nWe mix stories, data, and platform-specific thinking to connect audiences and create results that last.",
   },
   'branding': {
     title: 'Branding & Identity',
@@ -44,32 +44,28 @@ const Services = () => {
   // FAQ items for the accordion
   const faqItems = [
     {
-      q: 'Where is Lorem',
-      a: "Lorem Ipsum is a placeholder text used in publishing and design to focus on layout and typography rather than content. You'll find it anywhere mockups or drafts need readable text."
+      q: 'Will this work for my brand?',
+      a: "If you're willing to show up consistently and grow with intention, yes. We don't force results. We build toward them."
     },
     {
-      q: 'Lorem Ipsum is simply dummy text of the printing',
-      a: 'It originated from a scrambled section of Cicero\'s writings in the 1500s and has been the industry standard dummy text ever since, surviving leaps to digital typesetting. '
+      q: 'How long before we see a difference?',
+      a: 'Some things shift early. Others take time. We focus on steady progress, not overnight spikes.'
     },
     {
-      q: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      a: 'Designers use Lorem Ipsum to help clients visualize how a page will feel without being distracted by final copy. It improves feedback on layout, hierarchy, and spacing.'
+      q: 'Do you need constant input from us?',
+      a: 'No. We\'ll need clarity at the start, and alignment along the way. After that, we handle the rest.'
     },
     {
-      q: 'Lorem Ipsum is simply dummy text of the printing and',
-      a: 'Using dummy text keeps prototypes flexible. Copy changes frequently early on, so placeholder text helps teams iterate quickly without blocking on content.'
+      q: 'Is this just about posting on social media?',
+      a: 'Not really. It\'s about how your brand sounds, feels, and shows up, posts are only one part of it.'
     },
     {
-      q: 'Lorem Ipsum is simply dummy',
-      a: 'It reads like natural language, with word length and rhythm that resemble English, making it ideal for assessing readability and line lengths.'
+      q: 'Do you follow a fixed process?',
+      a: 'We follow your brand. The framework adapts. The thinking stays intentional.'
     },
     {
-      q: 'Lorem Ipsum is simply dummy text of the printing',
-      a: 'Most design tools and CMSs include Lorem Ipsum generators. You can also replace it later with real copy via content workflows.'
-    },
-    {
-      q: 'Lorem Ipsum is simply',
-      a: 'Short answer: it\'s a time‑saving tool. Use it when you need realistic filler text so your team can focus on the structure and experience first.'
+      q: 'How do you define success?',
+      a: 'When your presence feels clear, consistent, and starts bringing the right people to you.'
     }
   ];
   const [openFaq, setOpenFaq] = useState(faqItems.map((_, index) => index === 0));
@@ -307,7 +303,7 @@ const Services = () => {
                     <span className="text-white font-bold text-xl">1</span>
                   </div>
                   <p className="text-lg text-[#0D1B2A] font-nexa-regular">
-                    Low engagement despite regular posting
+                    Posting regularly, but nothing's really landing
                   </p>
                 </div>
                 <div className="text-[#F26B2A]">
@@ -322,12 +318,15 @@ const Services = () => {
               </div>
               {expandedCards.problem1 && (
                 <div className="px-6 pb-6 pt-0 border-t border-gray-100">
-                  <div className="ml-18 pt-4">
+                  <div className="ml-18 pt-4 text-left">
                     <p className="text-gray-600 font-nexa-regular leading-relaxed">
-                      We analyze your content performance and optimize posting times, hashtags, and content formats.
+                      We look at what's working, what's not, and why.
                     </p>
                     <p className="text-gray-600 font-nexa-regular leading-relaxed mt-2">
-                      Our data-driven approach increases engagement by 300% on average within 90 days.
+                      From timing to formats to hashtags, we fine-tune the details, so engagement starts feeling alive again.
+                    </p>
+                    <p className="text-gray-600 font-nexa-regular leading-relaxed mt-2">
+                      Most brands see a clear shift within a few months.
                     </p>
                   </div>
                 </div>
@@ -345,7 +344,7 @@ const Services = () => {
                     <span className="text-white font-bold text-xl">2</span>
                   </div>
                   <p className="text-lg text-[#0D1B2A] font-nexa-regular">
-                    No clear content strategy or brand voice
+                    No clear voice or content direction
                   </p>
                 </div>
                 <div className="text-[#F26B2A]">
@@ -360,12 +359,12 @@ const Services = () => {
               </div>
               {expandedCards.problem2 && (
                 <div className="px-6 pb-6 pt-0 border-t border-gray-100">
-                  <div className="ml-18 pt-4">
+                  <div className="ml-18 pt-4 text-left">
                     <p className="text-gray-600 font-nexa-regular leading-relaxed">
-                      We develop a unique brand voice and comprehensive content calendar tailored to your audience.
+                      We help you sound like you.
                     </p>
                     <p className="text-gray-600 font-nexa-regular leading-relaxed mt-2">
-                      Our strategic approach ensures consistent messaging that resonates with your target market.
+                      By shaping a brand voice and content flow that fits your audience, your messaging stops feeling scattered and starts feeling consistent and familiar.
                     </p>
                   </div>
                 </div>
@@ -383,7 +382,7 @@ const Services = () => {
                     <span className="text-white font-bold text-xl">3</span>
                   </div>
                   <p className="text-lg text-[#0D1B2A] font-nexa-regular">
-                    Difficulty converting followers into customers
+                    Followers, but not enough customers
                   </p>
                 </div>
                 <div className="text-[#F26B2A]">
@@ -398,12 +397,12 @@ const Services = () => {
               </div>
               {expandedCards.problem3 && (
                 <div className="px-6 pb-6 pt-0 border-t border-gray-100">
-                  <div className="ml-18 pt-4">
+                  <div className="ml-18 pt-4 text-left">
                     <p className="text-gray-600 font-nexa-regular leading-relaxed">
-                      We create conversion-focused content funnels and implement strategic call-to-actions.
+                      Attention alone isn't the goal.
                     </p>
                     <p className="text-gray-600 font-nexa-regular leading-relaxed mt-2">
-                      Our proven methods typically increase conversion rates by 250% within the first quarter.
+                      We design content that guides people from interest to trust to action, using thoughtful funnels and clear, natural call-to-actions.
                     </p>
                   </div>
                 </div>
@@ -421,7 +420,7 @@ const Services = () => {
                     <span className="text-white font-bold text-xl">4</span>
                   </div>
                   <p className="text-lg text-[#0D1B2A] font-nexa-regular">
-                    Overwhelm with managing multiple platforms
+                    Too many platforms. Too much to manage.
                   </p>
                 </div>
                 <div className="text-[#F26B2A]">
@@ -436,12 +435,12 @@ const Services = () => {
               </div>
               {expandedCards.problem4 && (
                 <div className="px-6 pb-6 pt-0 border-t border-gray-100">
-                  <div className="ml-18 pt-4">
+                  <div className="ml-18 pt-4 text-left">
                     <p className="text-gray-600 font-nexa-regular leading-relaxed">
-                      We handle all platform management, content creation, and community engagement for you.
+                      We take it off your plate.
                     </p>
                     <p className="text-gray-600 font-nexa-regular leading-relaxed mt-2">
-                      Our team ensures consistent, high-quality presence across all your social media channels.
+                      From content to posting to conversations, we handle the moving parts, so your brand shows up steadily, without you feeling stretched thin.
                     </p>
                   </div>
                 </div>
@@ -461,18 +460,24 @@ const Services = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
             {/* Step 1: Audit & Strategy */}
             <RevealOnScroll>
-            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{height: '280px'}}>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <span className="text-white font-bold text-2xl">1</span>
                 </div>
               </div>
               <div className="flex flex-col items-center text-center pt-4">
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 font-nexa-regular">
+                <h3 className="text-xl font-bold text-black mb-3 font-nexa-regular">
                   Audit & Strategy
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular">
-                  We start by analyzing your audience, competitors, and past performance to identify exactly where opportunities lie.
+                  We begin by looking closely.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  Your audience. Your space. What's worked before and what hasn't.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  That's how we spot the real opportunities.
                 </p>
               </div>
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-transparent group-hover:ring-2 group-hover:ring-orange-300/60 transition-all duration-300"></div>
@@ -481,18 +486,21 @@ const Services = () => {
 
             {/* Step 2: Content Planning */}
             <RevealOnScroll>
-            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{height: '280px'}}>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <span className="text-white font-bold text-2xl">2</span>
                 </div>
               </div>
               <div className="flex flex-col items-center text-center pt-4">
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 font-nexa-regular">
+                <h3 className="text-xl font-bold text-black mb-3 font-nexa-regular">
                   Content Planning
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular">
-                  A tailored content calendar with clear goals ensures your messaging is consistent and impactful.
+                  We plan with intention.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  A clear content rhythm, built around goals so your messaging stays consistent and actually lands.
                 </p>
               </div>
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-transparent group-hover:ring-2 group-hover:ring-orange-300/60 transition-all duration-300"></div>
@@ -501,18 +509,21 @@ const Services = () => {
 
             {/* Step 3: Creative Production */}
             <RevealOnScroll>
-            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{height: '280px'}}>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <span className="text-white font-bold text-2xl">3</span>
                 </div>
               </div>
               <div className="flex flex-col items-center text-center pt-4">
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 font-nexa-regular">
+                <h3 className="text-xl font-bold text-black mb-3 font-nexa-regular">
                   Creative Production
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular">
-                  From visuals to copy and video, we create scroll-stopping content your audience will remember.
+                  This is where ideas take shape.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  Visuals, words, videos made to pause the scroll and stay with your audience.
                 </p>
               </div>
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-transparent group-hover:ring-2 group-hover:ring-orange-300/60 transition-all duration-300"></div>
@@ -521,18 +532,21 @@ const Services = () => {
 
             {/* Step 4: Publishing & Engagement */}
             <RevealOnScroll>
-            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{height: '280px'}}>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <span className="text-white font-bold text-2xl">4</span>
                 </div>
               </div>
               <div className="flex flex-col items-center text-center pt-4">
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 font-nexa-regular">
+                <h3 className="text-xl font-bold text-black mb-3 font-nexa-regular">
                   Publishing & Engagement
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular">
-                  Consistent posting paired with active community management to keep your brand in the conversation.
+                  Showing up matters.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  We post consistently and stay present in conversations so your brand doesn't fade between uploads.
                 </p>
               </div>
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-transparent group-hover:ring-2 group-hover:ring-orange-300/60 transition-all duration-300"></div>
@@ -541,18 +555,21 @@ const Services = () => {
 
             {/* Step 5: Reporting & Optimization */}
             <RevealOnScroll>
-            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+            <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{height: '280px'}}>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <span className="text-white font-bold text-2xl">5</span>
                 </div>
               </div>
               <div className="flex flex-col items-center text-center pt-4">
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 font-nexa-regular">
+                <h3 className="text-xl font-bold text-black mb-3 font-nexa-regular">
                   Reporting & Optimization
                 </h3>
                 <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular">
-                  We track performance, measure impact, and tweak campaigns for even better results over time.
+                  We keep watching and adjusting.
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed font-nexa-regular mt-2">
+                  Tracking what's working, refining what's not so results improve over time, naturally.
                 </p>
               </div>
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-transparent group-hover:ring-2 group-hover:ring-orange-300/60 transition-all duration-300"></div>
@@ -579,7 +596,7 @@ const Services = () => {
               </div>
               <div className="text-left">
                 <p className="text-lg text-[#0D1B2A] font-nexa-regular leading-tight">
-                  Higher engagement<br />rates
+                  Higher engagement<br />that feels natural, not forced
                 </p>
               </div>
             </div>
@@ -593,7 +610,7 @@ const Services = () => {
               </div>
               <div className="text-left">
                 <p className="text-lg text-[#0D1B2A] font-nexa-regular leading-tight">
-                  A clear, recognizable<br />brand voice
+                  A clear, recognizable<br />brand voice people remember
                 </p>
               </div>
             </div>
@@ -607,7 +624,7 @@ const Services = () => {
               </div>
               <div className="text-left">
                 <p className="text-lg text-[#0D1B2A] font-nexa-regular leading-tight">
-                  Consistent follower<br />growth
+                  Consistent follower growth<br />that builds over time
                 </p>
               </div>
             </div>
@@ -621,7 +638,7 @@ const Services = () => {
               </div>
               <div className="text-left">
                 <p className="text-lg text-[#0D1B2A] font-nexa-regular leading-tight">
-                  More inbound leads<br />and conversions
+                  More inbound leads<br />and real conversions
                 </p>
               </div>
             </div>
@@ -687,7 +704,7 @@ const Services = () => {
                   </div>
                 </div>
                 <p className="text-lg md:text-xl leading-8 text-[#2C2C2C] max-w-5xl" style={{ fontFamily: 'NexaRegular' }}>
-                  We genuinely care about your goals. Every team here, from design to marketing, works with one focus: making sure you win. We don't believe in one-size-fits-all solutions. Instead, we listen, we understand, and we build what actually works for you. It's not just about delivering work—it's about delivering impact.
+                  We actually care about where you're headed. Every person on our team, design, content, marketing, works with one shared intent: helping you move forward. No templates. No one-size-fits-all fixes. We listen first. We understand next. And then we build what truly fits you. Because for us, it's not just about getting the work done. It's about making sure it matters.
                 </p>
               </div>
             </div>

@@ -95,9 +95,10 @@ const Work = () => {
           
           {/* Subtitle */}
           <div className="text-sm sm:text-base md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto space-y-2 md:space-y-4">
-            <p>Discover our latest creations, where innovation and design excellence</p>
-            <p>come together to deliver impactful solutions and drive success.</p>
-            <p>and drive success.</p>
+          
+            <p>A glimpse into the brands we've partnered with.</p>
+            <p>Different industries. Different goals.</p>
+            <p>One shared focus, doing work that feels intentional and delivers real movement.</p>
           </div>
         </div>
       </section>

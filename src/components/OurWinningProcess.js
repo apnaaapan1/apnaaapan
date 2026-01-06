@@ -9,7 +9,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 1",
       title: "Discovery & Analysis",
-      description: "We dig deep to understand your brand, audience, and market. This foundation guides strategy—so your growth starts smart, targeted, and built to scale from day one.",
+      description: "We start by listening. Understanding your brand, your people, your space. Because when the base is clear, growth doesn't feel forced. It scales naturally.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-500",
       image: "/images/step1.png",
@@ -18,7 +18,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 2",
       title: "Strategy Development",
-      description: "Using insights from analysis, we develop a custom marketing plan that aligns with your goals and audience—setting the stage for sustainable growth and memorable brand impact.",
+      description: "With the right insights in place, we shape a plan that fits you. Your goals. Your audience. Your pace. Nothing copied. Nothing random. Just direction that makes sense.",
       bgColor: "bg-yellow-400",
       tagColor: "bg-yellow-500",
       image: "/images/step2.png",
@@ -27,7 +27,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 3",
       title: "Launch & Execution",
-      description: "We execute across every channel—socials, content, campaigns—to capture attention and drive results, ensuring your brand launches strong and keeps gaining momentum.",
+      description: "This is where things move. Across content, socials, and campaigns, we show up consistently, so your brand doesn't just launch, it's noticed.",
       bgColor: "bg-blue-400",
       tagColor: "bg-blue-500",
       image: "/images/step3.png",
@@ -36,7 +36,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     {
       step: "Step 4",
       title: "Optimization",
-      description: "We constantly track performance, fine-tune strategies, and update campaigns, so your ROI grows and every marketing move brings you closer to your next milestone.",
+      description: "We don't set and forget. We watch, adjust, and refine, so every step forward brings better results and real momentum.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-400",
       image: "/images/step4.png",

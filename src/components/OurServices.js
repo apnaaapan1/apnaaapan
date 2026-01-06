@@ -9,22 +9,58 @@ const services = [
   {
     id: "01",
     title: "Branding & Identity",
-    description: "We build brands that are purposeful and memorable. From logo to tone, every detail is designed to resonate, earn trust, and drive consistent growth in your market."
+    description: (
+      <>
+        <span>We don't start with logos.</span>
+        <br />
+        <span>We start with meaning.</span>
+        <br />
+        <span>The kind that makes your brand feel familiar, trustworthy, and easy to remember.</span>
+        <br />
+        <span>So when people see you, they get you.</span>
+      </>
+    )
   },
   {
     id: "02",
     title: "Design & Creative",
-    description: "Creativity meets strategy here. Our design work is visually striking and built to perform—whether it's product, packaging, or campaign assets, we deliver standout creative that converts."
+    description: (
+      <>
+        <span>Good design isn't loud.</span>
+        <br />
+        <span>It's clear.</span>
+        <br />
+        <span>Every visual we create has a job, to catch attention, hold it, and move people to act.</span>
+        <br />
+        <span>Nothing extra. Nothing random.</span>
+      </>
+    )
   },
   {
     id: "03",
     title: "Social Media & Marketing",
-    description: "We create and manage social platforms that tell your story, win engagement, and generate leads. Every campaign is data-driven, authentic, and focused on business outcomes."
+    description: (
+      <>
+        <span>We help brands show up without pretending.</span>
+        <br />
+        <span>Telling real stories. Building real engagement.</span>
+        <br />
+        <span>And turning attention into outcomes that actually matter to your business.</span>
+      </>
+    )
   },
   {
     id: "04",
     title: "Web Development",
-    description: "We develop websites that are intuitive, fast, and built for conversions. From landing pages to e-commerce, each project combines sleek design with flawless function."
+    description: (
+      <>
+        <span>Websites shouldn't confuse people.</span>
+        <br />
+        <span>We build fast, intuitive experiences that guide visitors naturally</span>
+        <br />
+        <span>from curiosity to action, without making them think too hard.</span>
+      </>
+    )
   },
   {
     id: "05",
@@ -144,7 +180,7 @@ const OurServices = ({ showHeader = true, items }) => {
                 Our Services
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-[#22223b] mb-3 sm:mb-4 md:mb-6 lg:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Every product, website, and brand we craft at Apnaaapan is built for results—not just appearances. We deliver solutions that perform, engage, and drive real growth for your business. Our approach ensures you get standout visuals and measurable impact, making every project work smarter and harder for you.
+                Everything we build at Apnaaapan has a reason behind it. Products. Websites. Brands. Not to just look good but to work. To connect. To convert. To grow with you. We focus on clarity, consistency, and outcomes so what you put out into the world actually moves your business forward.
               </p>
               <button 
                 onClick={() => window.location.href = '/services'}

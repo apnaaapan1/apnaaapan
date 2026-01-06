@@ -22,16 +22,16 @@ const HeroSection = () => {
           {/* Content Container - Centered */}
           <div className="relative z-10 text-center max-w-5xl mx-auto px-2 sm:px-4">
             {/* Main Headline - EXACTLY as in design image */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif leading-tight mb-6 sm:mb-8">
-              <span className="text-gray-800 block mb-3 sm:mb-4 font-medium">We power your journey</span>
-              <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400 bg-clip-text text-transparent font-bold block text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl whitespace-nowrap overflow-visible">
-                from first sale to your first million
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif leading-tight mb-6 sm:mb-8">
+              <span className="text-gray-800 block mb-3 sm:mb-4 font-medium">We build your brand journey</span>
+              <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400 bg-clip-text text-transparent font-bold block text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl whitespace-nowrap overflow-visible">
+                from first customer to your first million
               </span>
             </h1>
             
             {/* Descriptive Text - EXACTLY as in design image */}
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-8 sm:mb-10 md:mb-12 leading-relaxed font-sans max-w-4xl mx-auto px-4">
-              At Apnaaapan, we handle everything: design, content, marketing, and social media —to drive lasting growth and spotlight your brand's success.
+              At Apnaaapan, we manage strategy, design, content, marketing, and social media to create growth and make your brand unforgettable.
             </p>
             
             {/* CTA Button - EXACTLY as in design image */}

@@ -128,7 +128,7 @@ const Contact = () => {
                 Connect With <span className="text-[#FFC107]">Us</span>
               </h2>
               <p className="text-lg text-[#5B5B5B] leading-relaxed animate-fadeIn" style={{ fontFamily: 'nexaRegular', animationDelay: '140ms' }}>
-                Have service-related questions or interested in other collaborations? We're here to support you every step of the way.
+                Have a question about our services, or something else in mind? We're always open to conversations and happy to figure things out together.
               </p>
             </div>
 
