@@ -137,15 +137,19 @@ const WorkWithUs = () => {
             className={`text-6xl md:text-7xl lg:text-8xl font-bold text-[#0D1B2A] mb-6 leading-tight ${getAnimationClasses('header-title')}`} 
             style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}
           >
-            Shape Your Growth With <span className="text-[#FFC107]">Us</span>
+            Grow With <span className="text-[#FFC107]">Us</span>
           </h1>
           <p 
             id="header-description"
             data-animate
-            className={`text-2xl md:text-3xl text-[#5B5B5B] max-w-4xl mx-auto leading-relaxed mb-6 ${getAnimationClasses('header-description')}`} 
+            className={`text-xl md:text-2xl text-[#5B5B5B] max-w-4xl mx-auto leading-relaxed mb-6 ${getAnimationClasses('header-description')}`} 
             style={{ fontFamily: 'NexaRegular' }}
           >
-            Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum.
+            Apnaaapan is a place for people who care about the work and the why behind it.
+            <br />
+            If you're curious, thoughtful, and willing to learn by doing, you'll feel at home here.
+            <br />
+            If that sounds like you, we'd love to work together.
           </p>
           <button 
             id="header-button"
@@ -174,7 +178,11 @@ const WorkWithUs = () => {
               data-animate
               className={`text-2xl md:text-3xl lg:text-4xl font-bold text-[#0D1B2A] leading-relaxed mb-6 ${getAnimationClasses('quote-text')}`}
             >
-              "Figma ipsum component variant main layer. Scrolling object vector comment export group arrow. Layer hand align slice layout scrolling layout effect. Slice mask invite union asset project device ellipse. Star vector distribute bold text library fill effect create boolean. <span className="text-[#F26B2A]">- Pixel figma component duplicate polygon line main inspect</span>"
+              "This didn't start as a company. It started as a need to build something that felt honest.
+              <br />
+              Apnaaapan grew from curiosity, mistakes, and learning in public. From late nights, small wins, and the belief that good work doesn't need to be loud to matter.
+              <br />
+              <span className="text-[#F26B2A]">Everything we build carries that same intent, to create with care, to grow with clarity, and to never lose the human side of the work."</span>
             </p>
             <footer 
               id="quote-author"
@@ -182,7 +190,7 @@ const WorkWithUs = () => {
               className={`mt-8 ${getAnimationClasses('quote-author')}`}
             >
               <cite className="not-italic">
-                <div className="text-xl font-bold text-[#0D1B2A]">Gourav Sharma</div>
+                <div className="text-xl font-bold text-[#0D1B2A]">- Gourav Sharma</div>
                 <div className="text-lg text-[#5B5B5B]">Founder, Apnaaapan</div>
               </cite>
             </footer>
@@ -205,7 +213,21 @@ const WorkWithUs = () => {
               data-animate
               className={`text-lg md:text-xl text-[#5B5B5B] leading-relaxed ${getAnimationClasses('culture-description')}`}
             >
-              Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus.
+              Our culture isn't built on buzzwords. It's built on how we show up for each other.
+              <br />
+              We value curiosity over certainty.
+              <br />
+              Work here moves with intention. We think before we act.
+              <br />
+              We ask questions before offering answers.
+              <br />
+              There's room to learn. Room to unlearn.
+              <br />
+              And room to grow without pretending you have it all figured out.
+              <br />
+              We care about the work, yes. But we care just as much about the people doing it.
+              <br />
+              Because when people feel trusted and heard, good work follows naturally.
             </p>
           </div>
 
@@ -399,7 +421,9 @@ const WorkWithUs = () => {
               data-animate
               className={`text-base sm:text-lg md:text-xl text-[#5B5B5B] max-w-4xl leading-relaxed ${getAnimationClasses('positions-description')}`}
             >
-              Lorem ipsum dolor sit amet consectetur. Ultricies quis velit eu malesuada molestie arcu. Cursus interdum felis id lectus. A nullam erat aliquet mauris justo odio lorem. Nisl cum at non cras mi nibh accumsan dictum.
+              We're looking for people who care about the work and the people behind it.
+              <br />
+              If you enjoy learning, collaborating, and building with intention, you'll feel at home here.
             </p>
           </div>
           

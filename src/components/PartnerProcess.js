@@ -7,10 +7,10 @@ const PartnerProcess = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   const steps = [
-    { step: 'Step 1', title: 'Connect', description: 'Launch & Execution involves implementing your digital marketing strategy with precision. We coordinate all elements to ensure a seamless rollout, optimizing campaigns for maximum impact and engagement.', image: '/images/partner_us/connect.png' },
-    { step: 'Step 2', title: 'Collaborate', description: 'Launch & Execution involves implementing your digital marketing strategy with precision. We coordinate all elements to ensure a seamless rollout, optimizing campaigns for maximum impact and engagement.', image: '/images/partner_us/collaborate.png' },
-    { step: 'Step 3', title: 'Deliver', description: 'Launch & Execution involves implementing your digital marketing strategy with precision. We coordinate all elements to ensure a seamless rollout, optimizing campaigns for maximum impact and engagement.', image: '/images/partner_us/deliver.png' },
-    { step: 'Step 4', title: 'Grow Together', description: 'Launch & Execution involves implementing your digital marketing strategy with precision. We coordinate all elements to ensure a seamless rollout, optimizing campaigns for maximum impact and engagement.', image: '/images/partner_us/grow together.png' },
+    { step: 'Step 1', title: 'Connect', description: 'We start with alignment. Your goals, your clients, and how you like to work.', image: '/images/partner_us/connect.png' },
+    { step: 'Step 2', title: 'Collaborate', description: 'We integrate with your team and processes, staying flexible and responsive as things move.', image: '/images/partner_us/collaborate.png' },
+    { step: 'Step 3', title: 'Deliver', description: 'Our team executes quietly and consistently, maintaining quality at every stage.', image: '/images/partner_us/deliver.png' },
+    { step: 'Step 4', title: 'Grow Together', description: 'As your needs evolve, we adapt with you, refining systems and scaling support.', image: '/images/partner_us/grow together.png' },
   ];
 
   useEffect(() => {

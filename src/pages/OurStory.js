@@ -326,7 +326,7 @@ const OurStory = () => {
               </div>
               {/* Orange bottom section */}
               <div className="bg-[#FF6B35] text-white px-8 py-8 text-center font-bold text-5xl h-1/2 group-hover:h-1/4 flex items-center justify-center rounded-t-3xl transition-all duration-500 relative z-5" style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}>
-                Collaborate
+                Trust
               </div>
             </div>
 
@@ -344,7 +344,7 @@ const OurStory = () => {
               </div>
               {/* Yellow bottom section */}
               <div className="bg-[#FFD700] text-white px-8 py-8 text-center font-bold text-5xl h-1/2 group-hover:h-1/4 flex items-center justify-center rounded-t-3xl transition-all duration-500 relative z-5" style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}>
-                Innovate
+                Belonging
               </div>
             </div>
 
@@ -362,7 +362,7 @@ const OurStory = () => {
               </div>
               {/* Blue bottom section */}
               <div className="bg-[#4682B4] text-white px-8 py-8 text-center font-bold text-5xl h-1/2 group-hover:h-1/4 flex items-center justify-center rounded-t-3xl transition-all duration-500 relative z-5" style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}>
-                Elevate
+                Curiosity
               </div>
             </div>
           </div>
@@ -409,7 +409,7 @@ const OurStory = () => {
               Milestones
             </h2>
             <p className="text-base md:text-lg text-[#2C2C2C] leading-relaxed max-w-2xl mx-auto">
-              Key Moments That Shaped Our Journey
+            How It Unfolded, Year by Year
             </p>
           </div>
         </div>
@@ -432,38 +432,38 @@ const OurStory = () => {
           {[
             {
               id: "2020",
-              title: "Where It Quietly Began",
-              description: "Lockdown. A small town. Too much time and a curious mind. Apnaaapan started as freelance work, learning by doing, one project at a time."
+              title: "Where Curiosity Had Time",
+              description: "Lockdown slowed everything down.\nA small town. Long days. A mind that wouldn't sit still.\nApnaaapan began as freelance work, learning by doing, one small project at a time."
             },
             {
               id: "2021",
-              title: "Finding the Rhythm",
-              description: "More work came in. Skills sharpened. Websites, apps, social media, slowly turning curiosity into capability."
+              title: "Finding Our Flow",
+              description: "Work started coming in.\nSo did confidence.\nWebsites, apps, social media, curiosity slowly turning into real skill."
             },
             {
               id: "2022",
-              title: "Choosing Growth Over Comfort",
-              description: "By the final year, it was clear this wasn't just a side project anymore. The idea of building something of our own started feeling real."
+              title: "When Comfort Wasn't Enough",
+              description: "By the final year, it was clear this wasn't just a side thing anymore.\nThe thought of building something of our own stopped feeling distant.\nIt felt possible."
             },
             {
               id: "2023",
-              title: "Taking the Leap",
-              description: "A full-time job was left behind. Jaipur became home. With a small team and a lot of belief, Apnaaapan became a company."
+              title: "The Jump",
+              description: "A stable job was left behind.\nJaipur became home.\nWith a small team and a lot of belief, Apnaaapan officially became a company."
             },
             {
               id: "2024",
-              title: "Growing Without Losing Ourselves",
-              description: "Clients grew, from local to national to international. Three cities. Many projects. But the work stayed personal. The culture stayed close."
+              title: "Growing, But Staying Close",
+              description: "Clients grew, local to national to international.\nThree cities. Many projects.\nBut the work stayed personal.\nAnd the culture stayed human."
             },
             {
               id: "2025",
-              title: "Coming Back to the Core",
-              description: "Eight months in Pali. Building quietly. Then Jaipur again, this time from the Startup India office: stronger, clearer, steadier."
+              title: "Back to the Heart of It",
+              description: "Eight quiet months in Pali.\nA team of 20+ people, building without noise.\nThen Jaipur again, this time from the Startup India office, stronger, clearer, steadier."
             },
             {
               id: "2026",
-              title: "The Second Chapter",
-              description: "New backing. New systems. Same intent. Apnaaapan begins again, focused on trust, people, and work that truly lasts."
+              title: "What Comes Next",
+              description: "New backing. New systems.\nThe same intent.\nApnaaapan begins its next chapter, rooted in trust, people, and work that's built to last."
             }
           ].map((milestone, index) => (
             <div 
@@ -492,7 +492,7 @@ const OurStory = () => {
                     <h3 className="text-xl md:text-3xl font-serif font-bold text-[#1a2236] mb-4 md:mb-6 group-hover:text-white transition-colors duration-300 leading-tight">
                       {milestone.title}
                     </h3>
-                    <p className="text-[#22223b] leading-relaxed text-sm md:text-base group-hover:text-white transition-colors duration-300">
+                    <p className="text-[#22223b] leading-relaxed text-sm md:text-base group-hover:text-white transition-colors duration-300" style={{ whiteSpace: 'pre-line' }}>
                       {milestone.description}
                     </p>
                   </div>

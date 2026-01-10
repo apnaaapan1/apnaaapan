@@ -69,7 +69,10 @@ const AboutUs = () => {
               <span className="bg-gradient-to-r from-[#DF5316] to-[#F4BF11] bg-clip-text text-transparent">Us</span>
             </h1>
           <p className="mt-6 md:mt-8 text-base md:text-lg lg:text-xl text-[#0D1B2A]/80 font-nexa-regular">
-              Creative at Heart. Strategic by Nature. Focused on You
+              Not Just What We Do. How We Do It.
+          </p>
+          <p className="mt-2 text-base md:text-lg lg:text-xl text-[#0D1B2A]/80 font-nexa-regular">
+              Built With Care. Shaped by People.
           </p>
         </div>
       </section>
@@ -84,14 +87,18 @@ const AboutUs = () => {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#0D1B2A] tracking-tight mb-6">Who We Are</h2>
             <div className="space-y-4 text-[#0D1B2A]/90 font-nexa-regular leading-relaxed text-[15px] md:text-base max-w-2xl">
               <p>
-                Apnaapan is a full-service creative agency made up of designers, marketers,
-                strategists, editors, developers, and storytellers. We’re here to help brands grow
-                through thoughtful design, smart marketing, and real collaboration.
+                Apnaaapan is a collective of designers, marketers, strategists, editors, developers, and storytellers who care deeply about the work and the people behind it.
               </p>
               <p>
-                We’re not just here to make things look good—we’re here to make them work. Everything we
-                do is rooted in understanding what your brand needs, who your audience is, and how we can
-                help you connect, engage, and thrive.
+                We exist to help brands grow, not through noise or shortcuts, but through thoughtful design, clear thinking, and genuine collaboration.
+              </p>
+              <p>
+                We don't chase how things look.
+                <br />
+                We focus on how they work.
+              </p>
+              <p>
+                By understanding your brand, your audience, and what truly matters to you, we build work that connects, lasts, and moves your business forward in ways that feel right.
               </p>
             </div>
 
@@ -123,32 +130,58 @@ const AboutUs = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-24">
           {/* Our mission */}
           <div>
-            <h3 className="text-5xl md:text-6xl font-serif text-[#0D1B2A] tracking-tight">Our mission</h3>
+            <h3 className="text-5xl md:text-6xl font-serif text-[#0D1B2A] tracking-tight">Our Mission</h3>
             <p className="mt-4 md:mt-5 text-xl md:text-2xl text-[#0D1B2A] font-nexa-regular">
-              To provide impactful growth solutions
+              To build spaces that feel like your own.
             </p>
-            <div className="mt-5 md:mt-6 text-[#0D1B2A]/85 font-nexa-regular leading-relaxed text-[15px] md:text-base max-w-xl">
+            <div className="mt-5 md:mt-6 text-[#0D1B2A]/85 font-nexa-regular leading-relaxed text-[15px] md:text-base max-w-xl space-y-3">
               <p>
-                This isn't just a statement; it's our commitment to making a real difference. We're
-                here to offer solutions that don't just work, but truly propel our clients' growth.
-                Think of it as our promise to deliver strategies that have a lasting impact, helping
-                businesses not just grow, but thrive.
+                Apnaaapan comes from <em>apna aapan</em>, the idea of having a place where you don't have to perform, explain, or fit into someone else's version of success.
+                <br />
+                Our mission is to create that feeling in everything we build.
+              </p>
+              <p>
+                Through brands, communities, and collaborations, we focus on trust first.
+                <br />
+                On work that feels honest.
+                <br />
+                On growth that doesn't disconnect you from who you are.
+              </p>
+              <p>
+                Because when something feels like your own, you show up fully.
+                <br />
+                And that's when real progress begins.
               </p>
             </div>
           </div>
 
           {/* Our vision */}
           <div>
-            <h3 className="text-5xl md:text-6xl font-serif text-[#0D1B2A] tracking-tight">Our vision</h3>
+            <h3 className="text-5xl md:text-6xl font-serif text-[#0D1B2A] tracking-tight">Our Vision</h3>
             <p className="mt-4 md:mt-5 text-xl md:text-2xl text-[#0D1B2A] font-nexa-regular">
-              A world where growth comes naturally.
+              To grow a culture where curiosity leads.
             </p>
-            <div className="mt-5 md:mt-6 text-[#0D1B2A]/85 font-nexa-regular leading-relaxed text-[15px] md:text-base max-w-xl">
+            <div className="mt-5 md:mt-6 text-[#0D1B2A]/85 font-nexa-regular leading-relaxed text-[15px] md:text-base max-w-xl space-y-3">
               <p>
-                Imagine a world where growing your business is as smooth as sailing on a calm sea.
-                That's the future we're aspiring to create. We believe every business, big or small,
-                should have the opportunity to grow without the usual roadblocks and headaches. We're
-                not just dreaming of this world; we're actively working to make it a reality.
+                Today, Apnaaapan is moving beyond services into something wider.
+                <br />
+                A community shaped by curiosity, not certainty.
+                <br />
+                A place where questions are welcomed, not rushed.
+                <br />
+                Where people build together, explore together, and learn without pretending to have it all figured out.
+              </p>
+              <p>
+                We imagine a future where work feels human again.
+                <br />
+                Where growth feels shared, not lonely.
+                <br />
+                Where "your own" doesn't mean isolated, it means connected.
+              </p>
+              <p>
+                That's the world we're building toward.
+                <br />
+                Slowly. Intentionally. Together.
               </p>
             </div>
           </div>
@@ -215,10 +248,12 @@ const AboutUs = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#0D1B2A] tracking-tight">Our History</h2>
-            <p className="mt-4 max-w-3xl mx-auto text-sm md:text-base text-[#0D1B2A]/80 font-nexa-regular">
-              From a small idea to a full-scale creative agency, our journey has been shaped by passion,
-              people, and purposeful growth. Every milestone reflects our commitment to doing meaningful
-              work and helping brands thrive.
+            <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-[#0D1B2A] font-nexa-regular">
+              How Apnaaapan Came to Be
+              <br />
+              Apnaaapan didn't begin with a pitch deck or a long-term plan.
+              <br />
+              It began with restlessness.
             </p>
           </div>
 
@@ -229,11 +264,26 @@ const AboutUs = () => {
 
             <div className="space-y-16">
               {[
-                { year: '2024', text: "Aimed at constant transformation, we shifted our focus to a more efficient omnichannel approach. It allowed us to increase conversions x4 and boost our and our customers' growth. Also, we started developing the Belkins ecosystem by partnering with the best-in-class agencies to serve our customers better and cover more needs than before. Finally, we received the title of the Most Innovative B2B Lead Generation Agency 2024 from the Corporate Excellence Awards." },
-                { year: '2024', text: "Aimed at constant transformation, we shifted our focus to a more efficient omnichannel approach. It allowed us to increase conversions x4 and boost our and our customers' growth. Also, we started developing the Belkins ecosystem by partnering with the best-in-class agencies to serve our customers better and cover more needs than before. Finally, we received the title of the Most Innovative B2B Lead Generation Agency 2024 from the Corporate Excellence Awards." },
-                { year: '2023', text: "Aimed at constant transformation, we shifted our focus to a more efficient omnichannel approach. It allowed us to increase conversions x4 and boost our and our customers' growth. Also, we started developing the Belkins ecosystem by partnering with the best-in-class agencies to serve our customers better and cover more needs than before. Finally, we received the title of the Most Innovative B2B Lead Generation Agency 2024 from the Corporate Excellence Awards." },
-                { year: '2022', text: "Aimed at constant transformation, we shifted our focus to a more efficient omnichannel approach. It allowed us to increase conversions x4 and boost our and our customers' growth. Also, we started developing the Belkins ecosystem by partnering with the best-in-class agencies to serve our customers better and cover more needs than before. Finally, we received the title of the Most Innovative B2B Lead Generation Agency 2024 from the Corporate Excellence Awards." },
-                { year: '2021', text: "Aimed at constant transformation, we shifted our focus to a more efficient omnichannel approach. It allowed us to increase conversions x4 and boost our and our customers' growth. Also, we started developing the Belkins ecosystem by partnering with the best-in-class agencies to serve our customers better and cover more needs than before. Finally, we received the title of the Most Innovative B2B Lead Generation Agency 2024 from the Corporate Excellence Awards." }
+                { 
+                  year: '2020 - Where It All Started', 
+                  text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time."
+                },
+                { 
+                  year: '2021–2022 - From Solo to Shared', 
+                  text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together."
+                },
+                { 
+                  year: '2023 - Choosing the Leap', 
+                  text: "A full-time placement at an MNC came with stability, predictability, and comfort. And then came a decision.\nThe job was left behind. Delhi was left behind too.\nJaipur, the founder's college city, became home again. Apnaaapan turned full-time.\nClients increased. Interns joined. The work became more structured, but the intent stayed the same: build honestly, grow steadily."
+                },
+                { 
+                  year: '2024–2025 - Growing Roots', 
+                  text: "Apnaaapan expanded, not upward, but outward.\nOffices took shape in Pali, Ahmedabad, and Jaipur. Clients came in from across industries and cities, all over India.\nThe team grew to 20+ full-time members and interns, working from different parts of the country, connected by shared intent rather than location.\nIn March 2025, something new began: with.apnaaapan. A community rooted in curiosity. A space for questions, conversations, and people who didn't want ready-made answers."
+                },
+                { 
+                  year: '2026 - Chapter 2.0', 
+                  text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own."
+                }
               ].map((item, idx) => (
                 <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center">
                   {/* Left: bullet + content */}
@@ -243,7 +293,7 @@ const AboutUs = () => {
                       <span className="w-2 h-2 rounded-full bg-[#0D1B2A]"></span>
                     </span>
                     <h4 className="text-[#0D1B2A] font-semibold mb-2" style={{fontFamily:'NexaBold'}}>{item.year}</h4>
-                    <p className="text-[#0D1B2A]/80 text-sm md:text-[15px] leading-relaxed font-nexa-regular">
+                    <p className="text-[#0D1B2A]/80 text-sm md:text-[15px] leading-relaxed font-nexa-regular whitespace-pre-line">
                       {item.text}
                     </p>
                   </div>
@@ -305,7 +355,7 @@ const AboutUs = () => {
                 </div>
               </div>
               <p className="text-base sm:text-lg md:text-xl leading-6 sm:leading-7 md:leading-8 text-[#2C2C2C] max-w-5xl" style={{ fontFamily: 'NexaRegular' }}>
-                We genuinely care about your goals. Every team here, from design to marketing, works with one focus: making sure you win. We don't believe in one-size-fits-all solutions. Instead, we listen, we understand, and we build what actually works for you. It's not just about delivering work—it's about delivering impact.
+                We genuinely care about where you're going. Every team here, from design to marketing, works with one shared intent: helping you move forward. We don't use templates. We listen, understand, and build what truly fits. It's not just about delivering work, it's about creating impact.
               </p>
             </div>
           </div>

@@ -8,8 +8,8 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
   const processSteps = [
     {
       step: "Step 1",
-      title: "Discovery & Analysis",
-      description: "We start by listening. Understanding your brand, your people, your space. Because when the base is clear, growth doesn't feel forced. It scales naturally.",
+      title: "Listen First",
+      description: "We begin by paying attention. To your brand, your people, and the space you're in. When the foundation is clear, growth doesn't feel forced. It unfolds naturally.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-500",
       image: "/images/step1.png",
@@ -17,8 +17,8 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     },
     {
       step: "Step 2",
-      title: "Strategy Development",
-      description: "With the right insights in place, we shape a plan that fits you. Your goals. Your audience. Your pace. Nothing copied. Nothing random. Just direction that makes sense.",
+      title: "Shape the Direction",
+      description: "With the right insights in place, we build a plan that fits you. Your goals. Your audience. Your pace. Nothing copied. Nothing rushed. Just clarity that makes sense.",
       bgColor: "bg-yellow-400",
       tagColor: "bg-yellow-500",
       image: "/images/step2.png",
@@ -26,8 +26,8 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     },
     {
       step: "Step 3",
-      title: "Launch & Execution",
-      description: "This is where things move. Across content, socials, and campaigns, we show up consistently, so your brand doesn't just launch, it's noticed.",
+      title: "Build & Launch",
+      description: "This is where momentum begins. Across content, social, and campaigns, we show up consistently, so your brand doesn't just exist, it's noticed.",
       bgColor: "bg-blue-400",
       tagColor: "bg-blue-500",
       image: "/images/step3.png",
@@ -35,8 +35,8 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
     },
     {
       step: "Step 4",
-      title: "Optimization",
-      description: "We don't set and forget. We watch, adjust, and refine, so every step forward brings better results and real momentum.",
+      title: "Refine & Grow",
+      description: "We don't set things live and walk away. We observe, adjust, and improve, so each step forward brings stronger results and steady progress.",
       bgColor: "bg-orange-500",
       tagColor: "bg-orange-400",
       image: "/images/step4.png",
@@ -98,7 +98,7 @@ const OurWinningProcess = ({ compact = false, showSpacer = true, spacerScreens =
       <section ref={sectionRef} className={`bg-[#EFE7D5] ${compact ? 'py-6 px-6' : 'py-6 sm:py-8 px-3 sm:px-4 md:px-8'} relative`}>
         <div className="max-w-7xl mx-auto relative">
           <div className={`text-center ${compact ? 'mb-4' : 'mb-4 sm:mb-6 md:mb-8'} ${isSmallScreen ? '' : 'sticky'} ${compact ? 'top-4' : 'top-6 sm:top-8'} z-50 bg-[#EFE7D5] ${compact ? 'py-2' : 'py-3 sm:py-4'}`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800">Our Winning Process</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800">Our Way of Working</h2>
           </div>
           <div className={`relative ${compact ? 'h-[80vh]' : (isSmallScreen ? 'h-[180vh]' : 'h-[80vh]')}`}>
             <div className={`sticky ${compact ? 'top-24' : (isSmallScreen ? 'top-20' : 'top-32')} space-y-4 sm:space-y-6 flex flex-col items-center`}>

@@ -121,31 +121,43 @@ const WithApnaaapan = () => {
                  background: 'radial-gradient(circle at 50% 35%, #39C7A5 0%, #2FB9A2 45%, #169D8E 78%)',
                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.45), 0 20px 50px rgba(0,0,0,0.22)'
                }}>
-            <div className="text-white text-[clamp(26px,4.5vw,52px)] font-serif drop-shadow-lg">What</div>
+            <div className="text-white text-[clamp(28px,5vw,56px)] font-serif font-bold drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]">What</div>
           </div>
 
           {/* How label - sits on cyan ring */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] text-white text-[clamp(20px,3.2vw,36px)] font-serif drop-shadow-md">How</div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] text-white text-[clamp(24px,3.8vw,42px)] font-serif font-bold drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">How</div>
 
           {/* WHY label - sits on outer ring */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] text-white/90 text-[clamp(22px,3.6vw,44px)] font-serif drop-shadow">WHY</div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] text-white text-[clamp(26px,4.2vw,48px)] font-serif font-bold drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">WHY</div>
 
-          {/* Speech bubble - top right */}
-          <div className="absolute -top-1 right-[6%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4">
+          {/* Speech bubble - top right (WHY) */}
+          <div className="absolute -top-1 right-[6%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#1E1A52]">
             <div className="absolute -bottom-3 right-12 w-0 h-0 border-l-[12px] border-l-transparent border-t-[14px] border-t-white border-r-[12px] border-r-transparent" />
-            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">Curiosity is the foundation of every great idea, innovation, and experience</p>
+            <div className="absolute -bottom-[17px] right-[46px] w-0 h-0 border-l-[14px] border-l-transparent border-t-[16px] border-t-[#1E1A52] border-r-[14px] border-r-transparent" />
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#1E1A52] to-[#2D2A7A] text-white text-xs font-bold rounded-full">WHY</span>
+            </div>
+            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">Because in all the noise of creating and scaling, we lost the space to stay curious and truly alive.</p>
           </div>
 
-          {/* Speech bubble - left middle */}
-          <div className="absolute left-[-2%] top-[46%] -translate-y-1/2 bg-white rounded-2xl shadow-xl w-[min(360px,76vw)] p-4">
+          {/* Speech bubble - left middle (WHAT) */}
+          <div className="absolute left-[-2%] top-[46%] -translate-y-1/2 bg-white rounded-2xl shadow-xl w-[min(360px,76vw)] p-4 border-2 border-[#39C7A5]">
             <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[14px] border-l-white" />
-            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">By building a community of curious individuals... offline meet-ups, & more</p>
+            <div className="absolute top-1/2 -right-[17px] -translate-y-1/2 w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-l-[16px] border-l-[#39C7A5]" />
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#39C7A5] to-[#2FB9A2] text-white text-xs font-bold rounded-full">WHAT</span>
+            </div>
+            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">A living community built on questions, contradictions, and moments of clarity that don't fade.</p>
           </div>
 
-          {/* Speech bubble - bottom right */}
-          <div className="absolute -bottom-6 right-[10%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4">
+          {/* Speech bubble - bottom right (HOW) */}
+          <div className="absolute -bottom-6 right-[10%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#00C4FF]">
             <div className="absolute -top-3 left-12 w-0 h-0 border-l-[12px] border-l-transparent border-b-[14px] border-b-white border-r-[12px] border-r-transparent" />
-            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">Curiosity is the foundation of every great idea, innovation, and experience</p>
+            <div className="absolute -top-[17px] left-[46px] w-0 h-0 border-l-[14px] border-l-transparent border-b-[16px] border-b-[#00C4FF] border-r-[14px] border-r-transparent" />
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#00C4FF] to-[#00BCDC] text-white text-xs font-bold rounded-full">HOW</span>
+            </div>
+            <p className="text-[#5B5B5B] leading-relaxed text-[15px]">Through playful experiments, messy collaboration, and spaces that help you ask better questions, not rush to answers.</p>
           </div>
         </div>
       </section>

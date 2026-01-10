@@ -21,7 +21,9 @@ const PartnerWithUs = () => {
             Partner With Us
           </h1>
           <h2 className="mt-3 text-[#EB8F1C] font-serif text-[32px] leading-[40px] md:text-[64px] md:leading-[72px] lg:text-[72px] lg:leading-[80px] font-bold">
-            Let’s Build Better Together!
+            <span className="whitespace-nowrap">Let’s Build Something</span>
+            <br />
+            That Works
           </h2>
         </div>
 
@@ -43,7 +45,7 @@ const PartnerWithUs = () => {
           </button>
 
           <p className="mt-6 text-[#202124] text-base md:text-xl leading-7 md:leading-8 max-w-[560px]">
-            Become our white-label partner. We’ll deliver the expertise, you take the credit — all at B2B rates.
+            Work with us as a white-label partner. We handle the work behind the scenes, you lead the relationship, at B2B-friendly rates.
           </p>
         </div>
 
@@ -79,10 +81,13 @@ const PartnerWithUs = () => {
           Why Partner With Us
         </div>
         <h3 className="font-serif text-[#0D1B2A] font-bold leading-tight text-[28px] md:text-[44px] lg:text-[56px]">
-          Why Choose Apnaaapan as Your
-          <br className="hidden md:block" />
-          White Label Partner?
+          Why Agencies Choose Apnaaapan
         </h3>
+        <p className="mt-4 text-[#202124] text-base md:text-xl leading-7 md:leading-8 max-w-[720px] mx-auto">
+          We’re not here to replace your brand.
+          <br />
+          We’re here to strengthen it.
+        </p>
       </section>
 
       {/* Horizontal feature cards reusing OurServices animation */}
@@ -90,10 +95,10 @@ const PartnerWithUs = () => {
         <OurServices 
           showHeader={false}
           items={[
-            { id: '01', title: 'Scalable\nSolutions', description: 'End-to-end services that grow with your business.' },
-            { id: '02', title: 'Cost-\nEffective', description: 'B2B partner rates to maximize your margins.' },
-            { id: '03', title: 'Expert\nExecution', description: 'Our team works behind the scenes, you lead the front.' },
-            { id: '04', title: 'Reliable\nDelivery', description: 'On-time execution with consistent quality control.' },
+            { id: '01', title: 'Scales\nWith You', description: 'Our services are built to grow as you do, without breaking systems or adding friction.' },
+            { id: '02', title: 'Made for\nPartnerships', description: 'Clear B2B pricing that protects your margins and keeps growth sustainable.' },
+            { id: '03', title: 'Quiet\nExecution', description: 'We work behind the scenes.\nYou stay client-facing.\nYour relationship always comes first.' },
+            { id: '04', title: 'Dependable\nDelivery', description: 'Consistent quality. Clear timelines.\nWork you can trust without second-guessing.' },
           ]}
         />
       </section>
@@ -115,7 +120,16 @@ const PartnerWithUs = () => {
 
       {/* Reuse animated services cards from homepage */}
       <section className="bg-[#EFE7D5] pt-2 pb-2">
-        <OurServices showHeader={false} />
+        <OurServices 
+          showHeader={false}
+          items={[
+            { id: '01', title: 'Branding & Identity', description: (<><span>We don’t begin with visuals.</span><br /><span>We begin with meaning.</span><br /><span>The kind that helps brands feel familiar, trustworthy, and easy to remember.</span></>) },
+            { id: '02', title: 'Design & Creative', description: (<><span>Good design doesn’t shout.</span><br /><span>It guides.</span><br /><span>Every visual has a purpose, nothing extra, nothing random.</span></>) },
+            { id: '03', title: 'Social Media & Marketing', description: (<><span>We help brands show up honestly.</span><br /><span>Real stories, real engagement, and outcomes that actually matter.</span></>) },
+            { id: '04', title: 'Web Development', description: (<><span>Clear, fast, intuitive websites that move users naturally from interest to action.</span></>) },
+            { id: '05', title: 'Marketing Strategy', description: (<><span>Thoughtful planning backed by execution, built to connect the dots between effort and growth.</span></>) }
+          ]}
+        />
       </section>
 
       {/* What sets us apart - reused from OurStory */}
@@ -133,7 +147,7 @@ const PartnerWithUs = () => {
             <div className="flex-1 p-6 md:p-8 lg:p-12">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-6">
                 <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#0D1B2A] font-serif">
-                  What sets us apart from others?
+                  What Sets Us Apart
                 </h3>
                 <div className="flex space-x-1 sm:ml-6">
                   {[...Array(5)].map((_, i) => (
@@ -144,7 +158,7 @@ const PartnerWithUs = () => {
                 </div>
               </div>
               <p className="text-base md:text-xl leading-7 md:leading-8 text-[#2C2C2C] max-w-5xl">
-                We genuinely care about your goals. Every team here, from design to marketing, works with one focus: making sure you win. We don’t believe in one-size-fits-all solutions. Instead, we listen, we understand, and we build what actually works for you. It’s not just about delivering work—it’s about delivering impact.
+                We care about where you're headed. Every team here, design, content, marketing, works with one shared intent: helping you win in a way that feels right for your business. No templates. No one-size-fits-all thinking. We listen first. We understand next. Then we build what actually works. Because for us, partnership isn't about output. It's about impact.
               </p>
             </div>
           </div>
@@ -158,9 +172,9 @@ const PartnerWithUs = () => {
           <div className="lg:col-span-6">
             <div className="text-[#E2552A] font-semibold mb-3">Ready to Partner With Us?</div>
             <h3 className="font-serif text-[#0D1B2A] font-bold text-[28px] leading-[1.2] md:text-[52px] md:leading-[1.15]">
-              Let’s grow together. Share
+              Let’s build together. Share
               <br className="hidden md:block" />
-              your details & we’ll reach out.
+              your details &  we’ll take it from there.
             </h3>
             <div className="mt-8 max-w-xl">
               <img src="/images/partner_us/Group 321.png" alt="People collaborating" className="w-full h-auto" />

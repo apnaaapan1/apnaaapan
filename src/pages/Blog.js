@@ -155,7 +155,7 @@ const Blog = () => {
           {/* Subheading */}
           <RevealOnScroll>
             <p className="text-lg md:text-xl lg:text-2xl text-[#2C2C2C] max-w-3xl mx-auto leading-relaxed" style={{ fontFamily: 'NexaRegular' }}>
-              Stories, Insights & Ideas from the World of Apnaaapan
+              Thoughts, notes, and moments from within Apnaaapan
             </p>
           </RevealOnScroll>
         </div>
