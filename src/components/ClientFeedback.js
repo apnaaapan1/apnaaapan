@@ -9,7 +9,7 @@ const getApiUrl = (endpoint) => {
 
 const API_REVIEWS = getApiUrl('/api/reviews');
 
-const ClientFeedback = () => {
+const ClientFeedback = ({ introText = 'What They Say After Using Our Product' }) => {
   const [testimonials, setTestimonials] = useState([
     {
       name: "Narendra Patel",
@@ -108,7 +108,7 @@ const ClientFeedback = () => {
         <div className="text-center mb-6 sm:mb-8 md:mb-12">
           <p className="text-blue-600 text-xs sm:text-sm font-medium mb-2">Client Feedback</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800">
-            What They Say After Using Our Product
+            {introText}
           </h2>
         </div>
       </div>
