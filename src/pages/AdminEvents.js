@@ -75,16 +75,27 @@ export default function AdminEvents() {
       setError('');
       setSuccess('');
 
+      const adminToken = window.sessionStorage.getItem('apnaaapan_admin_token');
+      if (!adminToken) {
+        throw new Error('Admin authentication required');
+      }
+
       const method = editingId ? 'PUT' : 'POST';
       const body = editingId ? { ...formData, id: editingId } : formData;
 
       const res = await fetch(API_EVENTS, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
         body: JSON.stringify(body),
       });
 
-      if (!res.ok) throw new Error(`Failed to ${editingId ? 'update' : 'add'} event`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to ${editingId ? 'update' : 'add'} event`);
+      }
 
       setSuccess(`Event ${editingId ? 'updated' : 'added'} successfully!`);
       resetForm();
@@ -113,11 +124,25 @@ export default function AdminEvents() {
     try {
       setError('');
       setSuccess('');
-      const res = await fetch(`${API_EVENTS}?id=${id}`, {
+
+      const adminToken = window.sessionStorage.getItem('apnaaapan_admin_token');
+      if (!adminToken) {
+        throw new Error('Admin authentication required');
+      }
+
+      const res = await fetch(API_EVENTS, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
+        body: JSON.stringify({ id }),
       });
 
-      if (!res.ok) throw new Error('Failed to delete event');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete event');
+      }
 
       setSuccess('Event deleted successfully!');
       fetchEvents();
@@ -131,14 +156,33 @@ export default function AdminEvents() {
       setError('');
       setSuccess('');
 
+      const adminToken = window.sessionStorage.getItem('apnaaapan_admin_token');
+      if (!adminToken) {
+        throw new Error('Admin authentication required');
+      }
+
       const res = await fetch(API_SETTINGS, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
         body: JSON.stringify({
           key: 'suggest_event_link',
           value: suggestEventLink
         }),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to save link');
+      }
+
+      setSuccess('Suggest Event link saved successfully!');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
       if (!res.ok) throw new Error('Failed to save link');
 

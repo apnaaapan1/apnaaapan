@@ -80,13 +80,19 @@ export default function AdminGallery() {
       // Add image to gallery (newest first handled by API sort)
       const addRes = await fetch(API_GALLERY, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
         body: JSON.stringify({
           imageUrl: uploadData.url || uploadData.imageUrl
         }),
       });
 
-      if (!addRes.ok) throw new Error('Failed to add image to gallery');
+      if (!addRes.ok) {
+        const errorData = await addRes.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to add image to gallery');
+      }
 
       setSuccess('Image added successfully!');
       fetchGallery();
@@ -109,15 +115,26 @@ export default function AdminGallery() {
       setError('');
       setSuccess('');
 
+      const adminToken = window.sessionStorage.getItem('apnaaapan_admin_token');
+      if (!adminToken) {
+        throw new Error('Admin authentication required');
+      }
+
       const addRes = await fetch(API_GALLERY, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
         body: JSON.stringify({
           imageUrl: imageUrl.trim()
         }),
       });
 
-      if (!addRes.ok) throw new Error('Failed to add image to gallery');
+      if (!addRes.ok) {
+        const errorData = await addRes.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to add image to gallery');
+      }
 
       setSuccess('Image added successfully!');
       setImageUrl('');
@@ -135,11 +152,25 @@ export default function AdminGallery() {
     try {
       setError('');
       setSuccess('');
-      const res = await fetch(`${API_GALLERY}?id=${id}`, {
+
+      const adminToken = window.sessionStorage.getItem('apnaaapan_admin_token');
+      if (!adminToken) {
+        throw new Error('Admin authentication required');
+      }
+
+      const res = await fetch(API_GALLERY, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': adminToken
+        },
+        body: JSON.stringify({ id }),
       });
 
-      if (!res.ok) throw new Error('Failed to delete image');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete image');
+      }
 
       setSuccess('Image deleted successfully!');
       fetchGallery();
