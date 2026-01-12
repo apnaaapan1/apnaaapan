@@ -10,23 +10,35 @@ const settingsSchema = new mongoose.Schema({
 
 const Settings = mongoose.models.Settings || mongoose.model('Settings', settingsSchema);
 
+const connectDB = async () => {
+  const MONGO_URI = process.env.MONGODB_URI;
+  if (!MONGO_URI) {
+    throw new Error('MONGODB_URI environment variable is not set');
+  }
+  
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      retryWrites: true,
+      w: 'majority'
+    });
+  }
+};
+
 module.exports = async (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token');
 
   // Handle OPTIONS request
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/apnaaapan';
-  
   try {
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(MONGO_URI);
-    }
+    await connectDB();
   } catch (err) {
     console.error('MongoDB connection error:', err);
     return res.status(500).json({ message: 'Database connection failed', error: err.message });
