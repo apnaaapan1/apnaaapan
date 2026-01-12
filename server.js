@@ -1336,6 +1336,379 @@ app.delete('/api/reviews', async (req, res) => {
   }
 });
 
+// Gallery API - MongoDB connection
+async function getGalleryDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('gallery'),
+  };
+}
+
+// GET gallery images (8 by default, all when ?all=true)
+app.get('/api/gallery', async (req, res) => {
+  try {
+    const { collection } = await getGalleryDb();
+    const showAll = req.query?.all === 'true';
+
+    const cursor = collection
+      .find()
+      .sort({ createdAt: -1, _id: -1 });
+
+    if (!showAll) {
+      cursor.limit(8);
+    }
+
+    const images = await cursor.toArray();
+
+    return res.status(200).json({ images });
+  } catch (error) {
+    console.error('GALLERY API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch gallery images',
+      error: error.message
+    });
+  }
+});
+
+// POST new gallery image
+app.post('/api/gallery', async (req, res) => {
+  try {
+    const { imageUrl, order } = req.body;
+
+    if (!imageUrl) {
+      return res.status(400).json({ message: 'Image URL is required' });
+    }
+
+    const { collection } = await getGalleryDb();
+    const newImage = {
+      imageUrl,
+      order: order || 0,
+      createdAt: new Date()
+    };
+
+    const result = await collection.insertOne(newImage);
+    newImage._id = result.insertedId;
+
+    return res.status(201).json({
+      message: 'Gallery image added successfully',
+      image: newImage
+    });
+  } catch (error) {
+    console.error('GALLERY API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to add gallery image',
+      error: error.message
+    });
+  }
+});
+
+// PUT update gallery image
+app.put('/api/gallery', async (req, res) => {
+  try {
+    const { id, imageUrl, order } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Image ID is required' });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid image ID' });
+    }
+
+    const { collection } = await getGalleryDb();
+    const updateData = {};
+    if (imageUrl) updateData.imageUrl = imageUrl;
+    if (order !== undefined) updateData.order = order;
+
+    const result = await collection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    );
+
+    if (!result.value) {
+      return res.status(404).json({ message: 'Gallery image not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Gallery image updated successfully',
+      image: result.value
+    });
+  } catch (error) {
+    console.error('GALLERY API PUT error:', error);
+    return res.status(500).json({
+      message: 'Failed to update gallery image',
+      error: error.message
+    });
+  }
+});
+
+// DELETE gallery image
+app.delete('/api/gallery', async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Image ID is required' });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid image ID' });
+    }
+
+    const { collection } = await getGalleryDb();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Gallery image not found' });
+    }
+
+    return res.status(200).json({ message: 'Gallery image deleted successfully' });
+  } catch (error) {
+    console.error('GALLERY API DELETE error:', error);
+    return res.status(500).json({
+      message: 'Failed to delete gallery image',
+      error: error.message
+    });
+  }
+});
+
+// Events API - MongoDB connection
+async function getEventsDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('events'),
+  };
+}
+
+// Settings API - MongoDB connection
+async function getSettingsDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('settings'),
+  };
+}
+
+// GET all events
+app.get('/api/events', async (req, res) => {
+  try {
+    const { collection } = await getEventsDb();
+    const events = await collection
+      .find()
+      .sort({ order: 1, createdAt: -1 })
+      .toArray();
+
+    return res.status(200).json({ events });
+  } catch (error) {
+    console.error('EVENTS API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch events',
+      error: error.message
+    });
+  }
+});
+
+// POST new event
+app.post('/api/events', async (req, res) => {
+  try {
+    const { title, date, emoji, author, content, order } = req.body;
+
+    if (!title || !date || !content) {
+      return res.status(400).json({ message: 'Title, date, and content are required' });
+    }
+
+    const { collection } = await getEventsDb();
+    const newEvent = {
+      title,
+      date,
+      emoji: emoji || '✨',
+      author: author || 'Apnaaapan Team',
+      content: Array.isArray(content) ? content : [content],
+      order: order || 0,
+      createdAt: new Date()
+    };
+
+    const result = await collection.insertOne(newEvent);
+    newEvent._id = result.insertedId;
+
+    return res.status(201).json({
+      message: 'Event added successfully',
+      event: newEvent
+    });
+  } catch (error) {
+    console.error('EVENTS API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to add event',
+      error: error.message
+    });
+  }
+});
+
+// PUT update event
+app.put('/api/events', async (req, res) => {
+  try {
+    const { id, title, date, emoji, author, content, order } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Event ID is required' });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID' });
+    }
+
+    const { collection } = await getEventsDb();
+    const updateData = {};
+    if (title) updateData.title = title;
+    if (date) updateData.date = date;
+    if (emoji) updateData.emoji = emoji;
+    if (author) updateData.author = author;
+    if (content) updateData.content = Array.isArray(content) ? content : [content];
+    if (order !== undefined) updateData.order = order;
+
+    const result = await collection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    );
+
+    if (!result.value) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Event updated successfully',
+      event: result.value
+    });
+  } catch (error) {
+    console.error('EVENTS API PUT error:', error);
+    return res.status(500).json({
+      message: 'Failed to update event',
+      error: error.message
+    });
+  }
+});
+
+// DELETE event
+app.delete('/api/events', async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Event ID is required' });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID' });
+    }
+
+    const { collection } = await getEventsDb();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    return res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('EVENTS API DELETE error:', error);
+    return res.status(500).json({
+      message: 'Failed to delete event',
+      error: error.message
+    });
+  }
+});
+
+// GET settings
+app.get('/api/settings', async (req, res) => {
+  try {
+    const { key } = req.query;
+    const { collection } = await getSettingsDb();
+
+    if (key) {
+      const setting = await collection.findOne({ key });
+      return res.status(200).json({ setting });
+    }
+
+    const settings = await collection.find().toArray();
+    return res.status(200).json({ settings });
+  } catch (error) {
+    console.error('SETTINGS API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch settings',
+      error: error.message
+    });
+  }
+});
+
+// POST/UPDATE setting
+app.post('/api/settings', async (req, res) => {
+  try {
+    const { key, value } = req.body;
+
+    if (!key || !value) {
+      return res.status(400).json({ message: 'Key and value are required' });
+    }
+
+    const { collection } = await getSettingsDb();
+    const setting = await collection.findOneAndUpdate(
+      { key },
+      { $set: { value, updatedAt: new Date() } },
+      { returnDocument: 'after', upsert: true }
+    );
+
+    return res.status(200).json({
+      message: 'Setting updated successfully',
+      setting: setting.value
+    });
+  } catch (error) {
+    console.error('SETTINGS API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to update setting',
+      error: error.message
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 

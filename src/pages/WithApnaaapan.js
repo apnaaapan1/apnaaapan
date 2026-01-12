@@ -1,20 +1,137 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
+// Use localhost:5000 in development (Express server), relative path in production (Vercel)
+const getApiUrl = (endpoint) => {
+  if (process.env.NODE_ENV === 'production') {
+    return endpoint;
+  }
+  return `http://localhost:5000${endpoint}`;
+};
 
 const WithApnaaapan = () => {
   const [galleryImages, setGalleryImages] = React.useState([]);
+  const [blogs, setBlogs] = React.useState([]);
+  const [events, setEvents] = React.useState([]);
+  const [suggestEventLink, setSuggestEventLink] = React.useState('#suggest');
+  const [loadingBlogs, setLoadingBlogs] = React.useState(true);
+  const [loadingGallery, setLoadingGallery] = React.useState(true);
+  const [loadingEvents, setLoadingEvents] = React.useState(true);
+  const [expandedEvents, setExpandedEvents] = React.useState({});
 
-  const fileInputRef = React.useRef(null);
+  // Fetch top 3 blogs
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchBlogs() {
+      try {
+        setLoadingBlogs(true);
+        const res = await fetch(getApiUrl('/api/blogs'));
+        if (!res.ok) {
+          throw new Error('Failed to fetch blogs');
+        }
+        const data = await res.json();
+        if (isMounted) {
+          // Get only top 3 blogs
+          setBlogs(Array.isArray(data.blogs) ? data.blogs.slice(0, 3) : []);
+          setLoadingBlogs(false);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setLoadingBlogs(false);
+        }
+      }
+    }
+    fetchBlogs();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  const handleAddClick = () => {
-    if (fileInputRef.current) fileInputRef.current.click();
-  };
+  // Fetch gallery images
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchGallery() {
+      try {
+        setLoadingGallery(true);
+        const res = await fetch(getApiUrl('/api/gallery'));
+        if (!res.ok) {
+          throw new Error('Failed to fetch gallery');
+        }
+        const data = await res.json();
+        if (isMounted) {
+          setGalleryImages(Array.isArray(data.images) ? data.images : []);
+          setLoadingGallery(false);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setLoadingGallery(false);
+        }
+      }
+    }
+    fetchGallery();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  const handleFilesSelected = (e) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
-    const urls = files.map((f) => URL.createObjectURL(f));
-    setGalleryImages((prev) => prev.concat(urls).slice(0, 8));
-    e.target.value = '';
+  // Fetch events
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchEvents() {
+      try {
+        setLoadingEvents(true);
+        const res = await fetch(getApiUrl('/api/events'));
+        if (!res.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        const data = await res.json();
+        if (isMounted) {
+          setEvents(Array.isArray(data.events) ? data.events : []);
+          setLoadingEvents(false);
+        }
+      } catch (err) {
+        console.error(err);
+        if (isMounted) {
+          setLoadingEvents(false);
+        }
+      }
+    }
+    fetchEvents();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Fetch suggest event link
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchSuggestLink() {
+      try {
+        const res = await fetch(getApiUrl('/api/settings?key=suggest_event_link'));
+        if (!res.ok) {
+          throw new Error('Failed to fetch settings');
+        }
+        const data = await res.json();
+        if (isMounted && data.setting?.value) {
+          setSuggestEventLink(data.setting.value);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchSuggestLink();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const toggleEventExpansion = (eventId) => {
+    setExpandedEvents(prev => ({
+      ...prev,
+      [eventId]: !prev[eventId]
+    }));
   };
 
   return (
@@ -121,19 +238,19 @@ const WithApnaaapan = () => {
                  background: 'radial-gradient(circle at 50% 35%, #39C7A5 0%, #2FB9A2 45%, #169D8E 78%)',
                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.45), 0 20px 50px rgba(0,0,0,0.22)'
                }}>
-            <div className="text-white text-[clamp(28px,5vw,56px)] font-serif font-bold drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]">What</div>
+            <div className="text-white text-[clamp(32px,5.5vw,64px)] font-serif font-bold" style={{textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3)'}}>What</div>
           </div>
 
           {/* How label - sits on cyan ring */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] text-white text-[clamp(24px,3.8vw,42px)] font-serif font-bold drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">How</div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[26%] text-white text-[clamp(28px,4.2vw,48px)] font-serif font-bold" style={{textShadow: '0 2px 8px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4)'}}>How</div>
 
           {/* WHY label - sits on outer ring */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] text-white text-[clamp(26px,4.2vw,48px)] font-serif font-bold drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">WHY</div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[6%] text-white text-[clamp(30px,4.5vw,52px)] font-serif font-bold" style={{textShadow: '0 2px 8px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4)'}}>WHY</div>
 
           {/* Speech bubble - top right (WHY) */}
-          <div className="absolute -top-1 right-[6%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#1E1A52]">
-            <div className="absolute -bottom-3 right-12 w-0 h-0 border-l-[12px] border-l-transparent border-t-[14px] border-t-white border-r-[12px] border-r-transparent" />
-            <div className="absolute -bottom-[17px] right-[46px] w-0 h-0 border-l-[14px] border-l-transparent border-t-[16px] border-t-[#1E1A52] border-r-[14px] border-r-transparent" />
+          <div className="absolute bottom-[-10%] right-[4%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#1E1A52]">
+            <div className="absolute -top-4 left-12 w-0 h-0 border-l-[14px] border-l-transparent border-b-[18px] border-b-white border-r-[14px] border-r-transparent" />
+            <div className="absolute -top-[21px] left-[45px] w-0 h-0 border-l-[16px] border-l-transparent border-b-[20px] border-b-[#1E1A52] border-r-[16px] border-r-transparent" />
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#1E1A52] to-[#2D2A7A] text-white text-xs font-bold rounded-full">WHY</span>
             </div>
@@ -141,9 +258,9 @@ const WithApnaaapan = () => {
           </div>
 
           {/* Speech bubble - left middle (WHAT) */}
-          <div className="absolute left-[-2%] top-[46%] -translate-y-1/2 bg-white rounded-2xl shadow-xl w-[min(360px,76vw)] p-4 border-2 border-[#39C7A5]">
-            <div className="absolute top-1/2 -right-3 -translate-y-1/2 w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[14px] border-l-white" />
-            <div className="absolute top-1/2 -right-[17px] -translate-y-1/2 w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-l-[16px] border-l-[#39C7A5]" />
+          <div className="absolute left-[-5%] top-[35%] -translate-y-1/2 bg-white rounded-2xl shadow-xl w-[min(360px,76vw)] p-4 border-2 border-[#39C7A5]">
+            <div className="absolute top-1/2 -right-4 -translate-y-1/2 w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-l-[18px] border-l-white" />
+            <div className="absolute top-1/2 -right-[21px] -translate-y-1/2 w-0 h-0 border-t-[14px] border-t-transparent border-b-[14px] border-b-transparent border-l-[20px] border-l-[#39C7A5]" />
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#39C7A5] to-[#2FB9A2] text-white text-xs font-bold rounded-full">WHAT</span>
             </div>
@@ -151,9 +268,9 @@ const WithApnaaapan = () => {
           </div>
 
           {/* Speech bubble - bottom right (HOW) */}
-          <div className="absolute -bottom-6 right-[10%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#00C4FF]">
-            <div className="absolute -top-3 left-12 w-0 h-0 border-l-[12px] border-l-transparent border-b-[14px] border-b-white border-r-[12px] border-r-transparent" />
-            <div className="absolute -top-[17px] left-[46px] w-0 h-0 border-l-[14px] border-l-transparent border-b-[16px] border-b-[#00C4FF] border-r-[14px] border-r-transparent" />
+          <div className="absolute top-[2%] right-[6%] bg-white rounded-2xl shadow-xl w-[min(340px,74vw)] p-4 border-2 border-[#00C4FF]">
+            <div className="absolute -bottom-4 right-12 w-0 h-0 border-l-[14px] border-l-transparent border-t-[18px] border-t-white border-r-[14px] border-r-transparent" />
+            <div className="absolute -bottom-[21px] right-[45px] w-0 h-0 border-l-[16px] border-l-transparent border-t-[20px] border-t-[#00C4FF] border-r-[16px] border-r-transparent" />
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#00C4FF] to-[#00BCDC] text-white text-xs font-bold rounded-full">HOW</span>
             </div>
@@ -288,7 +405,7 @@ const WithApnaaapan = () => {
                 Blog / Stories
               </h3>
               <p className="text-[#353535] opacity-70 mt-2" style={{fontSize:'clamp(13px,2vw,16px)'}}>
-                Lorem ipsum is placeholder text commonly
+                Latest stories and insights from our community
               </p>
             </div>
             <a
@@ -301,65 +418,93 @@ const WithApnaaapan = () => {
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[0,1,2].map((idx) => (
-              <article key={idx} className="group">
-                <div className="rounded-xl bg-white/70 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] overflow-hidden">
-                  <div className="h-[360px] bg-white rounded-xl"></div>
+          {loadingBlogs ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[0,1,2].map((idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className="rounded-xl bg-gray-200 h-[360px]"></div>
+                  <div className="mt-4 h-4 bg-gray-200 rounded w-16"></div>
+                  <div className="mt-2 h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="mt-2 h-4 bg-gray-200 rounded w-full"></div>
                 </div>
-                <div className="mt-4 text-[#6F6F6F] text-sm">10 Min</div>
-                <h4 className="mt-2 font-serif text-[#0D1B2A] leading-snug"
-                    style={{fontWeight:600, fontSize:'clamp(18px,2.4vw,22px)'}}>
-                  The Power of Social Media...
-                </h4>
-                <p className="mt-2 text-[#6F6F6F] text-sm leading-relaxed max-w-md">
-                  Discover how social media can shape your brand's voice, build real connections, and drive meaningful gro...
-                </p>
-              </article>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : blogs.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {blogs.map((blog) => (
+                <article key={blog._id} className="group cursor-pointer" onClick={() => window.location.href = `/blog/${blog.slug}`}>
+                  <div className="rounded-xl bg-white/70 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] overflow-hidden">
+                    <div className="h-[360px] bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl overflow-hidden">
+                      {(blog.heroImage || blog.image) && (
+                        <img 
+                          src={blog.heroImage || blog.image} 
+                          alt={blog.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 text-[#6F6F6F] text-sm">{blog.readTime || '5 Min'}</div>
+                  <h4 className="mt-2 font-serif text-[#0D1B2A] leading-snug group-hover:text-[#D24E1D] transition-colors"
+                      style={{fontWeight:600, fontSize:'clamp(18px,2.4vw,22px)'}}>
+                    {blog.title}
+                  </h4>
+                  <p className="mt-2 text-[#6F6F6F] text-sm leading-relaxed max-w-md line-clamp-3">
+                    {blog.excerpt || (Array.isArray(blog.content) && blog.content.length > 0 ? blog.content[0].substring(0, 150) + '...' : '')}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-[#6F6F6F]">
+              <p>No blogs available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Gallery Section */}
       <section className="mb-28">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 items-center">
-          {/* Left column: title + button (centered vertically) */}
-          <div className="pl-2 md:justify-self-start">
-            <h3 className="font-serif text-[#0D1B2A] mb-6" style={{fontWeight:700, fontSize:'clamp(32px,4vw,56px)'}}>
+        <div className="max-w-7xl mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-between gap-4 mb-8">
+            <h3 className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(32px,4vw,56px)'}}>
               Gallery
             </h3>
-            <button onClick={handleAddClick}
-                    className="inline-flex items-center gap-3 rounded-[16px] px-6 py-4 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
-                    style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
-              <span className="bg-white/20 rounded-md p-1">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z" stroke="white" strokeWidth="1.5"/>
-                  <path d="M7 16l3-3 2 2 4-4 3 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-              <span>Add Yours</span>
-            </button>
-            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFilesSelected} />
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 rounded-full px-4 sm:px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
+              style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}
+            >
+              <span>See All</span>
+              <span aria-hidden>➜</span>
+            </Link>
           </div>
 
-          {/* Grid 2x4 with quotes anchored to this box */}
+          {/* Grid with quotes */}
           <div className="relative">
             {/* Decorative quotes positioned to match mock */}
             <div className="absolute -top-6 -left-6 text-[#D24E1D] select-none" style={{fontSize:'52px'}}>“</div>
             <div className="absolute -bottom-8 -right-2 text-[#D24E1D] select-none rotate-180" style={{fontSize:'52px'}}>“</div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({length: 8}).map((_, i) => {
-              const img = galleryImages[i];
-              return (
-                <div key={i} className="rounded-xl border border-black/30 bg-white/70 shadow-sm overflow-hidden h-[220px] sm:h-[240px]">
-                  {img ? (
-                    <img src={img} alt={`Gallery ${i+1}`} className="w-full h-full object-cover" />
-                  ) : null}
-                </div>
-              );
-            })}
+            {loadingGallery ? (
+              Array.from({length: 8}).map((_, i) => (
+                <div key={i} className="rounded-xl border border-black/30 bg-gray-200 animate-pulse h-[220px] sm:h-[240px]"></div>
+              ))
+            ) : (
+              Array.from({length: 8}).map((_, i) => {
+                const img = galleryImages[i];
+                return (
+                  <div key={i} className="rounded-xl border border-black/30 bg-white/70 shadow-sm overflow-hidden h-[220px] sm:h-[240px]">
+                    {img ? (
+                      <img src={img.imageUrl} alt={`Gallery ${i+1}`} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200"></div>
+                    )}
+                  </div>
+                );
+              })
+            )}
             </div>
           </div>
         </div>
@@ -372,60 +517,87 @@ const WithApnaaapan = () => {
             What Happened
           </h3>
 
-          {/* Timeline */}
-          <div className="relative grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6">
-            {/* Full-height dashed line spanning all events */}
-            <div className="hidden md:block relative md:row-span-2 pointer-events-none">
-              <div className="absolute left-[14px] top-2 bottom-2 border-l-2 border-dashed border-black/25" />
-            </div>
+          {loadingEvents ? (
+            <div className="text-center py-12 text-gray-600">Loading events...</div>
+          ) : events.length > 0 ? (
+            <div className="relative">
+              {/* Continuous timeline line for all events */}
+              {events.length > 1 && (
+                <div className="hidden md:block absolute left-[14px] top-0 bottom-0 w-0.5 border-l-2 border-dashed border-black/25 pointer-events-none" />
+              )}
+              
+              <div className="space-y-12">
+                {events.map((event, idx) => (
+                  <div key={event._id} className="relative grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8">
+                    {/* Date - aligned to top */}
+                    <div className="hidden md:block relative pl-8">
+                      <span className="absolute left-0 top-0 w-2.5 h-2.5 rounded-full bg-black/70 z-10" />
+                      <div className="text-[#2E2E2E] text-sm">{event.date}</div>
+                    </div>
 
-            {/* Row 1: Date + Card */}
-            <div className="hidden md:flex items-center relative pl-8">
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-black/70" />
-              <span className="text-[#2E2E2E]">Mar 12, 2025</span>
-            </div>
-            <div>
-              {/* Card 1 */}
-              <div className="relative rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-black/10">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-6">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl leading-none">✨</div>
+                    {/* Event Card */}
                     <div>
-                      <div className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(20px,2.6vw,28px)'}}>
-                        Curiosity Meetup at HQ
+                      <div className="relative rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-black/10 overflow-hidden">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-4 px-6 py-5">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div className="text-2xl leading-none flex-shrink-0 mt-0.5">{event.emoji}</div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(18px,2.4vw,24px)'}}>
+                                {event.title}
+                              </h4>
+                              <div className="text-[#5B5B5B] mt-1" style={{fontSize:'13px'}}>By {event.author}</div>
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => toggleEventExpansion(event._id)}
+                            className="ml-auto sm:ml-0 inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition whitespace-nowrap text-sm flex-shrink-0" 
+                            style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}
+                          >
+                            <span className="text-white">➤</span>
+                            <span>{expandedEvents[event._id] ? 'READ LESS' : 'READ MORE'}</span>
+                          </button>
+                        </div>
+
+                        {/* Content with proper height management */}
+                        <div 
+                          className="px-6 pb-8 text-[#2C2C2C] leading-relaxed transition-all duration-300 overflow-hidden" 
+                          style={{
+                            fontSize:'clamp(15px,1.8vw,17px)',
+                            maxHeight: expandedEvents[event._id] ? '1500px' : '3.6em',
+                            lineHeight: '1.7'
+                          }}
+                        >
+                          {event.content.map((paragraph, pIdx) => (
+                            <p key={pIdx} className="break-words" style={{marginBottom: pIdx < event.content.length - 1 ? '0.8rem' : '0'}}>
+                              {paragraph}
+                            </p>
+                          ))}
+                        </div>
                       </div>
-                      <div className="text-[#5B5B5B] mt-1" style={{fontSize:'14px'}}>By Apnaaapan Team</div>
                     </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <a href="#details" className="ml-auto sm:ml-0 inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
-                      <span className="text-white">➤</span>
-                      <span>READ MORE</span>
-                    </a>
-                  </div>
-                </div>
-
-                {/* Expanded content */}
-                <div className="px-6 pb-6 text-[#2C2C2C] leading-relaxed" style={{fontSize:'clamp(14px,1.8vw,16px)'}}>
-                  <p>It started as a gathering.</p>
-                  <p style={{marginTop:'0.8rem'}}>It ended as a feeling.</p>
-                  <p style={{marginTop:'1rem'}}>From ideas on the wall to conversations that lingered, this wasn't an event, it was a shared pause.</p>
-                  <p style={{marginTop:'1rem'}}>People came with questions. Left with sparks.</p>
-                  <p style={{marginTop:'1rem'}}>Belonging wasn't asked for.</p>
-                  <p style={{marginTop:'1rem'}}>It was quietly built, between stories, laughter, and moments that didn't need names.</p>
-                  <p style={{marginTop:'1rem'}}>This was with.apnaaapan, in motion.</p>
-                </div>
+              {/* CTA Row */}
+              <div className="flex justify-center pt-8 mt-12">
+                <a 
+                  href={suggestEventLink} 
+                  target={suggestEventLink.startsWith('http') ? '_blank' : '_self'}
+                  rel={suggestEventLink.startsWith('http') ? 'noopener noreferrer' : ''}
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" 
+                  style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}
+                >
+                  <span>Suggest an Event</span>
+                </a>
               </div>
             </div>
-
-            {/* CTA Row spanning right column */}
-            <div className="md:col-start-2 flex justify-center pt-2">
-              <a href="#suggest" className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition" style={{background:'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)'}}>
-                <span>Suggest an Event</span>
-              </a>
+          ) : (
+            <div className="text-center py-12 text-gray-600">
+              No events yet. Check back soon!
             </div>
-          </div>
+          )}
         </div>
       </section>
 

@@ -18,11 +18,14 @@ import WorkWithUs from './pages/WorkWithUs';
 import Services from './pages/Services';
 import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
+import GalleryAll from './pages/GalleryAll';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminEvents from './pages/AdminEvents';
 import AdminBlogs from './pages/AdminBlogs';
 import AdminReviews from './pages/AdminReviews';
 import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
+import AdminGallery from './pages/AdminGallery';
 import usePageTracking from './hooks/usePageTracking';
 
 function App() {
@@ -60,6 +63,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/services/:slug" element={<Services />} />
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
+          <Route path="/gallery" element={<GalleryAll />} />
           <Route path="/with-apnaaapan" element={<WithApnaaapan />} />
           {/* Admin Panel: Dashboard + sections */}
           <Route path="/admin" element={<AdminDashboard />} />
@@ -67,6 +71,8 @@ function App() {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/positions" element={<AdminPositions />} />
           <Route path="/admin/work" element={<AdminWork />} />
+          <Route path="/admin/gallery" element={<AdminGallery />} />
+          <Route path="/admin/events" element={<AdminEvents />} />
         </Routes>
         <Footer />
       </div>

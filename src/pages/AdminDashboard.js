@@ -174,6 +174,28 @@ export default function AdminDashboard() {
               </div>
               <p className="text-sm text-gray-600">Create, edit, and delete portfolio projects shown on Work page.</p>
             </Link>
+
+            <Link
+              to="/admin/gallery"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Gallery</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">Add, reorder, and delete gallery images on With Apnaaapan page.</p>
+            </Link>
+
+            <Link
+              to="/admin/events"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Events</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">Add, edit, and delete "What Happened" events and set Suggest Event link.</p>
+            </Link>
           </div>
         )}
       </section>
