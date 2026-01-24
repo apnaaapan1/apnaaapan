@@ -43,6 +43,12 @@ const Header = () => {
     navigate('/');
   };
 
+  // Function to handle Book A Call click - navigate to book call page
+  const handleBookCallClick = () => {
+    navigate('/book-call');
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <header className={`bg-[#EFE7D5] border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50 transition-transform duration-200 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}>
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
@@ -116,13 +122,13 @@ const Header = () => {
         
         {/* CTA Button + Mobile Menu Button - Right */}
         <div className="flex items-center gap-3">
-          <Link 
-            to="/work-with-us" 
+          <button
+            onClick={handleBookCallClick}
             className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-3.5 py-2 md:px-6 md:py-2.5 rounded-full font-nexa-bold text-xs md:text-sm flex items-center gap-2 hover:shadow-lg transition-all duration-200 hover:scale-105 whitespace-nowrap"
           >
             <span className="text-white text-xs">⭐</span>
-            <span>Work with US</span>
-          </Link>
+            <span>Book A Call</span>
+          </button>
           <button
             type="button"
             aria-label="Toggle menu"

@@ -6,9 +6,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const photos = [
-  '/images/image 12.png',
-  '/images/image 13.png',
-  '/images/image 14.png'
+  '/images/Our_Story1.jpeg',
+  '/images/Our_story2.jpeg',
+  '/images/Our_story3.jpeg'
 ];
 
 const OurStory = () => {
@@ -128,7 +128,7 @@ const OurStory = () => {
             <img
               src="/images/Group 100.png"
               alt="Apnaaapan monogram"
-              className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 object-contain select-none"
+              className="w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 object-contain select-none"
             />
           </div>
         </div>
@@ -137,20 +137,13 @@ const OurStory = () => {
           {photos.map((src, index) => (
             <div
               key={index}
-              className="relative rounded-2xl overflow-hidden bg-[#E8DFD0] aspect-[4/3]"
+              className="relative rounded-2xl overflow-hidden bg-[#E8DFD0] h-64 sm:h-72 md:h-80 flex items-center justify-center"
             >
               <img
                 src={src}
                 alt={`Our story ${index + 1}`}
                 className="w-full h-full object-cover"
               />
-              {/* Faux carousel dots to match design */}
-              <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">{index === 0 ? '●' : '○'}</span>
-              </div>
-              <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">→</span>
-              </div>
             </div>
           ))}
         </div>
@@ -185,8 +178,24 @@ const OurStory = () => {
             </div>
           </div>
 
-          {/* Right Column - Founder Profile */}
+          {/* Right Column - Team Image */}
           <div className="lg:col-span-7 flex justify-center lg:justify-end">
+            <div className="relative">
+              <div className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] rounded-2xl overflow-hidden shadow-lg">
+                <img
+                  src="/images/apnaaapan_team.jpeg"
+                  alt="Apnaaapan Team"
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Row - Founder and Additional Description */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-12 md:mt-16 lg:mt-16">
+          {/* Left Column - Founder Profile */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-start">
             <div className="relative">
               <div className="w-72 h-88 sm:w-80 sm:h-96 md:w-96 md:h-[28rem] lg:w-[28rem] lg:h-[32rem] rounded-2xl overflow-hidden shadow-lg">
                 <img
@@ -208,33 +217,6 @@ const OurStory = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Bottom Row - Co-Founder and Additional Description */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mt-12 md:mt-16 lg:mt-16">
-          {/* Left Column - Co-Founder Profile */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-start">
-            <div className="relative">
-              <div className="w-72 h-88 sm:w-80 sm:h-96 md:w-96 md:h-[28rem] lg:w-[28rem] lg:h-[32rem] rounded-2xl overflow-hidden shadow-lg">
-                <img
-                  src="/images/kartik patel.png"
-                  alt="Karthik Patel"
-                  className="w-full h-full object-cover"
-                />
-                {/* Badges positioned at bottom-left of image */}
-                <div className="absolute -bottom-3 left-4 sm:left-6 flex flex-row gap-2 sm:gap-3">
-                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md" style={{ fontFamily: 'NexaBold' }}>
-                    <span className="mr-2 text-white">⭐</span>
-                    Co-Founder
-                  </span>
-                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md" style={{ fontFamily: 'NexaBold' }}>
-                    <span className="mr-2 text-white">⭐</span>
-                    Karthik Patel
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Right Column - Additional Description */}
           <div className="lg:col-span-7 lg:pl-8 flex flex-col justify-center">
@@ -250,7 +232,7 @@ const OurStory = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {[
             { name: "Yashaswi Mertiya", role: "Social Media Manager" },
-            { name: "Karthik Patel", role: "Co-Founder" },
+            { name: "Team Member", role: "Marketing Lead" },
             { name: "Team Member", role: "Creative Director" },
             { name: "Team Member", role: "Design Lead" },
             { name: "Team Member", role: "Content Strategist" },

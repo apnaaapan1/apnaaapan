@@ -91,7 +91,8 @@ export default function AdminGallery() {
 
       if (!addRes.ok) {
         const errorData = await addRes.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to add image to gallery');
+        console.error('Gallery POST error:', addRes.status, errorData);
+        throw new Error(errorData.message || `Failed to add image to gallery (${addRes.status})`);
       }
 
       setSuccess('Image added successfully!');
@@ -133,7 +134,8 @@ export default function AdminGallery() {
 
       if (!addRes.ok) {
         const errorData = await addRes.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to add image to gallery');
+        console.error('Gallery URL POST error:', addRes.status, errorData);
+        throw new Error(errorData.message || `Failed to add image to gallery (${addRes.status})`);
       }
 
       setSuccess('Image added successfully!');
@@ -297,7 +299,7 @@ export default function AdminGallery() {
                 />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <button
-                    onClick={() => handleDelete(img._id)}
+                    onClick={() => handleDelete(String(img._id))}
                     className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
                   >
                     Delete

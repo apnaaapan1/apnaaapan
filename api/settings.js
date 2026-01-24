@@ -33,9 +33,23 @@ async function getDb() {
 }
 
 function isAdmin(req) {
-  if (!ADMIN_SECRET) return false;
+  if (!ADMIN_SECRET) {
+    console.warn('ADMIN_SECRET is not set in environment variables');
+    return false;
+  }
+  
   const headerSecret = req.headers['x-admin-token'] || req.query?.token;
-  return headerSecret === ADMIN_SECRET;
+  
+  if (!headerSecret) {
+    console.warn('No admin token provided in request');
+    return false;
+  }
+
+  const isValid = headerSecret === ADMIN_SECRET;
+  if (!isValid) {
+    console.warn('Invalid admin token provided');
+  }
+  return isValid;
 }
 
 module.exports = async (req, res) => {

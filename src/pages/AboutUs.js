@@ -114,10 +114,10 @@ const AboutUs = () => {
 
           {/* Image */}
           <div className="relative group">
-            <div className="rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.12)]">
+            <div className="rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.12)] h-[350px] sm:h-[400px] md:h-[450px]">
               <img
-                src="/images/work/Tsczi1maYoHHENT2Fu6ychsMM%201.png"
-                alt="Work banner"
+                src="/images/apnaaapan.jpeg"
+                alt="Apnaaapan team"
                 className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 loading="lazy"
               />
@@ -266,11 +266,15 @@ const AboutUs = () => {
               {[
                 { 
                   year: '2020 - Where It All Started', 
-                  text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time."
+                  text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time.",
+                  image: '/images/2020.jpeg',
+                  isCropped: true
                 },
                 { 
                   year: '2021–2022 - From Solo to Shared', 
-                  text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together."
+                  text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together.",
+                  image: '/images/2021.jpeg',
+                  hoverImage: '/images/2022.jpeg'
                 },
                 { 
                   year: '2023 - Choosing the Leap', 
@@ -298,12 +302,30 @@ const AboutUs = () => {
                     </p>
                   </div>
 
-                  {/* Right: tilted cards */}
+                  {/* Right: tilted cards or image */}
                   <div className="md:col-span-5 hidden md:block">
-                    <div className="relative h-48">
-                      <div className="absolute inset-x-6 top-0 h-28 bg-white rounded-xl shadow-xl rotate-[-4deg]"></div>
-                      <div className="absolute inset-x-2 bottom-0 h-32 bg-white rounded-xl shadow-xl rotate-[4deg]"></div>
-                    </div>
+                    {item.image ? (
+                      <div className="relative rounded-2xl overflow-hidden shadow-lg group flex items-center justify-center">
+                        <img 
+                          src={item.image} 
+                          alt={item.year}
+                          className={`${item.isCropped ? 'w-full h-auto object-contain rounded-lg' : 'w-full h-auto'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
+                        />
+                        {item.hoverImage && (
+                          <img 
+                            src={item.hoverImage} 
+                            alt={`${item.year} hover`}
+                            className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full"
+                            style={{maxHeight: '100%'}}
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="relative h-48">
+                        <div className="absolute inset-x-6 top-0 h-28 bg-white rounded-xl shadow-xl rotate-[-4deg]"></div>
+                        <div className="absolute inset-x-2 bottom-0 h-32 bg-white rounded-xl shadow-xl rotate-[4deg]"></div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

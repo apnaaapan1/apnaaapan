@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const companyLogos = [
   { src: '/images/himee ride.png', alt: 'Himee Ride' },
@@ -9,62 +9,53 @@ const companyLogos = [
 ];
 
 const OurWorkSection = () => {
-  const projectCards = [
-    {
-      title: 'Pakkey Rang',
-      tags: ['UI', 'Branding', 'Website', 'Social Media'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/safal.png',
-      topBgColor: 'bg-blue-500'
-    },
-    {
-      title: 'Amrita Naturals',
-      tags: ['Branding', 'Website', 'Social Media', 'Packaging'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/kavvya.png',
-      topBgColor: 'bg-orange-500'
-    },
-    {
-      title: 'Phylaxis.ai',
-      tags: ['Social Media', 'Traffic Gen', 'Content Creation'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/safal.png',
-      topBgColor: 'bg-yellow-400'
-    },
-    {
-      title: 'Grey Weave',
-      tags: ['UI', 'Website'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/safal.png',
-      topBgColor: 'bg-blue-500'
-    },
-    {
-      title: 'Smiloshine',
-      tags: ['Social Media', 'Ads'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/safal.png',
-      topBgColor: 'bg-yellow-400'
-    },
-    {
-      title: 'Kavvya',
-      tags: ['Website', 'Social Media', 'Product Shoot'],
-      hasButton: true,
-      hasDescription: false,
-      hoverImage: '/images/Moxie-Sozo-Organic-Valley-Portfolio-Image-4x5_01-1 1.png',
-      clientLogo: '/images/kavvya.png',
-      topBgColor: 'bg-orange-500'
+  const [projectCards, setProjectCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Array of background colors to cycle through
+  const bgColors = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
+
+  // Build API URL
+  const getApiUrl = (endpoint) => {
+    if (process.env.NODE_ENV === 'production') {
+      return endpoint;
     }
-  ];
+    return `http://localhost:5000${endpoint}`;
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchWork = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(getApiUrl('/api/work'));
+        if (!res.ok) {
+          throw new Error('Failed to load work posts');
+        }
+        const data = await res.json();
+        if (mounted) {
+          const workPosts = Array.isArray(data.work) ? data.work : [];
+          // Get top 6 posts and transform them to match our card structure
+          const topSixPosts = workPosts.slice(0, 6).map((project, index) => ({
+            title: project.title,
+            tags: project.tags || [],
+            hasButton: true,
+            hasDescription: false,
+            hoverImage: project.image,
+            clientLogo: '/images/safal.png', // Default logo, you can customize this
+            topBgColor: bgColors[index % bgColors.length] // Cycle through colors
+          }));
+          setProjectCards(topSixPosts);
+        }
+      } catch (e) {
+        console.error('Error fetching work posts:', e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    fetchWork();
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <section className="bg-[#EFE7D5] py-12 sm:py-16 px-3 sm:px-4 md:px-8">
@@ -107,9 +98,16 @@ const OurWorkSection = () => {
           </h2>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-16">
+            <p className="text-gray-600 text-lg">Loading our amazing work...</p>
+          </div>
+        )}
+
         {/* Project Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-          {projectCards.map((card, index) => (
+        {!loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">{projectCards.map((card, index) => (
             <div key={index} className="group relative bg-[#faf8f3] rounded-lg sm:rounded-xl p-4 sm:p-6 md:p-8 border border-gray-200 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-xl min-h-[350px] sm:min-h-[400px]">
               {/* Full Card Background Color - Appears on hover */}
               <div className={`absolute inset-0 ${card.topBgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-xl`}></div>
@@ -197,7 +195,8 @@ const OurWorkSection = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

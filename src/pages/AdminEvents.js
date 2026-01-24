@@ -94,7 +94,8 @@ export default function AdminEvents() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to ${editingId ? 'update' : 'add'} event`);
+        console.error('Events API error:', res.status, errorData);
+        throw new Error(errorData.message || `Failed to ${editingId ? 'update' : 'add'} event (${res.status})`);
       }
 
       setSuccess(`Event ${editingId ? 'updated' : 'added'} successfully!`);
@@ -141,7 +142,8 @@ export default function AdminEvents() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to delete event');
+        console.error('Events DELETE error:', res.status, errorData);
+        throw new Error(errorData.message || `Failed to delete event (${res.status})`);
       }
 
       setSuccess('Event deleted successfully!');
@@ -175,16 +177,9 @@ export default function AdminEvents() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to save link');
+        console.error('Settings API error:', res.status, errorData);
+        throw new Error(errorData.message || `Failed to save link (${res.status})`);
       }
-
-      setSuccess('Suggest Event link saved successfully!');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-      if (!res.ok) throw new Error('Failed to save link');
 
       setSuccess('Suggest Event link saved successfully!');
     } catch (err) {

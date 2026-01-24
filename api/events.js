@@ -33,9 +33,23 @@ async function getDb() {
 }
 
 function isAdmin(req) {
-  if (!ADMIN_SECRET) return false;
+  if (!ADMIN_SECRET) {
+    console.warn('ADMIN_SECRET is not set in environment variables');
+    return false;
+  }
+  
   const headerSecret = req.headers['x-admin-token'] || req.query?.token;
-  return headerSecret === ADMIN_SECRET;
+  
+  if (!headerSecret) {
+    console.warn('No admin token provided in request');
+    return false;
+  }
+
+  const isValid = headerSecret === ADMIN_SECRET;
+  if (!isValid) {
+    console.warn('Invalid admin token provided');
+  }
+  return isValid;
 }
 
 module.exports = async (req, res) => {
@@ -141,93 +155,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({ 
       message: 'Server error', 
       error: err.message,
-      hint: 'Check if MONGODB_URI is set in environment variables'
+      hint: 'Check MONGODB_URI and ADMIN_SECRET environment variables'
     });
   }
-
-  // GET - Fetch all events
-  if (req.method === 'GET') {
-    try {
-      const events = await Event.find().sort({ order: 1, createdAt: -1 });
-      return res.status(200).json({ events });
-    } catch (err) {
-      console.error('Error fetching events:', err);
-      return res.status(500).json({ message: 'Failed to fetch events', error: err.message });
-    }
-  }
-
-  // POST - Create new event
-  if (req.method === 'POST') {
-    try {
-      const { title, date, emoji, author, content, order } = req.body;
-      if (!title || !date || !content) {
-        return res.status(400).json({ message: 'Title, date, and content are required' });
-      }
-
-      const newEvent = new Event({
-        title,
-        date,
-        emoji: emoji || '✨',
-        author: author || 'Apnaaapan Team',
-        content: Array.isArray(content) ? content : [content],
-        order: order || 0
-      });
-
-      await newEvent.save();
-      return res.status(201).json({ message: 'Event added successfully', event: newEvent });
-    } catch (err) {
-      console.error('Error creating event:', err);
-      return res.status(500).json({ message: 'Failed to add event', error: err.message });
-    }
-  }
-
-  // PUT - Update event
-  if (req.method === 'PUT') {
-    try {
-      const { id, title, date, emoji, author, content, order } = req.body;
-      if (!id) {
-        return res.status(400).json({ message: 'Event ID is required' });
-      }
-
-      const updateData = {};
-      if (title) updateData.title = title;
-      if (date) updateData.date = date;
-      if (emoji) updateData.emoji = emoji;
-      if (author) updateData.author = author;
-      if (content) updateData.content = Array.isArray(content) ? content : [content];
-      if (order !== undefined) updateData.order = order;
-
-      const updatedEvent = await Event.findByIdAndUpdate(id, updateData, { new: true });
-      if (!updatedEvent) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-      return res.status(200).json({ message: 'Event updated successfully', event: updatedEvent });
-    } catch (err) {
-      console.error('Error updating event:', err);
-      return res.status(500).json({ message: 'Failed to update event', error: err.message });
-    }
-  }
-
-  // DELETE - Delete event
-  if (req.method === 'DELETE') {
-    try {
-      const { id } = req.query;
-      if (!id) {
-        return res.status(400).json({ message: 'Event ID is required' });
-      }
-
-      const deletedEvent = await Event.findByIdAndDelete(id);
-      if (!deletedEvent) {
-        return res.status(404).json({ message: 'Event not found' });
-      }
-
-      return res.status(200).json({ message: 'Event deleted successfully' });
-    } catch (err) {
-      console.error('Error deleting event:', err);
-      return res.status(500).json({ message: 'Failed to delete event', error: err.message });
-    }
-  }
-
-  return res.status(405).json({ message: 'Method not allowed' });
 };

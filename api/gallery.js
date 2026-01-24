@@ -33,9 +33,23 @@ async function getDb() {
 }
 
 function isAdmin(req) {
-  if (!ADMIN_SECRET) return false;
+  if (!ADMIN_SECRET) {
+    console.warn('ADMIN_SECRET is not set in environment variables');
+    return false;
+  }
+  
   const headerSecret = req.headers['x-admin-token'] || req.query?.token;
-  return headerSecret === ADMIN_SECRET;
+  
+  if (!headerSecret) {
+    console.warn('No admin token provided in request');
+    return false;
+  }
+
+  const isValid = headerSecret === ADMIN_SECRET;
+  if (!isValid) {
+    console.warn('Invalid admin token provided');
+  }
+  return isValid;
 }
 
 module.exports = async (req, res) => {
@@ -67,17 +81,18 @@ module.exports = async (req, res) => {
     // POST - Add new image (admin only)
     if (req.method === 'POST') {
       if (!isAdmin(req)) {
-        return res.status(403).json({ message: 'Unauthorized' });
+        console.log('Unauthorized POST request to gallery');
+        return res.status(403).json({ message: 'Unauthorized - invalid admin token' });
       }
 
       const { imageUrl } = req.body;
 
-      if (!imageUrl) {
+      if (!imageUrl || !imageUrl.trim()) {
         return res.status(400).json({ message: 'Image URL is required' });
       }
 
       const newImage = {
-        imageUrl,
+        imageUrl: imageUrl.trim(),
         createdAt: new Date(),
       };
 
@@ -88,13 +103,18 @@ module.exports = async (req, res) => {
     // DELETE - Remove image (admin only)
     if (req.method === 'DELETE') {
       if (!isAdmin(req)) {
-        return res.status(403).json({ message: 'Unauthorized' });
+        console.log('Unauthorized DELETE request to gallery');
+        return res.status(403).json({ message: 'Unauthorized - invalid admin token' });
       }
 
       const { id } = req.body;
 
-      if (!id || !ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'Invalid image ID' });
+      if (!id) {
+        return res.status(400).json({ message: 'Image ID is required' });
+      }
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid image ID format' });
       }
 
       const result = await collection.deleteOne({ _id: new ObjectId(id) });
@@ -112,91 +132,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({ 
       message: 'Server error', 
       error: err.message,
-      hint: 'Check if MONGODB_URI is set in environment variables'
+      hint: 'Check MONGODB_URI and ADMIN_SECRET environment variables'
     });
   }
-
-  // GET - Fetch gallery images (8 by default, all when ?all=true)
-  if (req.method === 'GET') {
-    try {
-      const showAll = req.query?.all === 'true';
-      const query = Gallery.find().sort({ createdAt: -1, _id: -1 });
-      if (!showAll) {
-        query.limit(8);
-      }
-
-      const images = await query;
-      return res.status(200).json({ images });
-    } catch (err) {
-      console.error('Error fetching gallery:', err);
-      return res.status(500).json({ message: 'Failed to fetch gallery images', error: err.message });
-    }
-  }
-
-  // POST - Create new gallery image
-  if (req.method === 'POST') {
-    try {
-      const { imageUrl, order } = req.body;
-      if (!imageUrl) {
-        return res.status(400).json({ message: 'Image URL is required' });
-      }
-
-      const newImage = new Gallery({
-        imageUrl,
-        order: order || 0
-      });
-
-      await newImage.save();
-      return res.status(201).json({ message: 'Gallery image added successfully', image: newImage });
-    } catch (err) {
-      console.error('Error creating gallery image:', err);
-      return res.status(500).json({ message: 'Failed to add gallery image', error: err.message });
-    }
-  }
-
-  // PUT - Update gallery image
-  if (req.method === 'PUT') {
-    try {
-      const { id, imageUrl, order } = req.body;
-      if (!id) {
-        return res.status(400).json({ message: 'Image ID is required' });
-      }
-
-      const updateData = {};
-      if (imageUrl) updateData.imageUrl = imageUrl;
-      if (order !== undefined) updateData.order = order;
-
-      const updatedImage = await Gallery.findByIdAndUpdate(id, updateData, { new: true });
-      if (!updatedImage) {
-        return res.status(404).json({ message: 'Gallery image not found' });
-      }
-
-      return res.status(200).json({ message: 'Gallery image updated successfully', image: updatedImage });
-    } catch (err) {
-      console.error('Error updating gallery image:', err);
-      return res.status(500).json({ message: 'Failed to update gallery image', error: err.message });
-    }
-  }
-
-  // DELETE - Delete gallery image
-  if (req.method === 'DELETE') {
-    try {
-      const { id } = req.query;
-      if (!id) {
-        return res.status(400).json({ message: 'Image ID is required' });
-      }
-
-      const deletedImage = await Gallery.findByIdAndDelete(id);
-      if (!deletedImage) {
-        return res.status(404).json({ message: 'Gallery image not found' });
-      }
-
-      return res.status(200).json({ message: 'Gallery image deleted successfully' });
-    } catch (err) {
-      console.error('Error deleting gallery image:', err);
-      return res.status(500).json({ message: 'Failed to delete gallery image', error: err.message });
-    }
-  }
-
-  return res.status(405).json({ message: 'Method not allowed' });
 };

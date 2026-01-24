@@ -395,74 +395,6 @@ const WithApnaaapan = () => {
         </div>
       </section>
 
-      {/* Blog / Stories Section */}
-      <section className="mt-8 mb-28">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          {/* Header row */}
-          <div className="flex items-baseline justify-between mb-6">
-            <div>
-              <h3 className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(28px,3.8vw,48px)'}}>
-                Blog / Stories
-              </h3>
-              <p className="text-[#353535] opacity-70 mt-2" style={{fontSize:'clamp(13px,2vw,16px)'}}>
-                Latest stories and insights from our community
-              </p>
-            </div>
-            <a
-              href="/blog"
-              className="text-[#D24E1D] underline underline-offset-4 hover:opacity-80"
-              style={{fontSize:'clamp(14px,2vw,18px)'}}
-            >
-              See All
-            </a>
-          </div>
-
-          {/* Cards */}
-          {loadingBlogs ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[0,1,2].map((idx) => (
-                <div key={idx} className="animate-pulse">
-                  <div className="rounded-xl bg-gray-200 h-[360px]"></div>
-                  <div className="mt-4 h-4 bg-gray-200 rounded w-16"></div>
-                  <div className="mt-2 h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="mt-2 h-4 bg-gray-200 rounded w-full"></div>
-                </div>
-              ))}
-            </div>
-          ) : blogs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {blogs.map((blog) => (
-                <article key={blog._id} className="group cursor-pointer" onClick={() => window.location.href = `/blog/${blog.slug}`}>
-                  <div className="rounded-xl bg-white/70 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] overflow-hidden">
-                    <div className="h-[360px] bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl overflow-hidden">
-                      {(blog.heroImage || blog.image) && (
-                        <img 
-                          src={blog.heroImage || blog.image} 
-                          alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div className="mt-4 text-[#6F6F6F] text-sm">{blog.readTime || '5 Min'}</div>
-                  <h4 className="mt-2 font-serif text-[#0D1B2A] leading-snug group-hover:text-[#D24E1D] transition-colors"
-                      style={{fontWeight:600, fontSize:'clamp(18px,2.4vw,22px)'}}>
-                    {blog.title}
-                  </h4>
-                  <p className="mt-2 text-[#6F6F6F] text-sm leading-relaxed max-w-md line-clamp-3">
-                    {blog.excerpt || (Array.isArray(blog.content) && blog.content.length > 0 ? blog.content[0].substring(0, 150) + '...' : '')}
-                  </p>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-[#6F6F6F]">
-              <p>No blogs available yet. Check back soon!</p>
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* Gallery Section */}
       <section className="mb-28">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
@@ -668,6 +600,74 @@ const WithApnaaapan = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Blog / Stories Section */}
+      <section className="mt-8 mb-28">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4">
+          {/* Header row */}
+          <div className="flex items-baseline justify-between mb-6">
+            <div>
+              <h3 className="font-serif text-[#0D1B2A]" style={{fontWeight:700, fontSize:'clamp(28px,3.8vw,48px)'}}>
+                Blog / Stories
+              </h3>
+              <p className="text-[#353535] opacity-70 mt-2" style={{fontSize:'clamp(13px,2vw,16px)'}}>
+                Latest stories and insights from our community
+              </p>
+            </div>
+            <a
+              href="/blog"
+              className="text-[#D24E1D] underline underline-offset-4 hover:opacity-80"
+              style={{fontSize:'clamp(14px,2vw,18px)'}}
+            >
+              See All
+            </a>
+          </div>
+
+          {/* Cards */}
+          {loadingBlogs ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[0,1,2].map((idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className="rounded-xl bg-gray-200 h-[360px]"></div>
+                  <div className="mt-4 h-4 bg-gray-200 rounded w-16"></div>
+                  <div className="mt-2 h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="mt-2 h-4 bg-gray-200 rounded w-full"></div>
+                </div>
+              ))}
+            </div>
+          ) : blogs.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {blogs.map((blog) => (
+                <article key={blog._id} className="group cursor-pointer" onClick={() => window.location.href = `/blog/${blog.slug}`}>
+                  <div className="rounded-xl bg-white/70 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] overflow-hidden">
+                    <div className="h-[360px] bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl overflow-hidden">
+                      {(blog.heroImage || blog.image) && (
+                        <img 
+                          src={blog.heroImage || blog.image} 
+                          alt={blog.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 text-[#6F6F6F] text-sm">{blog.readTime || '5 Min'}</div>
+                  <h4 className="mt-2 font-serif text-[#0D1B2A] leading-snug group-hover:text-[#D24E1D] transition-colors"
+                      style={{fontWeight:600, fontSize:'clamp(18px,2.4vw,22px)'}}>
+                    {blog.title}
+                  </h4>
+                  <p className="mt-2 text-[#6F6F6F] text-sm leading-relaxed max-w-md line-clamp-3">
+                    {blog.excerpt || (Array.isArray(blog.content) && blog.content.length > 0 ? blog.content[0].substring(0, 150) + '...' : '')}
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-[#6F6F6F]">
+              <p>No blogs available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
     </div>

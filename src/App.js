@@ -15,6 +15,7 @@ import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
 import WorkWithUs from './pages/WorkWithUs';
+import BookCall from './pages/BookCall';
 import Services from './pages/Services';
 import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
@@ -60,6 +61,7 @@ function App() {
           <Route path="/blog/:slug" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/work-with-us" element={<WorkWithUs />} />
+          <Route path="/book-call" element={<BookCall />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:slug" element={<Services />} />
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
