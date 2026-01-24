@@ -274,19 +274,28 @@ const AboutUs = () => {
                   year: '2021–2022 - From Solo to Shared', 
                   text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together.",
                   image: '/images/2021.jpeg',
-                  hoverImage: '/images/2022.jpeg'
+                  hoverImage: '/images/2022.jpeg',
+                  removeHoverShadow: true
                 },
                 { 
-                  year: '2023 - Choosing the Leap', 
-                  text: "A full-time placement at an MNC came with stability, predictability, and comfort. And then came a decision.\nThe job was left behind. Delhi was left behind too.\nJaipur, the founder's college city, became home again. Apnaaapan turned full-time.\nClients increased. Interns joined. The work became more structured, but the intent stayed the same: build honestly, grow steadily."
+                  year: '2023–2024 - Full-Time Journey', 
+                  text: "A full-time placement at an MNC came with stability, predictability, and comfort. And then came a decision.\nThe job was left behind. Delhi was left behind too.\nJaipur, the founder's college city, became home again. Apnaaapan turned full-time.\nClients increased. Interns joined. The work became more structured, but the intent stayed the same: build honestly, grow steadily.",
+                  image: '/images/2023.jpeg',
+                  hoverImage: '/images/2024.jpeg',
+                  removeHoverShadow: true
                 },
                 { 
-                  year: '2024–2025 - Growing Roots', 
-                  text: "Apnaaapan expanded, not upward, but outward.\nOffices took shape in Pali, Ahmedabad, and Jaipur. Clients came in from across industries and cities, all over India.\nThe team grew to 20+ full-time members and interns, working from different parts of the country, connected by shared intent rather than location.\nIn March 2025, something new began: with.apnaaapan. A community rooted in curiosity. A space for questions, conversations, and people who didn't want ready-made answers."
+                  year: '2025 - Growing Roots', 
+                  text: "Apnaaapan expanded, not upward, but outward.\nOffices took shape in Pali, Ahmedabad, and Jaipur. Clients came in from across industries and cities, all over India.\nThe team grew to 20+ full-time members and interns, working from different parts of the country, connected by shared intent rather than location.\nIn March 2025, something new began: with.apnaaapan. A community rooted in curiosity. A space for questions, conversations, and people who didn't want ready-made answers.",
+                  image: '/images/2025(1).jpeg',
+                  hoverImage: '/images/2025(2).jpeg'
                 },
                 { 
                   year: '2026 - Chapter 2.0', 
-                  text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own."
+                  text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own.",
+                  image: '/images/our_story2.jpeg',
+                  hoverImage: '/images/apnaaapan logo.png',
+                  isLogoHover: true
                 }
               ].map((item, idx) => (
                 <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center">
@@ -305,17 +314,17 @@ const AboutUs = () => {
                   {/* Right: tilted cards or image */}
                   <div className="md:col-span-5 hidden md:block">
                     {item.image ? (
-                      <div className="relative rounded-2xl overflow-hidden shadow-lg group flex items-center justify-center">
+                      <div className={`relative rounded-2xl overflow-hidden shadow-lg group flex items-center justify-center ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
                         <img 
                           src={item.image} 
                           alt={item.year}
-                          className={`${item.isCropped ? 'w-full h-auto object-contain rounded-lg' : 'w-full h-auto'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
+                          className={`${item.isCropped ? 'w-full h-auto object-contain rounded-lg' : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
                         />
                         {item.hoverImage && (
                           <img 
                             src={item.hoverImage} 
                             alt={`${item.year} hover`}
-                            className="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full"
+                            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full shadow-none rounded-2xl ${item.isLogoHover ? 'object-contain' : 'object-cover'}`}
                             style={{maxHeight: '100%'}}
                           />
                         )}

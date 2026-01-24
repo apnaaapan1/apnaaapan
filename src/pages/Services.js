@@ -938,29 +938,6 @@ const Services = () => {
           </div>
         </div>
 
-        {/* Your Dedicated Team Section */}
-        <div className="mb-24">
-          <RevealOnScroll>
-            <h2 className="text-4xl md:text-5xl font-serif text-[#0D1B2A]">
-              Your Dedicated Team
-            </h2>
-          </RevealOnScroll>
-          <RevealOnScroll>
-            <p className="mt-4 text-lg text-[#0D1B2A]/80 font-nexa-regular">
-              {teamText}
-            </p>
-          </RevealOnScroll>
-
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-            {[0, 1, 2, 3, 4].map((idx) => (
-              <div
-                key={idx}
-                className="bg-white h-64 border border-[#E5E2D8] shadow-sm"
-              ></div>
-            ))}
-          </div>
-        </div>
-
         {/* What sets us apart Section */}
         <div className="mb-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden">

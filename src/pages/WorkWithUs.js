@@ -240,8 +240,8 @@ const WorkWithUs = () => {
             <div className="h-[400px] w-full rounded-2xl overflow-hidden">
               {/* Team Culture Image */}
               <img 
-                src="/images/image 12.png" 
-                alt="Our Team Culture - Four team members standing together" 
+                src="/images/apnaaapan_team.jpeg" 
+                alt="Our Team Culture - Apnaaapan team members" 
                 className="w-full h-full object-cover rounded-2xl"
               />
             </div>
@@ -368,38 +368,38 @@ const WorkWithUs = () => {
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {/* Card 1 - Team on Sofa */}
-              <div className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg">
+              <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/image 13.png" 
+                  src="/images/life_apnaaapan1.jpeg" 
                   alt="Team members sitting on sofa - collaborative work environment" 
-                  className="w-full h-full object-cover"
+                  className="h-full w-auto object-contain rounded-2xl"
                 />
               </div>
               
               {/* Card 2 - Gaurav */}
-              <div className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg">
+              <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/gaurav.png" 
+                  src="/images/life_apnaaapan2.jpeg" 
                   alt="Gaurav - Team member with red hoodie and wireless earbuds" 
-                  className="w-full h-full object-cover"
+                  className="h-full w-auto object-contain rounded-2xl"
                 />
               </div>
               
               {/* Card 3 - Team Discussion */}
-              <div className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg">
+              <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/image 14.png" 
+                  src="/images/life_apnaaapan3.jpeg" 
                   alt="Team members in discussion - collaborative brainstorming session" 
-                  className="w-full h-full object-cover"
+                  className="h-full w-auto object-contain rounded-2xl"
                 />
               </div>
               
               {/* Card 4 - Kartik Patel */}
-              <div className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg">
+              <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/kartik patel.png" 
+                  src="/images/life_apnaaapan4.jpeg" 
                   alt="Kartik Patel - Team member with confident smile" 
-                  className="w-full h-full object-cover"
+                  className="h-full w-auto object-contain rounded-2xl"
                 />
               </div>
             </div>

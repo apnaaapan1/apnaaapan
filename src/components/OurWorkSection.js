@@ -8,12 +8,11 @@ const companyLogos = [
   { src: '/images/utkrasht.png', alt: 'Utkrasht' },
 ];
 
+const BG_COLORS = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
+
 const OurWorkSection = () => {
   const [projectCards, setProjectCards] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Array of background colors to cycle through
-  const bgColors = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
 
   // Build API URL
   const getApiUrl = (endpoint) => {
@@ -43,7 +42,7 @@ const OurWorkSection = () => {
             hasDescription: false,
             hoverImage: project.image,
             clientLogo: '/images/safal.png', // Default logo, you can customize this
-            topBgColor: bgColors[index % bgColors.length] // Cycle through colors
+            topBgColor: BG_COLORS[index % BG_COLORS.length] // Cycle through colors
           }));
           setProjectCards(topSixPosts);
         }
