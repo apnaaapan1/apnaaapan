@@ -267,7 +267,7 @@ const AboutUs = () => {
                 { 
                   year: '2020 - Where It All Started', 
                   text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time.",
-                  image: '/images/2020.jpeg',
+                  image:  '/images/2020.jpeg',
                   isCropped: true
                 },
                 { 
@@ -314,17 +314,17 @@ const AboutUs = () => {
                   {/* Right: tilted cards or image */}
                   <div className="md:col-span-5 hidden md:block">
                     {item.image ? (
-                      <div className={`relative rounded-2xl overflow-hidden shadow-lg group flex items-center justify-center ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
+                      <div className={`relative ${item.year.startsWith('2020') ? 'rounded-3xl overflow-hidden' : 'rounded-2xl overflow-hidden'} ${item.isCropped ? '' : 'shadow-lg'} group flex items-center justify-center ${item.isCropped ? 'h-64 md:h-72 lg:h-80' : ''} ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
                         <img 
                           src={item.image} 
                           alt={item.year}
-                          className={`${item.isCropped ? 'w-full h-auto object-contain rounded-lg' : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
+                          className={`${item.isCropped ? `w-full h-full object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
                         />
                         {item.hoverImage && (
                           <img 
                             src={item.hoverImage} 
                             alt={`${item.year} hover`}
-                            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full shadow-none rounded-2xl ${item.isLogoHover ? 'object-contain' : 'object-cover'}`}
+                            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full shadow-none ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'} ${item.isLogoHover ? 'object-contain' : 'object-cover'}`}
                             style={{maxHeight: '100%'}}
                           />
                         )}

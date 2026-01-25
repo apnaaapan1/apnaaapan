@@ -571,6 +571,12 @@ const Services = () => {
   const path = typeof window !== 'undefined' ? window.location.pathname : '/services/social-media';
   const slug = path.startsWith('/services/') ? path.replace('/services/', '') : 'social-media';
   const svc = serviceContent[slug] || serviceContent['social-media'];
+  const heroImages = {
+    'web-development': '/images/web_development.png',
+    'marketing': '/images/marketing.jpg',
+    'branding': '/images/Brand.webp',
+  };
+  const heroImage = heroImages[slug];
   const problems = problemContent[slug] || problemContent['social-media'];
   const approach = approachContent[slug] || approachContent['social-media'];
   const outcomes = outcomesContent[slug] || outcomesContent['social-media'];
@@ -657,98 +663,102 @@ const Services = () => {
             </div>
           </div>
 
-          {/* Right Section - Dashboard Style Visual */}
+          {/* Right Section - Visual */}
           <div className="relative order-first lg:order-last">
-            {/* Main Dashboard Card */}
             <RevealOnScroll>
-            <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-2xl relative overflow-hidden transform hover:scale-105 transition-all duration-300">
-              {/* Engagement Metrics Section */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-gray-600 font-nexa-regular">Engagement Last 7 days</h4>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-3xl font-bold text-gray-800">5.49K</span>
-                    <div className="flex items-center text-green-500">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              {heroImage ? (
+                <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+                  <img src={heroImage} alt={svc.title} className="w-full h-full object-cover rounded-3xl" />
+                </div>
+              ) : (
+                <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-2xl relative overflow-hidden transform hover:scale-105 transition-all duration-300">
+                  {/* Engagement Metrics Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-sm font-medium text-gray-600 font-nexa-regular">Engagement Last 7 days</h4>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-3xl font-bold text-gray-800">5.49K</span>
+                        <div className="flex items-center text-green-500">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                
+                    {/* Mini Bar Chart */}
+                    <div className="flex items-end space-x-1 h-8">
+                      {[3, 5, 4, 7, 6, 8, 9].map((height, index) => (
+                        <div 
+                          key={index}
+                          className="bg-green-400 rounded-t-sm flex-1"
+                          style={{ height: `${height * 0.8}rem` }}
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Revenue Graph Section */}
+                  <div className="mb-8">
+                    <h4 className="text-sm font-medium text-gray-600 mb-4 font-nexa-regular">Revenue</h4>
+                    <div className="relative h-32">
+                      {/* SVG Line Graph */}
+                      <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3"/>
+                            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0"/>
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M0,80 Q50,60 100,40 T200,20 T300,30"
+                          stroke="#8B5CF6"
+                          strokeWidth="3"
+                          fill="none"
+                          className="drop-shadow-sm"
+                        />
+                        <path
+                          d="M0,80 Q50,60 100,40 T200,20 T300,30 L300,100 L0,100 Z"
+                          fill="url(#revenueGradient)"
+                        />
                       </svg>
                     </div>
                   </div>
-                </div>
-                
-                {/* Mini Bar Chart */}
-                <div className="flex items-end space-x-1 h-8">
-                  {[3, 5, 4, 7, 6, 8, 9].map((height, index) => (
-                    <div 
-                      key={index}
-                      className="bg-green-400 rounded-t-sm flex-1"
-                      style={{ height: `${height * 0.8}rem` }}
-                    ></div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Revenue Graph Section */}
-              <div className="mb-8">
-                <h4 className="text-sm font-medium text-gray-600 mb-4 font-nexa-regular">Revenue</h4>
-                <div className="relative h-32">
-                  {/* SVG Line Graph */}
-                  <svg className="w-full h-full" viewBox="0 0 300 100" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3"/>
-                        <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0"/>
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M0,80 Q50,60 100,40 T200,20 T300,30"
-                      stroke="#8B5CF6"
-                      strokeWidth="3"
-                      fill="none"
-                      className="drop-shadow-sm"
-                    />
-                    <path
-                      d="M0,80 Q50,60 100,40 T200,20 T300,30 L300,100 L0,100 Z"
-                      fill="url(#revenueGradient)"
-                    />
-                  </svg>
-                </div>
-              </div>
+                  {/* 3D Avatar Elements */}
+                  <div className="absolute top-2 right-2 lg:top-4 lg:right-4 animate-pulse">
+                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
+                      <div className="w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-sm lg:text-lg">✨</span>
+                      </div>
+                    </div>
+                  </div>
 
-              {/* 3D Avatar Elements */}
-              <div className="absolute top-2 right-2 lg:top-4 lg:right-4 animate-pulse">
-                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
-                  <div className="w-8 h-8 lg:w-12 lg:h-12 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-lg lg:text-2xl">👩</span>
+                  {/* Bottom Avatar */}
+                  <div className="absolute bottom-2 left-2 lg:bottom-4 lg:left-4">
+                    <div className="w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+                      <div className="w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-sm lg:text-lg">👨</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Megaphone Icon */}
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 12a7.971 7.971 0 00-1.343-4.243 1 1 0 010-1.414z"/>
+                    </svg>
                   </div>
                 </div>
-                {/* Emojis floating around */}
-                <div className="absolute -top-1 -right-1 lg:-top-2 lg:-right-2 text-lg lg:text-xl animate-bounce">❤️</div>
-                <div className="absolute -bottom-1 -right-1 lg:-bottom-1 lg:-right-2 text-sm lg:text-lg animate-bounce" style={{ animationDelay: '0.5s' }}>👍</div>
-              </div>
-
-              {/* Bottom Avatar */}
-              <div className="absolute bottom-2 left-2 lg:bottom-4 lg:left-4">
-                <div className="w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
-                  <div className="w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-sm lg:text-lg">👨</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Megaphone Icon */}
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 12a7.971 7.971 0 00-1.343-4.243 1 1 0 010-1.414z"/>
-                </svg>
-              </div>
-            </div>
+              )}
             </RevealOnScroll>
 
-            {/* Background Decorative Elements */}
-            <div className="absolute -z-10 top-8 left-8 w-full h-full bg-gradient-to-br from-orange-100 to-yellow-100 rounded-3xl"></div>
+            {!heroImage && (
+              <div className="absolute -z-10 top-8 left-8 w-full h-full bg-gradient-to-br from-orange-100 to-yellow-100 rounded-3xl"></div>
+            )}
           </div>
         </div>
+        
 
         {/* Trusted Companies Section */}
         <div className="bg-[#EFE7D5] rounded-xl px-6 py-4 flex flex-col md:flex-row items-center md:items-center justify-between mb-16 border border-[#e5e2d8]">
