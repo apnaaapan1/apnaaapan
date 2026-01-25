@@ -45,6 +45,7 @@ export default function AdminBlogs() {
       setIsAuthenticated(true);
       fetchBlogs(savedToken);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchBlogs = async (tokenForHeader) => {

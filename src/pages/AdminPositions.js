@@ -41,6 +41,7 @@ export default function AdminPositions() {
       setIsAuthenticated(true);
       fetchPositions(savedToken);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchPositions = async (tokenForHeader) => {
