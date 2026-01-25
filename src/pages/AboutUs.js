@@ -227,15 +227,9 @@ const AboutUs = () => {
               className="flex space-x-6 overflow-x-auto pb-4 px-4 hide-scrollbar" 
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {['/images/image 12.png','/images/image 13.png','/images/image 14.png'].map((src, index) => (
+              {['/images/Our_Story1.jpeg','/images/Our_story2.jpeg','/images/apnaaapan.jpeg'].map((src, index) => (
                 <div key={index} className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg relative bg-[#E8DFD0]">
                   <img src={src} alt={`About gallery ${index+1}`} className="w-full h-full object-cover" />
-                  <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                    <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">{index === 0 ? '●' : '○'}</span>
-                  </div>
-                  <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                    <span className="inline-block w-6 h-6 bg-white/90 text-[#5B5B5B] text-xs rounded-full grid place-items-center shadow">→</span>
-                  </div>
                 </div>
               ))}
             </div>
