@@ -86,24 +86,41 @@ module.exports = (req, res) => {
         });
       }
 
-      // Upload to Cloudinary
+      // Upload to Cloudinary with timeout handling
       const uploadPromise = new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'apnaaapan_work',
-            resource_type: 'auto',
-            timeout: 300000,
-          },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
+        let timeoutId;
+        
+        try {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Upload timeout - image took too long to upload'));
+          }, 280000); // 280 seconds to leave margin
+
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: 'apnaaapan_work',
+              resource_type: 'auto',
+              timeout: 300000,
+            },
+            (error, result) => {
+              clearTimeout(timeoutId);
+              if (error) {
+                reject(error);
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
-        uploadStream.on('error', (e) => reject(e));
-        uploadStream.end(req.file.buffer);
+          );
+          
+          uploadStream.on('error', (e) => {
+            clearTimeout(timeoutId);
+            reject(e);
+          });
+          
+          uploadStream.end(req.file.buffer);
+        } catch (err) {
+          clearTimeout(timeoutId);
+          reject(err);
+        }
       });
 
       const result = await uploadPromise;
@@ -114,9 +131,13 @@ module.exports = (req, res) => {
         publicId: result.public_id,
       });
     } catch (error) {
+      console.error('Upload error:', error);
+      const errorMsg = error?.message || 'Failed to upload image';
+      
       return res.status(500).json({
-        message: 'Failed to upload image',
+        message: errorMsg,
         error: 'UPLOAD_ERROR',
+        details: error?.http_code ? `Cloudinary error ${error.http_code}` : undefined,
       });
     }
   });
