@@ -107,7 +107,7 @@ const PartnerProcess = () => {
           </div>
         </div>
       </section>
-      <div className="bg-[#EFE7D5] h-[60vh] md:h-[68vh]"></div>
+      <div className="bg-[#EFE7D5] h-[100vh] md:h-[68vh]"></div>
     </>
   );
 };
