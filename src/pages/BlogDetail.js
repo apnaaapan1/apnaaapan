@@ -92,9 +92,9 @@ const BlogDetail = () => {
           </div>
         ) : null}
         <div className="prose prose-lg max-w-none text-[#2C2C2C]">
-          {post.content.map((paragraph, idx) => (
-            <p key={idx} className="mb-6">{paragraph}</p>
-          ))}
+          <p className="whitespace-pre-wrap leading-relaxed">
+            {Array.isArray(post.content) ? post.content.join(' ') : post.content}
+          </p>
         </div>
         <div className="mt-10">
           <a href="/blog" className="inline-block text-[#0D1B2A] hover:underline">← Back to Blog</a>

@@ -7,10 +7,10 @@ const AboutUs = () => {
   // State for tracking current image index in gallery section
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const scrollContainerRef = useRef(null);
-  
+
   // Total number of images
   const totalImages = 3;
-  
+
   // Handle scroll event to update current index
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +28,7 @@ const AboutUs = () => {
       return () => container.removeEventListener('scroll', handleScroll);
     }
   }, [totalImages]);
-  
+
   // Function to scroll to previous image
   const scrollToPrevious = () => {
     if (currentImageIndex > 0) {
@@ -43,7 +43,7 @@ const AboutUs = () => {
       }
     }
   };
-  
+
   // Function to scroll to next image
   const scrollToNext = () => {
     if (currentImageIndex < totalImages - 1) {
@@ -65,19 +65,19 @@ const AboutUs = () => {
       <section className="px-4 sm:px-6 lg:px-8 pt-28 md:pt-32 pb-24 md:pb-28 mb-10 md:mb-16">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif tracking-tight">
-              <span className="text-[#0D1B2A]">About </span>
-              <span className="bg-gradient-to-r from-[#DF5316] to-[#F4BF11] bg-clip-text text-transparent">Us</span>
-            </h1>
+            <span className="text-[#0D1B2A]">About </span>
+            <span className="bg-gradient-to-r from-[#DF5316] to-[#F4BF11] bg-clip-text text-transparent">Us</span>
+          </h1>
           <p className="mt-6 md:mt-8 text-base md:text-lg lg:text-xl text-[#0D1B2A]/80 font-nexa-regular">
-              Not Just What We Do. How We Do It.
+            Not Just What We Do. How We Do It.
           </p>
           <p className="mt-2 text-base md:text-lg lg:text-xl text-[#0D1B2A]/80 font-nexa-regular">
-              Built With Care. Shaped by People.
+            Built With Care. Shaped by People.
           </p>
         </div>
       </section>
 
-      
+
 
       {/* Who We Are Section */}
       <section className="px-4 sm:px-6 lg:px-8 pt-28 md:pt-32 pb-28">
@@ -105,8 +105,8 @@ const AboutUs = () => {
             {/* CTA Button - single gradient pill with arrow and text together */}
             <a href="#contact" className="group mt-8 inline-flex items-center gap-2 md:gap-3 rounded-full bg-gradient-to-r from-[#DF5316] to-[#F4BF11] px-5 md:px-7 py-3 text-white shadow-[0_6px_16px_rgba(223,83,22,0.25)] hover:brightness-105 transition">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:translate-x-0.5">
-                <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <path d="M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <path d="M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="text-sm md:text-base font-semibold">Work with US</span>
             </a>
@@ -193,43 +193,41 @@ const AboutUs = () => {
         <div className="max-w-6xl mx-auto">
           <div className="relative">
             {/* Navigation Arrows */}
-            <button 
+            <button
               onClick={scrollToPrevious}
               disabled={currentImageIndex === 0}
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${
-                currentImageIndex === 0 
-                  ? 'opacity-50 cursor-not-allowed' 
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${currentImageIndex === 0
+                  ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-gray-50 cursor-pointer'
-              }`}
+                }`}
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
-            <button 
+
+            <button
               onClick={scrollToNext}
               disabled={currentImageIndex === totalImages - 1}
-              className={`absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${
-                currentImageIndex === totalImages - 1 
-                  ? 'opacity-50 cursor-not-allowed' 
+              className={`absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${currentImageIndex === totalImages - 1
+                  ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-gray-50 cursor-pointer'
-              }`}
+                }`}
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-            
+
             {/* Image Cards Container */}
-            <div 
+            <div
               ref={scrollContainerRef}
-              className="flex space-x-6 overflow-x-auto pb-4 px-4 hide-scrollbar" 
+              className="flex space-x-6 overflow-x-auto pb-4 px-4 hide-scrollbar"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {['/images/Our_Story1.jpeg','/images/Our_story2.jpeg','/images/apnaaapan.jpeg'].map((src, index) => (
+              {['/images/Our_Story1.jpeg', '/images/Our_story2.jpeg', '/images/apnaaapan.jpeg'].map((src, index) => (
                 <div key={index} className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg relative bg-[#E8DFD0]">
-                  <img src={src} alt={`About gallery ${index+1}`} className="w-full h-full object-cover" />
+                  <img src={src} alt={`About gallery ${index + 1}`} className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -258,34 +256,34 @@ const AboutUs = () => {
 
             <div className="space-y-16">
               {[
-                { 
-                  year: '2020 - Where It All Started', 
+                {
+                  year: '2020 - Where It All Started',
                   text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time.",
-                  image:  '/images/2020.jpeg',
+                  image: '/images/2020.jpeg',
                   isCropped: true
                 },
-                { 
-                  year: '2021–2022 - From Solo to Shared', 
+                {
+                  year: '2021–2022 - From Solo to Shared',
                   text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together.",
                   image: '/images/2021.jpeg',
                   hoverImage: '/images/2022.jpeg',
                   removeHoverShadow: true
                 },
-                { 
-                  year: '2023–2024 - Full-Time Journey', 
+                {
+                  year: '2023–2024 - Full-Time Journey',
                   text: "A full-time placement at an MNC came with stability, predictability, and comfort. And then came a decision.\nThe job was left behind. Delhi was left behind too.\nJaipur, the founder's college city, became home again. Apnaaapan turned full-time.\nClients increased. Interns joined. The work became more structured, but the intent stayed the same: build honestly, grow steadily.",
                   image: '/images/2023.jpeg',
                   hoverImage: '/images/2024.jpeg',
                   removeHoverShadow: true
                 },
-                { 
-                  year: '2025 - Growing Roots', 
+                {
+                  year: '2025 - Growing Roots',
                   text: "Apnaaapan expanded, not upward, but outward.\nOffices took shape in Pali, Ahmedabad, and Jaipur. Clients came in from across industries and cities, all over India.\nThe team grew to 20+ full-time members and interns, working from different parts of the country, connected by shared intent rather than location.\nIn March 2025, something new began: with.apnaaapan. A community rooted in curiosity. A space for questions, conversations, and people who didn't want ready-made answers.",
                   image: '/images/2025(1).jpeg',
                   hoverImage: '/images/2025(2).jpeg'
                 },
-                { 
-                  year: '2026 - Chapter 2.0', 
+                {
+                  year: '2026 - Chapter 2.0',
                   text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own.",
                   image: '/images/our_story2.jpeg',
                   hoverImage: '/images/apnaaapan logo.png',
@@ -299,27 +297,27 @@ const AboutUs = () => {
                     <span className="absolute left-2 md:left-4 top-1.5 inline-grid place-items-center w-6 h-6 rounded-full bg-white shadow">
                       <span className="w-2 h-2 rounded-full bg-[#0D1B2A]"></span>
                     </span>
-                    <h4 className="text-[#0D1B2A] font-semibold mb-2" style={{fontFamily:'NexaBold'}}>{item.year}</h4>
+                    <h4 className="text-[#0D1B2A] font-semibold mb-2" style={{ fontFamily: 'NexaBold' }}>{item.year}</h4>
                     <p className="text-[#0D1B2A]/80 text-sm md:text-[15px] leading-relaxed font-nexa-regular whitespace-pre-line">
                       {item.text}
                     </p>
                   </div>
 
                   {/* Right: tilted cards or image */}
-                  <div className="md:col-span-5 hidden md:block">
+                  <div className="md:col-span-5 mt-8 md:mt-0">
                     {item.image ? (
                       <div className={`relative ${item.year.startsWith('2020') ? 'rounded-3xl overflow-hidden' : 'rounded-2xl overflow-hidden'} ${item.isCropped ? '' : 'shadow-lg'} group flex items-center justify-center ${item.isCropped ? 'h-64 md:h-72 lg:h-80' : ''} ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
-                        <img 
-                          src={item.image} 
+                        <img
+                          src={item.image}
                           alt={item.year}
                           className={`${item.isCropped ? `w-full h-full object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
                         />
                         {item.hoverImage && (
-                          <img 
-                            src={item.hoverImage} 
+                          <img
+                            src={item.hoverImage}
                             alt={`${item.year} hover`}
                             className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full shadow-none ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'} ${item.isLogoHover ? 'object-contain' : 'object-cover'}`}
-                            style={{maxHeight: '100%'}}
+                            style={{ maxHeight: '100%' }}
                           />
                         )}
                       </div>
@@ -364,7 +362,7 @@ const AboutUs = () => {
               <div className="flex-1 lg:flex-none lg:h-24 bg-[#FFD700]"></div>
               <div className="flex-1 lg:flex-none lg:h-24 bg-[#4682B4]"></div>
             </div>
-            
+
             {/* Content area */}
             <div className="flex-1 p-4 sm:p-6 md:p-8 lg:p-12">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 sm:mb-6 space-y-4 sm:space-y-0">

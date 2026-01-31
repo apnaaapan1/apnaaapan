@@ -78,7 +78,10 @@ const OurServices = ({ showHeader = true, items }) => {
     const wrapper = wrapperRef.current;
     const cards = cardsRef.current;
 
-    if (!wrapper || !cards.length) return;
+    // Clean up null references to avoid errors
+    const validCards = cards.filter(card => card !== null);
+
+    if (!wrapper || !validCards.length) return;
 
     // Handle resize events
     const handleResize = () => {
@@ -88,20 +91,22 @@ const OurServices = ({ showHeader = true, items }) => {
     window.addEventListener('resize', handleResize);
 
     // Calculate total width needed for horizontal scroll
+    // Use scrollWidth to account for margins and padding correctly
     const getMaxWidth = () => {
-      return cards.reduce((val, card) => val + card.offsetWidth, 0);
+      return wrapper.scrollWidth;
     };
 
     const maxWidth = getMaxWidth();
-    const scrollSpeed = window.innerWidth < 768 ? 1.5 : 1.2; // Faster scroll for mobile to reduce empty space
+    const scrollSpeed = 1.2;
     let tl = gsap.timeline();
 
     // Create horizontal scroll animation with maximum performance
     // Ensure we scroll enough to show the last card completely
     const isMobile = window.innerWidth < 768;
-    const extraSpace = isMobile ? 0.25 : 0.15; // Increased for mobile to show all 5 cards completely
-    const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
-    tl.to(cards, {
+    const extraSpace = isMobile ? 0.3 : 0.15; // Decreased extraSpace as accurate calculation needs less buffer
+    // Scroll distance = Total Content Width - Visible Width + Buffer
+    const scrollDistance = maxWidth - wrapper.offsetWidth + (window.innerWidth * extraSpace);
+    tl.to(validCards, {
       x: -scrollDistance,
       duration: 1,
       ease: "none",
@@ -123,7 +128,7 @@ const OurServices = ({ showHeader = true, items }) => {
         delay: 0.1,
         directional: false
       },
-      end: () => "+=" + (scrollDistance / scrollSpeed) * (window.innerWidth < 768 ? 1.5 : 2), // Adjusted for mobile to show all 5 cards before next section
+      end: () => "+=" + (scrollDistance / scrollSpeed) * 2, // Extended duration to show all cards
       invalidateOnRefresh: true,
       anticipatePin: 1,
       refreshPriority: -1, // Better performance
@@ -136,21 +141,21 @@ const OurServices = ({ showHeader = true, items }) => {
     });
 
     function init() {
-      gsap.set(cards, {
+      gsap.set(validCards, {
         x: 0,
         force3D: true,
         immediateRender: false
       });
       const maxWidth = getMaxWidth();
       const isMobile = window.innerWidth < 768;
-      const extraSpace = isMobile ? 0.25 : 0.15; // Increased for mobile to show all 5 cards completely
+      const extraSpace = isMobile ? 0.6 : 0.15; // Increased for complete 5th card visibility
       const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
       let position = 0;
       const distance = scrollDistance;
 
       // Add labels for each card with better spacing
       tl.add("label0", 0);
-      cards.forEach((card, i) => {
+      validCards.forEach((card, i) => {
         position += card.offsetWidth / distance;
         tl.add("label" + (i + 1), position);
       });
@@ -170,7 +175,7 @@ const OurServices = ({ showHeader = true, items }) => {
 
 
   return (
-    <section className="bg-[#EFE7D5] pt-4 sm:pt-8 md:pt-14 lg:pt-20 pb-0 sm:pb-6 md:pb-8 lg:pb-0 px-3 sm:px-4 md:px-8 overflow-x-hidden -mb-[15vh] sm:mb-0">
+    <section className="bg-[#EFE7D5] pt-4 sm:pt-8 md:pt-14 lg:pt-20 pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-3 sm:px-4 md:px-8 overflow-x-hidden">
       <div className="max-w-7xl mx-auto overflow-x-hidden">
         {/* Header Section */}
         {showHeader && (
@@ -208,7 +213,7 @@ const OurServices = ({ showHeader = true, items }) => {
         ref={wrapperRef}
         className="wrapper flex flex-nowrap items-center"
         style={{
-          height: window.innerWidth < 768 ? '35vh' : '90vh',
+          height: window.innerWidth < 768 ? '80vh' : '90vh',
           willChange: 'transform',
           backfaceVisibility: 'hidden',
           perspective: '1000px',
