@@ -113,8 +113,8 @@ const OurWorkSection = () => {
 
               {/* Hover Image - Slides up from bottom and covers 75% with rounded top */}
               <div className="absolute bottom-0 left-0 right-0 h-3/4 bg-cover bg-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out rounded-t-xl overflow-hidden">
-                <img 
-                  src={card.hoverImage} 
+                <img
+                  src={card.hoverImage}
                   alt={`${card.title} project`}
                   className="w-full h-full object-cover rounded-t-xl"
                   style={{ objectPosition: 'center 20%' }}
@@ -124,8 +124,8 @@ const OurWorkSection = () => {
               {/* Client Logo - Appears on hover */}
               <div className="absolute top-4 sm:top-6 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200 z-20">
                 <div className="bg-white rounded-full p-2 sm:p-3 shadow-lg">
-                  <img 
-                    src={card.clientLogo} 
+                  <img
+                    src={card.clientLogo}
                     alt={`${card.title} logo`}
                     className="h-8 sm:h-10 w-auto object-contain"
                   />
@@ -135,17 +135,17 @@ const OurWorkSection = () => {
               {/* Arrow Button - Appears on hover */}
               <div className="absolute top-4 sm:top-6 right-4 sm:right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200 z-20">
                 <button className="w-10 h-10 sm:w-12 sm:h-12 bg-[#faf8f3] rounded-full flex items-center justify-center shadow-lg">
-                  <svg 
-                    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 transform rotate-45" 
-                    fill="none" 
-                    stroke="currentColor" 
+                  <svg
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 transform rotate-45"
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M7 17l9.2-9.2M17 17V7H7" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17l9.2-9.2M17 17V7H7"
                     />
                   </svg>
                 </button>
@@ -157,7 +157,7 @@ const OurWorkSection = () => {
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                   {card.title}
                 </h3>
-                
+
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
                   {card.tags && card.tags.map((tag, tagIndex) => (
@@ -170,23 +170,23 @@ const OurWorkSection = () => {
                 {/* Description or Button */}
                 {card.hasDescription ? (
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
                     when an unknown printer took a galley of t...
                   </p>
                 ) : card.hasButton ? (
                   <button className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors duration-200">
-                    <svg 
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-white transform rotate-45" 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-white transform rotate-45"
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M7 17l9.2-9.2M17 17V7H7" 
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 17l9.2-9.2M17 17V7H7"
                       />
                     </svg>
                   </button>

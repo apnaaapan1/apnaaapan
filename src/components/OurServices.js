@@ -77,14 +77,14 @@ const OurServices = ({ showHeader = true, items }) => {
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const cards = cardsRef.current;
-    
+
     if (!wrapper || !cards.length) return;
 
     // Handle resize events
     const handleResize = () => {
       ScrollTrigger.refresh();
     };
-    
+
     window.addEventListener('resize', handleResize);
 
     // Calculate total width needed for horizontal scroll
@@ -99,7 +99,7 @@ const OurServices = ({ showHeader = true, items }) => {
     // Create horizontal scroll animation with maximum performance
     // Ensure we scroll enough to show the last card completely
     const isMobile = window.innerWidth < 768;
-    const extraSpace = isMobile ? 0.05 : 0.15; // Minimized for mobile to eliminate empty space during animation
+    const extraSpace = isMobile ? 0.25 : 0.15; // Increased for mobile to show all 5 cards completely
     const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
     tl.to(cards, {
       x: -scrollDistance,
@@ -123,7 +123,7 @@ const OurServices = ({ showHeader = true, items }) => {
         delay: 0.1,
         directional: false
       },
-      end: () => "+=" + (scrollDistance / scrollSpeed) * (window.innerWidth < 768 ? 1.0 : 2), // Further reduced for mobile to show next section sooner
+      end: () => "+=" + (scrollDistance / scrollSpeed) * (window.innerWidth < 768 ? 1.5 : 2), // Adjusted for mobile to show all 5 cards before next section
       invalidateOnRefresh: true,
       anticipatePin: 1,
       refreshPriority: -1, // Better performance
@@ -136,18 +136,18 @@ const OurServices = ({ showHeader = true, items }) => {
     });
 
     function init() {
-      gsap.set(cards, { 
-        x: 0, 
+      gsap.set(cards, {
+        x: 0,
         force3D: true,
         immediateRender: false
       });
       const maxWidth = getMaxWidth();
       const isMobile = window.innerWidth < 768;
-      const extraSpace = isMobile ? 0.05 : 0.15; // Minimized for mobile to eliminate empty space during animation
+      const extraSpace = isMobile ? 0.25 : 0.15; // Increased for mobile to show all 5 cards completely
       const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
       let position = 0;
       const distance = scrollDistance;
-      
+
       // Add labels for each card with better spacing
       tl.add("label0", 0);
       cards.forEach((card, i) => {
@@ -182,7 +182,7 @@ const OurServices = ({ showHeader = true, items }) => {
               <p className="text-sm sm:text-base md:text-lg text-[#22223b] mb-3 sm:mb-4 md:mb-6 lg:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
                 Everything we build at Apnaaapan has a reason behind it. Products. Websites. Brands. Not to just look good but to work. To connect. To convert. To grow with you. We focus on clarity, consistency, and outcomes so what you put out into the world actually moves your business forward.
               </p>
-              <button 
+              <button
                 onClick={() => window.location.href = '/services'}
                 className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base md:text-lg hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto lg:mx-0"
               >
@@ -193,21 +193,21 @@ const OurServices = ({ showHeader = true, items }) => {
               </button>
             </div>
             <div className="lg:w-1/2 flex justify-center lg:justify-end">
-              <img 
-                src="/images/Group 100.png" 
-                alt="Company Logo" 
+              <img
+                src="/images/Group 100.png"
+                alt="Company Logo"
                 className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 object-contain relative z-10"
               />
             </div>
           </div>
         )}
       </div>
-      
+
       {/* Services Cards with GSAP ScrollTrigger horizontal scroll */}
-      <div 
+      <div
         ref={wrapperRef}
         className="wrapper flex flex-nowrap items-center"
-        style={{ 
+        style={{
           height: window.innerWidth < 768 ? '35vh' : '90vh',
           willChange: 'transform',
           backfaceVisibility: 'hidden',
@@ -219,8 +219,8 @@ const OurServices = ({ showHeader = true, items }) => {
         }}
       >
         {itemsToRender.map((service, index) => (
-          <div 
-            key={service.id} 
+          <div
+            key={service.id}
             ref={el => cardsRef.current[index] = el}
             className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] lg:w-[450px] mx-2 sm:mx-3 md:mx-4"
             style={{
@@ -235,7 +235,7 @@ const OurServices = ({ showHeader = true, items }) => {
             <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-300 group relative overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl h-[320px] sm:h-[380px] md:h-[420px] lg:h-[480px] xl:h-[560px]">
               {/* Hover Background Gradient */}
               <div className="absolute inset-0 bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-3xl"></div>
-              
+
               {/* Content Container */}
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex-1">
