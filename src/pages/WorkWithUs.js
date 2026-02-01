@@ -240,7 +240,7 @@ const WorkWithUs = () => {
             <div className="h-[400px] w-full rounded-2xl overflow-hidden">
               {/* Team Culture Image */}
               <img 
-                src="/images/apnaaapan_team.jpeg" 
+                src="/images/apnaaapan_team.webp" 
                 alt="Our Team Culture - Apnaaapan team members" 
                 className="w-full h-full object-cover rounded-2xl"
               />
@@ -370,7 +370,7 @@ const WorkWithUs = () => {
               {/* Card 1 - Team on Sofa */}
               <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/life_apnaaapan1.jpeg" 
+                  src="/images/life_apnaaapan1.webp" 
                   alt="Team members sitting on sofa - collaborative work environment" 
                   className="h-full w-auto object-contain rounded-2xl"
                 />
@@ -379,7 +379,7 @@ const WorkWithUs = () => {
               {/* Card 2 - Gaurav */}
               <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/life_apnaaapan2.jpeg" 
+                  src="/images/life_apnaaapan2.webp" 
                   alt="Gaurav - Team member with red hoodie and wireless earbuds" 
                   className="h-full w-auto object-contain rounded-2xl"
                 />
@@ -388,7 +388,7 @@ const WorkWithUs = () => {
               {/* Card 3 - Team Discussion */}
               <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/life_apnaaapan3.jpeg" 
+                  src="/images/life_apnaaapan3.webp" 
                   alt="Team members in discussion - collaborative brainstorming session" 
                   className="h-full w-auto object-contain rounded-2xl"
                 />
@@ -397,7 +397,7 @@ const WorkWithUs = () => {
               {/* Card 4 - Kartik Patel */}
               <div className="flex-shrink-0 max-w-[600px] h-[350px] overflow-hidden bg-[#EFE7D5] flex items-center justify-center">
                 <img 
-                  src="/images/life_apnaaapan4.jpeg" 
+                  src="/images/life_apnaaapan4.webp" 
                   alt="Kartik Patel - Team member with confident smile" 
                   className="h-full w-auto object-contain rounded-2xl"
                 />

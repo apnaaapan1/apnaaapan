@@ -116,7 +116,7 @@ const AboutUs = () => {
           <div className="relative group">
             <div className="rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.12)] h-[350px] sm:h-[400px] md:h-[450px]">
               <img
-                src="/images/apnaaapan.jpeg"
+                src="/images/apnaaapan.webp"
                 alt="Apnaaapan team"
                 className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 loading="lazy"
@@ -225,7 +225,7 @@ const AboutUs = () => {
               className="flex space-x-6 overflow-x-auto pb-4 px-4 hide-scrollbar"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {['/images/Our_Story1.jpeg', '/images/Our_story2.jpeg', '/images/apnaaapan.jpeg'].map((src, index) => (
+              {['/images/Our_Story1.webp', '/images/Our_story2.webp', '/images/apnaaapan.webp'].map((src, index) => (
                 <div key={index} className="flex-shrink-0 w-80 h-96 rounded-2xl overflow-hidden shadow-lg relative bg-[#E8DFD0]">
                   <img src={src} alt={`About gallery ${index + 1}`} className="w-full h-full object-cover" />
                 </div>
@@ -259,33 +259,33 @@ const AboutUs = () => {
                 {
                   year: '2020 - Where It All Started',
                   text: "Lockdown. A small room in Pali, Rajasthan.\nA third-year electrical engineering student, curious and restless, wanted to move from non-tech into building something of his own. Around the same time, AI tools were beginning to bloom, opening new doors to learning and experimentation.\nThat's when Apnaaapan took shape. A word learned growing up. Apna aapan - your own space, your own market, your own way.\nWhat started as freelance work from a single room became a way to explore, learn, and create. One project at a time.",
-                  image: '/images/2020.jpeg',
+                  image: '/images/2020.webp',
                   isCropped: true
                 },
                 {
                   year: '2021–2022 - From Solo to Shared',
                   text: "Work grew. So did belief.\nFriends joined in. What was once a solo effort slowly turned into a small agency-in-the-making.\nWebsites, social media, design, marketing, everything was learned by doing. Mistakes were frequent. So was growth.\nThere was no rush to \"scale.\" Just a steady rhythm of building, together.",
-                  image: '/images/2021.jpeg',
-                  hoverImage: '/images/2022.jpeg',
+                  image: '/images/2021.webp',
+                  hoverImage: '/images/2022.webp',
                   removeHoverShadow: true
                 },
                 {
                   year: '2023–2024 - Full-Time Journey',
                   text: "A full-time placement at an MNC came with stability, predictability, and comfort. And then came a decision.\nThe job was left behind. Delhi was left behind too.\nJaipur, the founder's college city, became home again. Apnaaapan turned full-time.\nClients increased. Interns joined. The work became more structured, but the intent stayed the same: build honestly, grow steadily.",
-                  image: '/images/2023.jpeg',
-                  hoverImage: '/images/2024.jpeg',
+                  image: '/images/2023.webp',
+                  hoverImage: '/images/2024.webp',
                   removeHoverShadow: true
                 },
                 {
                   year: '2025 - Growing Roots',
                   text: "Apnaaapan expanded, not upward, but outward.\nOffices took shape in Pali, Ahmedabad, and Jaipur. Clients came in from across industries and cities, all over India.\nThe team grew to 20+ full-time members and interns, working from different parts of the country, connected by shared intent rather than location.\nIn March 2025, something new began: with.apnaaapan. A community rooted in curiosity. A space for questions, conversations, and people who didn't want ready-made answers.",
-                  image: '/images/2025(1).jpeg',
-                  hoverImage: '/images/2025(2).jpeg'
+                  image: '/images/2025(1).webp',
+                  hoverImage: '/images/2025(2).webp'
                 },
                 {
                   year: '2026 - Chapter 2.0',
                   text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own.",
-                  image: '/images/our_story2.jpeg',
+                  image: '/images/Our_story2.webp',
                   hoverImage: '/images/apnaaapan logo.png',
                   isLogoHover: true
                 }

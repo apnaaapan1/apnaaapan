@@ -6,9 +6,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const photos = [
-  '/images/Our_Story1.jpeg',
-  '/images/Our_story2.jpeg',
-  '/images/Our_story3.jpeg'
+  '/images/Our_Story1.webp',
+  '/images/Our_story2.webp',
+  '/images/Our_story3.webp'
 ];
 
 const OurStory = () => {
@@ -183,7 +183,7 @@ const OurStory = () => {
             <div className="relative">
               <div className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] rounded-2xl overflow-hidden shadow-lg">
                 <img
-                  src="/images/apnaaapan_team.jpeg"
+                  src="/images/apnaaapan_team.webp"
                   alt="Apnaaapan Team"
                   className="w-full h-auto"
                 />

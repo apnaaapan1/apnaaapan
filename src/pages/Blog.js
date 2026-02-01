@@ -291,17 +291,19 @@ const Blog = () => {
             <div className="col-span-full text-center text-gray-600">No more blogs to display.</div>
           ) : (
             paginatedBlogs.map((blog) => (
-              <a key={blog.id} href={`/blog/${blog.slug}`} className="block">
+              <a key={blog.id} href={`/blog/${blog.slug}`} className="block group cursor-pointer">
                 <div>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4">
-                    <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-4 transition-all duration-300 group-hover:shadow-2xl">
+                    <div className="w-full h-48 sm:h-60 md:h-72 lg:h-80 bg-white rounded-t-2xl border border-gray-100 relative overflow-hidden">
                       {blog.heroImage && (
                         <img
                           src={blog.heroImage}
                           alt={blog.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                         />
                       )}
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   </div>
                   <RevealOnScroll>
