@@ -28,6 +28,7 @@ import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
 import AdminGallery from './pages/AdminGallery';
 import usePageTracking from './hooks/usePageTracking';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   // Track page views on route changes
@@ -35,12 +36,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#EFE7D5]">
+      <ScrollToTop />
       <Header />
       <div className="pt-14 sm:pt-16 md:pt-20">
         <Routes>
           {/* Home Page */}
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               <>
                 <HeroSection />
@@ -50,9 +52,9 @@ function App() {
                 <OurServices />
                 <BookingSection />
               </>
-            } 
+            }
           />
-          
+
           {/* Other Pages */}
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/our-story" element={<OurStory />} />

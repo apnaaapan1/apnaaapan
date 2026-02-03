@@ -83,91 +83,108 @@ const OurServices = ({ showHeader = true, items }) => {
 
     if (!wrapper || !validCards.length) return;
 
-    // Handle resize events
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Calculate total width needed for horizontal scroll
-    // Use scrollWidth to account for margins and padding correctly
+    // Robust width calculation using reduce (matches OurStory.js approach)
+    // This is more reliable for flex containers than scrollWidth
     const getMaxWidth = () => {
-      return wrapper.scrollWidth;
+      return validCards.reduce((val, card) => val + card.offsetWidth, 0);
     };
 
-    const maxWidth = getMaxWidth();
-    const scrollSpeed = 1.2;
+    // Helper to calculate precise scroll distance
+    const getScrollDistance = () => {
+      const maxWidth = getMaxWidth();
+      // Ensure we treat mobile/desktop distinctly
+      const isMobile = window.innerWidth < 768;
+      // Buffer adjustment to ensure the last card is fully visible
+      // Mobile needs a bit more buffer usually due to screen constraints
+      const extraSpace = isMobile ? 0.3 : 0.15;
+      return maxWidth - wrapper.offsetWidth + (window.innerWidth * extraSpace);
+    };
+
     let tl = gsap.timeline();
 
-    // Create horizontal scroll animation with maximum performance
-    // Ensure we scroll enough to show the last card completely
-    const isMobile = window.innerWidth < 768;
-    const extraSpace = isMobile ? 0.3 : 0.15; // Decreased extraSpace as accurate calculation needs less buffer
-    // Scroll distance = Total Content Width - Visible Width + Buffer
-    const scrollDistance = maxWidth - wrapper.offsetWidth + (window.innerWidth * extraSpace);
+    // Use function-based value for x to support invalidation on refresh properly
+    // This allows GSAP to re-calculate the destination when the screen parses
     tl.to(validCards, {
-      x: -scrollDistance,
+      x: () => -getScrollDistance(),
       duration: 1,
       ease: "none",
-      force3D: true,
-      transformOrigin: "center center",
-      immediateRender: false, // Better performance
-      willChange: "transform" // Optimize for GPU acceleration
+      force3D: true, // Force GPU acceleration
+      immediateRender: false,
     });
 
-    // Create ScrollTrigger with highly optimized settings
+    // Create ScrollTrigger
     const scrollTrigger = ScrollTrigger.create({
       animation: tl,
       trigger: wrapper,
       pin: true,
-      scrub: 0.05, // Reduced scrub for smoother animation
+      scrub: 0.5, // Slightly smoother scrub
       snap: {
         snapTo: "labels",
         duration: { min: 0.2, max: 0.5 },
         delay: 0.1,
-        directional: false
+        directional: false // Snap in both directions
       },
-      end: () => "+=" + (scrollDistance / scrollSpeed) * 2, // Extended duration to show all cards
-      invalidateOnRefresh: true,
+      // Recalculate end position dynamically
+      end: () => "+=" + (getScrollDistance() / 1.2) * 2,
+      invalidateOnRefresh: true, // Important: recalculates tween values on resize
       anticipatePin: 1,
-      refreshPriority: -1, // Better performance
-      fastScrollEnd: true, // Optimize for fast scrolling
-      onUpdate: () => {
-        // Update current index based on progress
-        // Can be used here if needed for indicators or other UI elements
-        // For now, we're keeping the calculation but not storing it
-      }
+      fastScrollEnd: true,
     });
 
+    // Initialize labels for snapping
     function init() {
-      gsap.set(validCards, {
-        x: 0,
-        force3D: true,
-        immediateRender: false
-      });
-      const maxWidth = getMaxWidth();
-      const isMobile = window.innerWidth < 768;
-      const extraSpace = isMobile ? 0.6 : 0.15; // Increased for complete 5th card visibility
-      const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
-      let position = 0;
-      const distance = scrollDistance;
+      // Clear any existing labels to prevent duplicates on refresh
+      // tl.clearLabels(); // Method not available
 
-      // Add labels for each card with better spacing
+      const distance = getScrollDistance();
+      let position = 0;
+
+      // Add start label
       tl.add("label0", 0);
+
+      // Calculate relative positions for other cards
       validCards.forEach((card, i) => {
-        position += card.offsetWidth / distance;
+        // Calculate how much of the total distance this card occupies
+        const cardDistance = card.offsetWidth;
+        // Add to current position
+        // We use a safe division to map physical pixels to timeline progress (0-1)
+        if (distance > 0) {
+          position += cardDistance / distance;
+        }
+
+        // Clamp position to 1 to avoid GSAP errors
+        if (position > 1) position = 1;
+
         tl.add("label" + (i + 1), position);
       });
     }
 
+    // Run init immediately
     init();
+
+    // Refresh listener
+    const handleResize = () => ScrollTrigger.refresh();
+    window.addEventListener('resize', handleResize);
+
+    // CRITICAL FIX: Refresh ScrollTrigger after a delay to account for layout shifts
+    // from upstream components (like OurWorkSection images loading)
+    const timer1 = setTimeout(() => ScrollTrigger.refresh(), 500);
+    const timer2 = setTimeout(() => ScrollTrigger.refresh(), 2000);
+
+    // Also listen for general window load to be safe
+    const handleLoad = () => ScrollTrigger.refresh();
+    window.addEventListener('load', handleLoad);
+
+    // Re-run init when ScrollTrigger refreshes (e.g. on resize)
     ScrollTrigger.addEventListener("refreshInit", init);
 
-    // Cleanup function
+    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('load', handleLoad);
       ScrollTrigger.removeEventListener("refreshInit", init);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
       scrollTrigger.kill();
       tl.kill();
     };
