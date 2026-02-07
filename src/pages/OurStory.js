@@ -19,14 +19,14 @@ const OurStory = () => {
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const cards = cardsRef.current;
-    
+
     if (!wrapper || !cards.length) return;
 
     // Handle resize events
     const handleResize = () => {
       ScrollTrigger.refresh();
     };
-    
+
     window.addEventListener('resize', handleResize);
 
     // Calculate total width needed for horizontal scroll
@@ -78,8 +78,8 @@ const OurStory = () => {
     });
 
     function init() {
-      gsap.set(cards, { 
-        x: 0, 
+      gsap.set(cards, {
+        x: 0,
         force3D: true,
         immediateRender: false
       });
@@ -89,7 +89,7 @@ const OurStory = () => {
       const scrollDistance = maxWidth - window.innerWidth + (window.innerWidth * extraSpace);
       let position = 0;
       const distance = scrollDistance;
-      
+
       // Add labels for each card with better spacing
       tl.add("label0", 0);
       cards.forEach((card, i) => {
@@ -204,15 +204,26 @@ const OurStory = () => {
                   className="w-full h-full object-cover"
                 />
                 {/* Badges positioned at bottom-left of image */}
-                <div className="absolute -bottom-3 left-4 sm:left-6 flex flex-row gap-2 sm:gap-3">
-                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md" style={{ fontFamily: 'NexaBold' }}>
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex flex-row flex-wrap gap-2 sm:gap-3 items-center justify-center w-max px-4">
+                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md whitespace-nowrap" style={{ fontFamily: 'NexaBold' }}>
                     <span className="mr-2 text-white">⭐</span>
                     Founder
                   </span>
-                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md" style={{ fontFamily: 'NexaBold' }}>
+                  <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white text-xs sm:text-sm font-medium rounded-full shadow-md whitespace-nowrap" style={{ fontFamily: 'NexaBold' }}>
                     <span className="mr-2 text-white">⭐</span>
                     Gourav Sharma
                   </span>
+                  <a
+                    href="https://linkedin.com/in/gauravfeel"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-r from-[#DF5316] to-[#F4BF11] text-white hover:opacity-90 transition-opacity duration-200 rounded-full shadow-md h-10 w-10 sm:h-12 sm:w-12"
+                    title="Connect on LinkedIn"
+                  >
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
@@ -231,12 +242,12 @@ const OurStory = () => {
       <section className="max-w-7xl mx-auto px-6 md:px-8 lg:px-10 pt-12 md:pt-16 pb-16 md:pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {[
-            { name: "Yashaswi Mertiya", role: "Social Media Manager" },
-            { name: "Team Member", role: "Marketing Lead" },
-            { name: "Team Member", role: "Creative Director" },
-            { name: "Team Member", role: "Design Lead" },
-            { name: "Team Member", role: "Content Strategist" },
-            { name: "Team Member", role: "Project Manager" }
+            { name: "Yashaswi Mertiya", role: "Social Media Manager", linkedin: "https://linkedin.com/in/yashaswi-mertiya" },
+            { name: "Team Member", role: "Marketing Lead", linkedin: "#" },
+            { name: "Team Member", role: "Creative Director", linkedin: "#" },
+            { name: "Team Member", role: "Design Lead", linkedin: "#" },
+            { name: "Team Member", role: "Content Strategist", linkedin: "#" },
+            { name: "Team Member", role: "Project Manager", linkedin: "#" }
           ].map((member, index) => {
             // Determine overlay color based on column (index % 3)
             const getOverlayColor = (index) => {
@@ -254,7 +265,7 @@ const OurStory = () => {
                   padding: '6px'
                 }}
               >
-                <div 
+                <div
                   className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-white transition-all duration-300 pointer-events-none"
                   style={{ zIndex: 10 }}
                 ></div>
@@ -264,21 +275,30 @@ const OurStory = () => {
                     alt={member.name}
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
                   />
-                  
-                  {/* Hover Overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-t ${getOverlayColor(index)} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                      <h3 className="text-lg font-semibold mb-1">{member.name}</h3>
-                      <p className="text-sm opacity-90">{member.role}</p>
+
+                  {/* Always Visible Text with Shadow for readability */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10 flex justify-between items-end">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1 drop-shadow-md">{member.name}</h3>
+                      <p className="text-sm opacity-90 drop-shadow-sm">{member.role}</p>
                     </div>
-                    
-                    {/* Arrow button */}
-                    <div className="absolute bottom-4 right-4 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:bg-white transition-all duration-300">
-                      <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17l9.2-9.2M17 17V7H7" />
-                      </svg>
-                    </div>
+                    {member.linkedin && (
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-white/20 hover:bg-white/40 group-hover:bg-white/90 p-2 sm:p-2.5 rounded-full backdrop-blur-sm transition-all duration-300 transform group-hover:scale-110 mb-0.5 z-20 flex items-center justify-center shadow-lg"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 fill-white group-hover:fill-[#0077B5] transition-colors duration-300" viewBox="0 0 24 24">
+                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                      </a>
+                    )}
                   </div>
+
+                  {/* Hover Overlay Gradient */}
+                  <div className={`absolute inset-0 bg-gradient-to-t ${getOverlayColor(index)} opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0`}></div>
                 </div>
               </div>
             );
@@ -298,9 +318,9 @@ const OurStory = () => {
             <div className="bg-white rounded-3xl overflow-hidden shadow-xl h-[500px] group cursor-pointer transition-all duration-500 relative">
               {/* White top section with icon */}
               <div className="p-8 flex flex-col items-center justify-center h-1/2 group-hover:h-3/4 transition-all duration-500 bg-white relative z-10">
-                <img 
-                  src="/images/image 16.png" 
-                  alt="Collaborate icon" 
+                <img
+                  src="/images/image 16.png"
+                  alt="Collaborate icon"
                   className="w-40 h-40 object-contain"
                 />
                 {/* Curved bottom edge */}
@@ -316,9 +336,9 @@ const OurStory = () => {
             <div className="bg-white rounded-3xl overflow-hidden shadow-xl h-[500px] group cursor-pointer transition-all duration-500 relative">
               {/* White top section with icon */}
               <div className="p-8 flex flex-col items-center justify-center h-1/2 group-hover:h-3/4 transition-all duration-500 bg-white relative z-10">
-                <img 
-                  src="/images/image 17.png" 
-                  alt="Innovate icon" 
+                <img
+                  src="/images/image 17.png"
+                  alt="Innovate icon"
                   className="w-40 h-40 object-contain"
                 />
                 {/* Curved bottom edge */}
@@ -334,9 +354,9 @@ const OurStory = () => {
             <div className="bg-white rounded-3xl overflow-hidden shadow-xl h-[500px] group cursor-pointer transition-all duration-500 relative">
               {/* White top section with icon */}
               <div className="p-8 flex flex-col items-center justify-center h-1/2 group-hover:h-3/4 transition-all duration-500 bg-white relative z-10">
-                <img 
-                  src="/images/image 18.png" 
-                  alt="Elevate icon" 
+                <img
+                  src="/images/image 18.png"
+                  alt="Elevate icon"
                   className="w-40 h-40 object-contain"
                 />
                 {/* Curved bottom edge */}
@@ -359,7 +379,7 @@ const OurStory = () => {
               <div className="flex-1 lg:flex-none lg:h-24 bg-[#FFD700]"></div>
               <div className="flex-1 lg:flex-none lg:h-24 bg-[#4682B4]"></div>
             </div>
-            
+
             {/* Right side - Content */}
             <div className="flex-1 p-4 sm:p-6 md:p-8 lg:p-12">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 sm:mb-6">
@@ -391,16 +411,16 @@ const OurStory = () => {
               Milestones
             </h2>
             <p className="text-base md:text-lg text-[#2C2C2C] leading-relaxed max-w-2xl mx-auto">
-            How It Unfolded, Year by Year
+              How It Unfolded, Year by Year
             </p>
           </div>
         </div>
-        
+
         {/* Milestones Cards with GSAP ScrollTrigger horizontal scroll */}
-        <div 
+        <div
           ref={wrapperRef}
           className="wrapper flex flex-nowrap items-center"
-          style={{ 
+          style={{
             height: window.innerWidth < 768 ? '80vh' : '90vh',
             willChange: 'transform',
             backfaceVisibility: 'hidden',
@@ -448,8 +468,8 @@ const OurStory = () => {
               description: "New backing. New systems.\nThe same intent.\nApnaaapan begins its next chapter, rooted in trust, people, and work that's built to last."
             }
           ].map((milestone, index) => (
-            <div 
-              key={milestone.id} 
+            <div
+              key={milestone.id}
               ref={el => cardsRef.current[index] = el}
               className="flex-shrink-0 w-[240px] sm:w-[320px] md:w-[380px] lg:w-[450px] mx-1 sm:mx-4"
               style={{
@@ -464,7 +484,7 @@ const OurStory = () => {
               <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-300 group relative overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl h-[420px] sm:h-[480px] md:h-[560px]">
                 {/* Hover Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-3xl"></div>
-                
+
                 {/* Content Container */}
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex-1">
@@ -484,7 +504,7 @@ const OurStory = () => {
           ))}
         </div>
       </section>
-      
+
     </main>
   );
 };

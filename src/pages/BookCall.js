@@ -13,7 +13,7 @@ const BookCall = () => {
               Apnaaapan
             </span>
           </h1>
-          
+
           {/* Subtitle */}
           <div className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
             <p>Schedule a 30-minute meeting with our team to discuss your project and explore how we can help bring your vision to life.</p>
@@ -26,7 +26,7 @@ const BookCall = () => {
         <div className="max-w-5xl mx-auto">
           <div className="w-full h-[650px] sm:h-[700px] md:h-[800px] bg-white rounded-2xl shadow-lg overflow-hidden">
             <iframe
-              src="https://cal.com/apnaaapan/30min?date=2025-12-05"
+              src="https://cal.com/apnaaapan/30min"
               title="Book a 30 min meeting with Apnaaapan"
               className="w-full h-full border-0"
               loading="lazy"

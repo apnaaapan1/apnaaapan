@@ -6,6 +6,20 @@ const companyLogos = [
   { src: '/images/safal.png', alt: 'Safal' },
   { src: '/images/kap.png', alt: 'KAP' },
   { src: '/images/utkrasht.png', alt: 'Utkrasht' },
+  { src: "/images/client's logos/1.png", alt: 'Logo 1' },
+  { src: "/images/client's logos/2.png", alt: 'Logo 2' },
+  { src: "/images/client's logos/3.png", alt: 'Logo 3' },
+  { src: "/images/client's logos/4.png", alt: 'Logo 4' },
+  { src: "/images/client's logos/5.png", alt: 'Logo 5' },
+  { src: "/images/client's logos/6.png", alt: 'Logo 6' },
+  { src: "/images/client's logos/7.png", alt: 'Logo 7' },
+  { src: "/images/client's logos/8.png", alt: 'Logo 8' },
+  { src: "/images/client's logos/9.png", alt: 'Logo 9' },
+  { src: "/images/client's logos/10.png", alt: 'Logo 10' },
+  { src: "/images/client's logos/11.png", alt: 'Logo 11' },
+  { src: "/images/client's logos/14.png", alt: 'Logo 14' },
+  { src: "/images/client's logos/Logo.png", alt: 'Logo' },
+  { src: "/images/client's logos/Logo - B.png", alt: 'Logo B' },
 ];
 
 const BG_COLORS = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
@@ -65,14 +79,14 @@ const OurWorkSection = () => {
             Trusted by fast-growing<br />companies around the world
           </div>
           <div className="w-full md:w-2/3 overflow-hidden">
-            <div className="flex items-center animate-scroll">
+            <div className="flex items-center animate-scroll w-max flex-nowrap gap-12 sm:gap-16">
               {/* First set of logos */}
               {companyLogos.map((logo, idx) => (
                 <img
                   key={`first-${idx}`}
                   src={logo.src}
                   alt={logo.alt}
-                  className="h-8 sm:h-10 md:h-12 max-w-[100px] sm:max-w-[120px] object-contain mx-2 sm:mx-4 md:mx-6 flex-shrink-0"
+                  className="h-10 sm:h-12 md:h-14 max-w-[140px] sm:max-w-[160px] md:max-w-[180px] object-contain flex-shrink-0"
                   style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
                 />
               ))}
@@ -82,7 +96,7 @@ const OurWorkSection = () => {
                   key={`second-${idx}`}
                   src={logo.src}
                   alt={logo.alt}
-                  className="h-8 sm:h-10 md:h-12 max-w-[100px] sm:max-w-[120px] object-contain mx-2 sm:mx-4 md:mx-6 flex-shrink-0"
+                  className="h-10 sm:h-12 md:h-14 max-w-[140px] sm:max-w-[160px] md:max-w-[180px] object-contain flex-shrink-0"
                   style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
                 />
               ))}
