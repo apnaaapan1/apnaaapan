@@ -44,6 +44,7 @@ export default function AdminTeam() {
             setIsAuthenticated(true);
             fetchTeam(savedToken);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchTeam = async (tokenForHeader) => {
