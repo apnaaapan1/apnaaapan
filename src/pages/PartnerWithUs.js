@@ -1,9 +1,102 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OurServices from '../components/OurServices';
 import PartnerProcess from '../components/PartnerProcess';
- 
+
+
+const PARTNER_BENEFITS = [
+  { id: '01', title: 'Scales\nWith You', description: 'Our services are built to grow as you do, without breaking systems or adding friction.' },
+  { id: '02', title: 'Made for\nPartnerships', description: 'Clear B2B pricing that protects your margins and keeps growth sustainable.' },
+  { id: '03', title: 'Quiet\nExecution', description: 'We work behind the scenes.\nYou stay client-facing.\nYour relationship always comes first.' },
+  { id: '04', title: 'Dependable\nDelivery', description: 'Consistent quality. Clear timelines.\nWork you can trust without second-guessing.' },
+];
+
+const WHITE_LABEL_SERVICES = [
+  { id: '01', title: 'Branding & Identity', description: (<><span>We don’t begin with visuals.</span><br /><span>We begin with meaning.</span><br /><span>The kind that helps brands feel familiar, trustworthy, and easy to remember.</span></>) },
+  { id: '02', title: 'Design & Creative', description: (<><span>Good design doesn’t shout.</span><br /><span>It guides.</span><br /><span>Every visual has a purpose, nothing extra, nothing random.</span></>) },
+  { id: '03', title: 'Social Media & Marketing', description: (<><span>We help brands show up honestly.</span><br /><span>Real stories, real engagement, and outcomes that actually matter.</span></>) },
+  { id: '04', title: 'Web Development', description: (<><span>Clear, fast, intuitive websites that move users naturally from interest to action.</span></>) },
+  { id: '05', title: 'Marketing Strategy', description: (<><span>Thoughtful planning backed by execution, built to connect the dots between effort and growth.</span></>) }
+];
 
 const PartnerWithUs = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    agency: '',
+    email: '',
+    phonePrefix: '+91',
+    phone: '',
+    service: '',
+    question: ''
+  });
+
+  const [status, setStatus] = useState({
+    submitting: false,
+    submitted: false,
+    error: null
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus({ submitting: true, submitted: false, error: null });
+
+    try {
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        agency: formData.agency,
+        email: formData.email,
+        phone: `${formData.phonePrefix} ${formData.phone}`,
+        service: formData.service,
+        question: formData.question
+      };
+
+      const response = await fetch('/api/partner', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      setStatus({ submitting: false, submitted: true, error: null });
+      // Reset form
+      setFormData(prev => ({
+        ...prev,
+        firstName: '',
+        lastName: '',
+        agency: '',
+        email: '',
+        phone: '',
+        service: '',
+        question: ''
+      }));
+
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setStatus(prev => ({ ...prev, submitted: false }));
+      }, 5000);
+
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setStatus({ submitting: false, submitted: false, error: err.message });
+    }
+  };
+
   return (
     <div className="bg-[#EFE7D5]">
       {/* Hero Section */}
@@ -29,7 +122,7 @@ const PartnerWithUs = () => {
 
         {/* CTA and intro text */}
         <div className="mt-8 md:mt-12 max-w-xl">
-          <button 
+          <button
             onClick={() => {
               const readyToPartnerSection = document.getElementById('ready-to-partner');
               if (readyToPartnerSection) {
@@ -92,14 +185,9 @@ const PartnerWithUs = () => {
 
       {/* Horizontal feature cards reusing OurServices animation */}
       <section className="bg-[#EFE7D5] pb-2">
-        <OurServices 
+        <OurServices
           showHeader={false}
-          items={[
-            { id: '01', title: 'Scales\nWith You', description: 'Our services are built to grow as you do, without breaking systems or adding friction.' },
-            { id: '02', title: 'Made for\nPartnerships', description: 'Clear B2B pricing that protects your margins and keeps growth sustainable.' },
-            { id: '03', title: 'Quiet\nExecution', description: 'We work behind the scenes.\nYou stay client-facing.\nYour relationship always comes first.' },
-            { id: '04', title: 'Dependable\nDelivery', description: 'Consistent quality. Clear timelines.\nWork you can trust without second-guessing.' },
-          ]}
+          items={PARTNER_BENEFITS}
         />
       </section>
 
@@ -120,15 +208,9 @@ const PartnerWithUs = () => {
 
       {/* Reuse animated services cards from homepage */}
       <section className="bg-[#EFE7D5] pt-2 pb-2">
-        <OurServices 
+        <OurServices
           showHeader={false}
-          items={[
-            { id: '01', title: 'Branding & Identity', description: (<><span>We don’t begin with visuals.</span><br /><span>We begin with meaning.</span><br /><span>The kind that helps brands feel familiar, trustworthy, and easy to remember.</span></>) },
-            { id: '02', title: 'Design & Creative', description: (<><span>Good design doesn’t shout.</span><br /><span>It guides.</span><br /><span>Every visual has a purpose, nothing extra, nothing random.</span></>) },
-            { id: '03', title: 'Social Media & Marketing', description: (<><span>We help brands show up honestly.</span><br /><span>Real stories, real engagement, and outcomes that actually matter.</span></>) },
-            { id: '04', title: 'Web Development', description: (<><span>Clear, fast, intuitive websites that move users naturally from interest to action.</span></>) },
-            { id: '05', title: 'Marketing Strategy', description: (<><span>Thoughtful planning backed by execution, built to connect the dots between effort and growth.</span></>) }
-          ]}
+          items={WHITE_LABEL_SERVICES}
         />
       </section>
 
@@ -186,41 +268,127 @@ const PartnerWithUs = () => {
             <div className="bg-white rounded-[28px] shadow-xl border border-[#EEE7D8] p-4 md:p-6 lg:p-8">
               <div className="text-[#0D1B2A] text-sm md:text-lg font-medium mb-4">Let us know more about you and your goals</div>
 
-              {/* Name row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
-                <input className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" placeholder="First Name" />
-                <input className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" placeholder="Last Name" />
-              </div>
+              <form onSubmit={handleSubmit}>
+                {status.error && (
+                  <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                    {status.error}
+                  </div>
+                )}
+                {status.submitted && (
+                  <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
+                    Thank you! We've received your request and will get back to you soon.
+                  </div>
+                )}
 
-              {/* Agency */}
-              <div className="mb-4">
-                <input className="w-full rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" placeholder="Agency / Organization" />
-              </div>
+                {/* Name row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
+                  <input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none w-full"
+                    placeholder="First Name"
+                    required
+                  />
+                  <input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none w-full"
+                    placeholder="Last Name"
+                    required
+                  />
+                </div>
 
-              {/* Email */}
-              <div className="mb-4">
-                <input className="w-full rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" placeholder="Mail" />
-              </div>
+                {/* Agency */}
+                <div className="mb-4">
+                  <input
+                    name="agency"
+                    value={formData.agency}
+                    onChange={handleChange}
+                    className="w-full rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none"
+                    placeholder="Agency / Organization"
+                  />
+                </div>
 
-              {/* Phone */}
-              <div className="grid grid-cols-1 sm:grid-cols-[90px,1fr] gap-3 mb-4">
-                <input className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" defaultValue={"+91"} />
-                <input className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none" placeholder="Phone Number" />
-              </div>
+                {/* Email & Service */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
+                  <input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none"
+                    placeholder="Mail"
+                    required
+                  />
+                  <div className="relative">
+                    <select
+                      name="service"
+                      value={formData.service}
+                      onChange={handleChange}
+                      className="w-full appearance-none rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none bg-transparent text-[#6B7280] placeholder-gray-400"
+                      required
+                    >
+                      <option value="" disabled>Select Service</option>
+                      <option value="Branding & Identity">Branding & Identity</option>
+                      <option value="Design & Creative">Design & Creative</option>
+                      <option value="Social Media">Social Media</option>
+                      <option value="Web Development">Web Development</option>
+                      <option value="Marketing Strategy">Marketing Strategy</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Question */}
-              <div className="mb-5">
-                <textarea className="w-full rounded-2xl border border-[#E5E7EB] px-4 md:px-5 py-4 min-h-[140px] md:min-h-[160px] text-sm md:text-base focus:outline-none" placeholder="Enter your question here" />
-              </div>
+                {/* Phone */}
+                <div className="grid grid-cols-1 sm:grid-cols-[90px,1fr] gap-3 mb-4">
+                  <input
+                    name="phonePrefix"
+                    value={formData.phonePrefix}
+                    onChange={handleChange}
+                    className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none w-full"
+                  />
+                  <input
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="rounded-full border border-[#E5E7EB] px-4 md:px-5 py-3 text-sm md:text-base focus:outline-none w-full"
+                    placeholder="Phone Number"
+                    required
+                  />
+                </div>
 
-              {/* Submit */}
-              <button className="w-full rounded-full text-white font-semibold py-3 bg-gradient-to-r from-[#F26B2A] to-[#FFC107]">Submit</button>
+                {/* Question */}
+                <div className="mb-5">
+                  <textarea
+                    name="question"
+                    value={formData.question}
+                    onChange={handleChange}
+                    className="w-full rounded-2xl border border-[#E5E7EB] px-4 md:px-5 py-4 min-h-[140px] md:min-h-[160px] text-sm md:text-base focus:outline-none"
+                    placeholder="Enter your question here"
+                  />
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={status.submitting}
+                  className="w-full rounded-full text-white font-semibold py-3 bg-gradient-to-r from-[#F26B2A] to-[#FFC107] disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {status.submitting ? 'Submitting...' : 'Submit'}
+                </button>
+              </form>
 
               {/* Fine print */}
               <p className="mt-4 text-[10px] md:text-[11px] text-[#6B7280] leading-relaxed text-center">
                 By entering my phone number in the form, I agree to receive recurring automated
-                marketing text messages. Msg & data rates may apply; msg frequency varies. Reply HELP
-                for help and STOP to unsubscribe. Terms of Use and Privacy Policy.
+                marketing text messages.
+                Terms of Use and Privacy Policy.
               </p>
             </div>
           </div>

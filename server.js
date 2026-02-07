@@ -455,6 +455,140 @@ This is an automated email from your website's contact form.
   }
 });
 
+// Partner form API endpoint
+app.post('/api/partner', async (req, res) => {
+  try {
+    const { firstName, lastName, agency, email, phone, service, question } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !phone || !service) {
+      return res.status(400).json({
+        message: 'Please fill in all required fields',
+        error: 'MISSING_FIELDS'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: 'Invalid email format',
+        error: 'INVALID_EMAIL'
+      });
+    }
+
+    // Connect to MongoDB Atlas
+    let client;
+    try {
+      client = new MongoClient(MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
+      });
+
+      await client.connect();
+    } catch (connectionError) {
+      console.error('❌ MongoDB connection error:', connectionError);
+      return res.status(500).json({
+        message: 'Database connection failed. Please try again later.',
+        error: 'DB_CONNECTION_ERROR'
+      });
+    }
+
+    const db = client.db(DATABASE_NAME);
+    const collection = db.collection('partner_submissions');
+
+    // Create partner submission document
+    const partnerData = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      agency: agency ? agency.trim() : '',
+      email: email.trim().toLowerCase(),
+      phone: phone.trim(),
+      service: service,
+      question: question ? question.trim() : '',
+      submittedAt: new Date(),
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('User-Agent')
+    };
+
+    // Save to database
+    console.log('Saving partner submission to database...');
+    const result = await collection.insertOne(partnerData);
+    console.log('✅ Partner form submission saved successfully!');
+
+    // Send email notification
+    if (EMAIL_USER && EMAIL_PASS && RECIPIENT_EMAIL) {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: EMAIL_USER,
+            pass: EMAIL_PASS
+          }
+        });
+
+        const mailOptions = {
+          from: EMAIL_USER,
+          to: RECIPIENT_EMAIL,
+          subject: `New Partner Request from ${firstName} ${lastName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #EB8F1C;">New Partner Request</h2>
+              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #0D1B2A; margin-top: 0;">Partner Details</h3>
+                <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                <p><strong>Agency:</strong> ${agency || 'N/A'}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Service Interested:</strong> ${service}</p>
+                <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+              </div>
+              <div style="background-color: #ffffff; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
+                <h3 style="color: #0D1B2A; margin-top: 0;">Question/Message</h3>
+                <p style="line-height: 1.6;">${question ? question.replace(/\n/g, '<br>') : 'No extra message.'}</p>
+              </div>
+            </div>
+          `,
+          text: `
+New Partner Request
+
+Name: ${firstName} ${lastName}
+Agency: ${agency || 'N/A'}
+Email: ${email}
+Phone: ${phone}
+Service: ${service}
+Submitted: ${new Date().toLocaleString()}
+
+Message:
+${question || 'No extra message.'}
+          `
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('Email notification sent for partner request');
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
+      }
+    }
+
+    // Close MongoDB connection
+    await client.close();
+
+    // Send success response
+    res.status(200).json({
+      message: 'Partner request submitted successfully',
+      submissionId: result.insertedId
+    });
+
+  } catch (error) {
+    console.error('❌ Error processing partner form:', error);
+    res.status(500).json({
+      message: 'Internal server error',
+      error: 'SERVER_ERROR'
+    });
+  }
+});
+
 // Admin Login API endpoint
 app.post('/api/admin-login', async (req, res) => {
   if (!ADMIN_EMAIL || !ADMIN_PASSWORD || !ADMIN_SECRET) {

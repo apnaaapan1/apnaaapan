@@ -286,7 +286,7 @@ const AboutUs = () => {
                   year: '2026 - Chapter 2.0',
                   text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own.",
                   image: '/images/Our_story2.webp',
-                  hoverImage: '/images/apnaaapan logo.png',
+                  hoverImage: '/images/2026.png',
                   isLogoHover: true
                 }
               ].map((item, idx) => (

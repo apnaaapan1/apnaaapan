@@ -343,7 +343,7 @@ const Contact = () => {
               {/* Disclaimer */}
               <p className="text-xs text-[#5B5B5B] text-center leading-relaxed" style={{ fontFamily: 'nexaRegular' }}>
                 By entering my phone number in the form, I agree to receive recurring automated marketing text messages.
-                Msg & data rates may apply, msg frequency varies. Reply HELP for help and STOP to unsubscribe.
+
                 <a href="/terms" className="text-[#F26B2A] hover:underline ml-1">Terms of Use</a> and{' '}
                 <a href="/privacy" className="text-[#F26B2A] hover:underline">Privacy Policy</a>.
               </p>
