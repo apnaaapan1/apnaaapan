@@ -196,6 +196,17 @@ export default function AdminDashboard() {
               </div>
               <p className="text-sm text-gray-600">Add, edit, and delete "What Happened" events and set Suggest Event link.</p>
             </Link>
+
+            <Link
+              to="/admin/team"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Team</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">Add, edit, and delete team members on Our Story page.</p>
+            </Link>
           </div>
         )}
       </section>

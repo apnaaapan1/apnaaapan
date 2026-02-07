@@ -139,6 +139,27 @@ async function getReviewsDb() {
   };
 }
 
+// Team API - share same Mongo client
+async function getTeamDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('team_members'),
+  };
+}
+
 function isAdmin(req) {
   if (!ADMIN_SECRET) return false;
   const headerSecret =
@@ -170,8 +191,8 @@ function sanitizeBlogInput(body) {
   } = body || {};
 
   // Auto-generate slug from title if not provided
-  const finalSlug = slug && typeof slug === 'string' && slug.trim() 
-    ? slug.trim().toLowerCase() 
+  const finalSlug = slug && typeof slug === 'string' && slug.trim()
+    ? slug.trim().toLowerCase()
     : generateSlug(title || '');
 
   return {
@@ -217,6 +238,18 @@ function sanitizeWorkInput(body) {
   };
 }
 
+function sanitizeTeamInput(body) {
+  const { name, role, linkedin, image, status } = body || {};
+
+  return {
+    name: typeof name === 'string' ? name.trim() : '',
+    role: typeof role === 'string' ? role.trim() : '',
+    linkedin: typeof linkedin === 'string' ? linkedin.trim() : '',
+    image: typeof image === 'string' ? image.trim() : '',
+    status: status === 'draft' ? 'draft' : 'published',
+  };
+}
+
 // Contact form API endpoint
 app.post('/api/contact', async (req, res) => {
   try {
@@ -224,7 +257,7 @@ app.post('/api/contact', async (req, res) => {
 
     // Validate required fields
     if (!firstName || !lastName || !email || !phoneNumber || !question) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'All fields are required',
         error: 'MISSING_FIELDS'
       });
@@ -233,7 +266,7 @@ app.post('/api/contact', async (req, res) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'Invalid email format',
         error: 'INVALID_EMAIL'
       });
@@ -245,15 +278,15 @@ app.post('/api/contact', async (req, res) => {
       console.log('Attempting to connect to MongoDB...');
       console.log('MongoDB URI:', MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')); // Hide credentials
       console.log('Database Name:', DATABASE_NAME);
-      
+
       client = new MongoClient(MONGODB_URI, {
         serverSelectionTimeoutMS: 10000, // 10 seconds timeout
         connectTimeoutMS: 10000,
       });
-      
+
       await client.connect();
       console.log('✅ Connected to MongoDB successfully');
-      
+
       // Test the connection
       await client.db('admin').command({ ping: 1 });
       console.log('✅ MongoDB ping successful');
@@ -262,7 +295,7 @@ app.post('/api/contact', async (req, res) => {
       console.error('Error Name:', connectionError.name);
       console.error('Error Message:', connectionError.message);
       console.error('Error Code:', connectionError.code);
-      
+
       let errorMessage = 'Database connection failed. Please try again later.';
       if (connectionError.message.includes('authentication failed')) {
         errorMessage = 'Database authentication failed. Please check your MongoDB username and password.';
@@ -271,8 +304,8 @@ app.post('/api/contact', async (req, res) => {
       } else if (connectionError.message.includes('timeout')) {
         errorMessage = 'Database connection timeout. Please check your network connection.';
       }
-      
-      return res.status(500).json({ 
+
+      return res.status(500).json({
         message: errorMessage,
         error: 'DB_CONNECTION_ERROR',
         details: process.env.NODE_ENV === 'development' ? connectionError.message : undefined
@@ -368,7 +401,7 @@ This is an automated email from your website's contact form.
     await client.close();
 
     // Send success response
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Contact form submitted successfully',
       submissionId: result.insertedId
     });
@@ -380,7 +413,7 @@ This is an automated email from your website's contact form.
     console.error('Error Message:', error.message);
     console.error('Error Stack:', error.stack);
     console.error('Full Error Object:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-    
+
     // Close MongoDB connection in case of error (if client exists)
     if (typeof client !== 'undefined' && client) {
       try {
@@ -394,7 +427,7 @@ This is an automated email from your website's contact form.
     // Provide more specific error messages based on error type
     let errorMessage = 'Internal server error. Please try again later.';
     let errorCode = 'SERVER_ERROR';
-    
+
     if (error.message) {
       if (error.message.includes('authentication failed') || error.message.includes('Authentication failed')) {
         errorMessage = 'Database authentication failed. Please check your MongoDB credentials.';
@@ -414,7 +447,7 @@ This is an automated email from your website's contact form.
       }
     }
 
-    res.status(500).json({ 
+    res.status(500).json({
       message: errorMessage,
       error: errorCode,
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -1130,7 +1163,7 @@ app.get('/api/reviews', async (req, res) => {
     const isAdminRequest = isAdmin(req);
 
     const filter = {};
-    
+
     // If admin token provided and 'all' query param, return all reviews
     if (!(all && isAdminRequest)) {
       filter.status = 'active';
@@ -1709,10 +1742,144 @@ app.post('/api/settings', async (req, res) => {
   }
 });
 
+// Team API endpoints
+app.get('/api/team', async (req, res) => {
+  try {
+    const { collection } = await getTeamDb();
+    const { includeDrafts } = req.query || {};
+    const isAdminRequest = isAdmin(req);
+
+    const filter = {};
+    if (!isAdminRequest || includeDrafts !== 'true') {
+      filter.status = 'published';
+    }
+
+    const docs = await collection.find(filter).toArray();
+
+    return res.status(200).json({
+      team: docs.map((doc) => ({
+        id: doc._id.toString(),
+        name: doc.name,
+        role: doc.role,
+        linkedin: doc.linkedin,
+        image: doc.image,
+        status: doc.status,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      })),
+    });
+  } catch (error) {
+    console.error('TEAM API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch team members',
+      error: 'TEAM_GET_ERROR',
+    });
+  }
+});
+
+app.post('/api/team', async (req, res) => {
+  console.log('POST /api/team request received');
+  if (!isAdmin(req)) {
+    console.log('Unauthorized team post attempt');
+    return res.status(401).json({ message: 'Unauthorized', error: 'UNAUTHORIZED' });
+  }
+
+  try {
+    const { collection } = await getTeamDb();
+    const member = sanitizeTeamInput(req.body);
+    console.log('Saving team member:', member);
+
+    if (!member.name || !member.role) {
+      console.log('Missing name or role in team post');
+      return res.status(400).json({ message: 'Name and role are required', error: 'MISSING_FIELDS' });
+    }
+
+    const now = new Date();
+    const doc = { ...member, createdAt: now, updatedAt: now };
+    const result = await collection.insertOne(doc);
+    console.log('Successfully saved team member with ID:', result.insertedId);
+
+    return res.status(201).json({
+      message: 'Team member added successfully',
+      memberId: result.insertedId.toString(),
+    });
+  } catch (error) {
+    console.error('TEAM API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to add team member: ' + error.message,
+      error: 'TEAM_CREATE_ERROR'
+    });
+  }
+});
+
+app.put('/api/team', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ message: 'Unauthorized', error: 'UNAUTHORIZED' });
+  }
+
+  try {
+    const { collection } = await getTeamDb();
+    const { id } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({ message: 'Member id is required', error: 'MISSING_ID' });
+    }
+
+    const member = sanitizeTeamInput(req.body);
+    const update = {
+      $set: {
+        name: member.name,
+        role: member.role,
+        linkedin: member.linkedin,
+        image: member.image,
+        status: member.status,
+        updatedAt: new Date(),
+      },
+    };
+
+    const result = await collection.updateOne({ _id: new ObjectId(id) }, update);
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'Team member not found', error: 'NOT_FOUND' });
+    }
+
+    return res.status(200).json({ message: 'Team member updated successfully' });
+  } catch (error) {
+    console.error('TEAM API PUT error:', error);
+    return res.status(500).json({ message: 'Failed to update team member', error: 'TEAM_UPDATE_ERROR' });
+  }
+});
+
+app.delete('/api/team', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ message: 'Unauthorized', error: 'UNAUTHORIZED' });
+  }
+
+  try {
+    const { collection } = await getTeamDb();
+    const { id } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({ message: 'Member id is required', error: 'MISSING_ID' });
+    }
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Team member not found', error: 'NOT_FOUND' });
+    }
+
+    return res.status(200).json({ message: 'Team member deleted successfully' });
+  } catch (error) {
+    console.error('TEAM API DELETE error:', error);
+    return res.status(500).json({ message: 'Failed to delete team member', error: 'TEAM_DELETE_ERROR' });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'Server is running',
     port: PORT,
     mongodb: MONGODB_URI ? 'Configured' : 'Not configured',

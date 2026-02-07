@@ -28,6 +28,7 @@ import AdminReviews from './pages/AdminReviews';
 import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
 import AdminGallery from './pages/AdminGallery';
+import AdminTeam from './pages/AdminTeam';
 import usePageTracking from './hooks/usePageTracking';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -79,6 +80,7 @@ function App() {
           <Route path="/admin/work" element={<AdminWork />} />
           <Route path="/admin/gallery" element={<AdminGallery />} />
           <Route path="/admin/events" element={<AdminEvents />} />
+          <Route path="/admin/team" element={<AdminTeam />} />
         </Routes>
         <Footer />
       </div>
