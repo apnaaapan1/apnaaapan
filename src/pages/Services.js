@@ -894,7 +894,7 @@ const Services = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
               {approach.map((step, idx) => (
                 <RevealOnScroll key={idx}>
-                  <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style={{ height: '280px' }}>
+                  <div className="group relative bg-white rounded-2xl p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full min-h-[280px]">
                     <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                       <div className="w-16 h-16 bg-[#F26B2A] rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                         <span className="text-white font-bold text-2xl">{idx + 1}</span>

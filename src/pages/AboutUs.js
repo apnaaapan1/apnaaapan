@@ -197,8 +197,8 @@ const AboutUs = () => {
               onClick={scrollToPrevious}
               disabled={currentImageIndex === 0}
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${currentImageIndex === 0
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-gray-50 cursor-pointer'
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-50 cursor-pointer'
                 }`}
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,8 +210,8 @@ const AboutUs = () => {
               onClick={scrollToNext}
               disabled={currentImageIndex === totalImages - 1}
               className={`absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center transition-colors ${currentImageIndex === totalImages - 1
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-gray-50 cursor-pointer'
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-50 cursor-pointer'
                 }`}
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,7 +310,7 @@ const AboutUs = () => {
                         <img
                           src={item.image}
                           alt={item.year}
-                          className={`${item.isCropped ? `w-full h-full object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
+                          className={`${item.isCropped ? `h-full w-auto mx-auto object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
                         />
                         {item.hoverImage && (
                           <img

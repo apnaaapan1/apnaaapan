@@ -18,6 +18,10 @@ const WithApnaaapan = () => {
   const [loadingGallery, setLoadingGallery] = React.useState(true);
   const [loadingEvents, setLoadingEvents] = React.useState(true);
   const [expandedEvents, setExpandedEvents] = React.useState({});
+  const [showAllEvents, setShowAllEvents] = React.useState(false);
+
+  // Determine displayed events
+  const displayedEvents = showAllEvents ? events : events.slice(0, 4);
 
   // Fetch top 3 blogs
   React.useEffect(() => {
@@ -461,7 +465,7 @@ const WithApnaaapan = () => {
               )}
 
               <div className="space-y-12">
-                {events.map((event, idx) => (
+                {displayedEvents.map((event, idx) => (
                   <div key={event._id} className="relative grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8">
                     {/* Date - aligned to top */}
                     <div className="hidden md:block relative pl-8">
@@ -514,18 +518,58 @@ const WithApnaaapan = () => {
                 ))}
               </div>
 
-              {/* CTA Row */}
-              <div className="flex justify-center pt-8 mt-12">
-                <a
-                  href={suggestEventLink}
-                  target={suggestEventLink.startsWith('http') ? '_blank' : '_self'}
-                  rel={suggestEventLink.startsWith('http') ? 'noopener noreferrer' : ''}
-                  className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
-                  style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}
-                >
-                  <span>Suggest an Event</span>
-                </a>
-              </div>
+              {/* Buttons Row */}
+              {events.length > 4 ? (
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mt-12 relative z-10">
+                  {/* See All / Show Less Button */}
+                  <button
+                    onClick={() => setShowAllEvents(!showAllEvents)}
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
+                    style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}
+                  >
+                    <span>
+                      {showAllEvents ? 'Show Less' : `See All (${events.length - 4} more)`}
+                    </span>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={`transition-transform duration-300 ${showAllEvents ? 'rotate-180' : ''}`}
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+
+                  {/* Suggest an Event Button */}
+                  <a
+                    href={suggestEventLink}
+                    target={suggestEventLink.startsWith('http') ? '_blank' : '_self'}
+                    rel={suggestEventLink.startsWith('http') ? 'noopener noreferrer' : ''}
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
+                    style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}
+                  >
+                    <span>Suggest an Event</span>
+                  </a>
+                </div>
+              ) : (
+                /* Only Suggest an Event Button (when <= 4 events) */
+                <div className="flex justify-center pt-8 mt-12">
+                  <a
+                    href={suggestEventLink}
+                    target={suggestEventLink.startsWith('http') ? '_blank' : '_self'}
+                    rel={suggestEventLink.startsWith('http') ? 'noopener noreferrer' : ''}
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
+                    style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}
+                  >
+                    <span>Suggest an Event</span>
+                  </a>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-600">
@@ -542,9 +586,9 @@ const WithApnaaapan = () => {
             Curiosity Challenge
           </h3>
 
-          <div className="grid grid-cols-1 md:[grid-template-columns:minmax(0,1fr)_minmax(0,1.6fr)] gap-8 items-start">
+          <div className="grid grid-cols-1 md:[grid-template-columns:minmax(0,1fr)_minmax(0,1.6fr)] gap-8">
             {/* Left Card */}
-            <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-9 md:min-h-[260px]">
+            <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-9 flex flex-col h-full">
               <div className="font-serif text-[#0D1B2A] leading-tight mb-4" style={{ fontWeight: 700, fontSize: 'clamp(24px,3vw,34px)' }}>
                 What are you curious about today?
               </div>
@@ -553,25 +597,31 @@ const WithApnaaapan = () => {
                 Not what you're good at.<br />
                 What's pulling at you quietly?
               </p>
-              <button className="inline-flex items-center justify-center w-[200px] h-[46px] rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
-                style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}>
-                I’m In!
-              </button>
+              <div className="mt-auto">
+                <a
+                  href="https://forms.gle/dt23nc2v1osaqG3m9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-[200px] h-[46px] rounded-full text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
+                  style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}>
+                  I’m In!
+                </a>
+              </div>
             </div>
 
             {/* Right Card */}
-            <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-10 md:min-h-[360px]">
+            <div className="rounded-[20px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-black/10 p-8 md:p-10 flex flex-col h-full">
               <div className="font-serif text-[#0D1B2A] leading-tight mb-4" style={{ fontWeight: 700, fontSize: 'clamp(24px,3vw,34px)' }}>
                 Be a Part
               </div>
-              <ul className="text-[#4F4F4F] space-y-2 mb-5" style={{ fontSize: '14px' }}>
+              <ul className="text-[#4F4F4F] space-y-2 mb-8" style={{ fontSize: '14px' }}>
                 <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Connect with curious minds</li>
                 <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Join conversations that don't rush to conclusions</li>
                 <li className="flex items-start gap-2"><span className="mt-[6px] inline-block w-1.5 h-1.5 rounded-full bg-[#111]" /> Build, contribute, and lead projects together</li>
               </ul>
 
               {/* Roles */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-5 text-sm text-[#222]">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-sm text-[#222]">
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <span className="w-2 h-2 rounded-full bg-[#E86C21]" /> Member
                 </label>
@@ -584,7 +634,7 @@ const WithApnaaapan = () => {
               </div>
 
               {/* Email + CTA */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="mt-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 w-full rounded-full border border-black/10 bg-white px-3 py-2.5">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9E9E9E]">

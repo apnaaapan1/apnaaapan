@@ -18,7 +18,7 @@ const Contact = () => {
   useEffect(() => {
     if (submitStatus === 'success') {
       setCountdown(5);
-      
+
       const countdownInterval = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
@@ -58,9 +58,9 @@ const Contact = () => {
     try {
       // Use relative URL for production, or localhost for development
       const apiUrl = process.env.REACT_APP_API_URL || '/api/contact';
-      const fullUrl = apiUrl.startsWith('http') ? apiUrl : 
+      const fullUrl = apiUrl.startsWith('http') ? apiUrl :
         (process.env.NODE_ENV === 'production' ? apiUrl : 'http://localhost:5000/api/contact');
-      
+
       const response = await fetch(fullUrl, {
         method: 'POST',
         headers: {
@@ -103,7 +103,7 @@ const Contact = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');
-      
+
       // Provide more specific error messages
       if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
         setErrorMessage('Cannot connect to server. Please make sure the server is running on port 5000.');
@@ -120,7 +120,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#EFE7D5] py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-20">
           {/* Left Section - Connect With Us */}
           <div className="space-y-12 animate-fadeIn" style={{ animationDelay: '50ms' }}>
             <div className="animate-fadeIn" style={{ animationDelay: '100ms' }}>
@@ -133,68 +133,24 @@ const Contact = () => {
             </div>
 
             <div className="space-y-12">
-              {/* Learn about our services */}
+              {/* Contact Us Section */}
               <div className="animate-fadeIn" style={{ animationDelay: '180ms' }}>
                 <h3 className="text-xl font-semibold text-[#0D1B2A] mb-6" style={{ fontFamily: 'nexaRegular' }}>
-                  Learn about our services
+                  Contact Us
                 </h3>
-                <div className="flex items-center space-x-8">
+                <div className="flex flex-col space-y-4">
                   <div className="flex items-center space-x-3">
                     <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>hello@gmail.com</span>
+                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Email - Hr@apnaaapan.com</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>+91 9548954859</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Talk to our PR department */}
-              <div className="animate-fadeIn" style={{ animationDelay: '220ms' }}>
-                <h3 className="text-xl font-semibold text-[#0D1B2A] mb-6" style={{ fontFamily: 'nexaRegular' }}>
-                  Talk to our PR department
-                </h3>
-                <div className="flex items-center space-x-8">
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>pr@gmail.com</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>+91 9548954859</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Join our team */}
-              <div className="animate-fadeIn" style={{ animationDelay: '260ms' }}>
-                <h3 className="text-xl font-semibold text-[#0D1B2A] mb-6" style={{ fontFamily: 'nexaRegular' }}>
-                  Join our team
-                </h3>
-                <div className="flex items-center space-x-8">
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>join@gmail.com</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>+91 9548954859</span>
+                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Phone - +91 9548954859</span>
                   </div>
                 </div>
               </div>
@@ -206,7 +162,7 @@ const Contact = () => {
             <h2 className="text-2xl font-bold text-[#0D1B2A] mb-6" style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}>
               Let us know more about you and your goals
             </h2>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* First Name and Last Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -365,11 +321,10 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isSubmitting
-                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-orange-500 to-yellow-400 text-white hover:shadow-lg hover:scale-[1.02] focus:ring-orange-500'
-                }`}
+                className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isSubmitting
+                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-orange-500 to-yellow-400 text-white hover:shadow-lg hover:scale-[1.02] focus:ring-orange-500'
+                  }`}
                 style={{ fontFamily: 'nexaRegular' }}
               >
                 {isSubmitting ? (
@@ -387,8 +342,8 @@ const Contact = () => {
 
               {/* Disclaimer */}
               <p className="text-xs text-[#5B5B5B] text-center leading-relaxed" style={{ fontFamily: 'nexaRegular' }}>
-                By entering my phone number in the form, I agree to receive recurring automated marketing text messages. 
-                Msg & data rates may apply, msg frequency varies. Reply HELP for help and STOP to unsubscribe. 
+                By entering my phone number in the form, I agree to receive recurring automated marketing text messages.
+                Msg & data rates may apply, msg frequency varies. Reply HELP for help and STOP to unsubscribe.
                 <a href="/terms" className="text-[#F26B2A] hover:underline ml-1">Terms of Use</a> and{' '}
                 <a href="/privacy" className="text-[#F26B2A] hover:underline">Privacy Policy</a>.
               </p>
@@ -402,7 +357,7 @@ const Contact = () => {
             <div className="relative h-[600px] w-full rounded-2xl overflow-hidden">
               {/* Google Maps iframe - Replace with your actual Google Maps embed code */}
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.5!2d75.7873!3d26.9124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db3815c0b1b9d%3A0x1d3e5e1e1e1e1e1e!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d222.53600439212462!2d75.7502111!3d26.8216239!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396dcbeea82eeba9%3A0xff55686426875b37!2sAxis%20Bank%20Branch!5e0!3m2!1sen!2sin!4v1770488560581!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
