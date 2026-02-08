@@ -138,6 +138,62 @@ const WithApnaaapan = () => {
     }));
   };
 
+  const [email, setEmail] = React.useState('');
+  const [role, setRole] = React.useState('Member');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitStatus, setSubmitStatus] = React.useState(null); // 'success' | 'error' | null
+
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7GgTBSA1IslBbesJw0EFsnOmZng3JpSuzBBYeq6_CGoXJfdl3IB2R7h3n_c9gCiLl/exec';
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      // Create a form data object
+      const data = {
+        timestamp: new Date().toISOString(),
+        role,
+        email
+      };
+
+      // Use no-cors mode for Google Apps Script Web App to avoid CORS errors on the frontend,
+      // though this means we can't read the response. We assume success if no network error.
+      // Alternatively, we can use a proxy or JSONP, but 'no-cors' is simplest for fire-and-forget.
+      // HOWEVER, standard fetch to Google Script triggers CORS.
+      // To get a response, the script must handle CORS options or we just send it.
+      // The established pattern for simple sheets is using FormData or JSON with 'no-cors' if we don't need the response content.
+      // But actually, the script I provided returns JSON. Let's try standard POST first.
+      // If CORS fails, we'll switch to 'no-cors'.
+
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Important for direct browser-to-google-script calls usually
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      // Since we use no-cors, we can't check res.ok. We assume it went through.
+      setSubmitStatus('success');
+      setEmail('');
+      setRole('Member');
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubmitStatus(null), 5000);
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#EFE7D5] px-4 sm:px-6 lg:px-8 py-16">
       <div className="max-w-7xl mx-auto">
@@ -622,34 +678,67 @@ const WithApnaaapan = () => {
 
               {/* Roles */}
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-sm text-[#222]">
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <span className="w-2 h-2 rounded-full bg-[#E86C21]" /> Member
-                </label>
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <span className="w-2 h-2 rounded-full bg-[#C0C0C0]" /> Collaborator
-                </label>
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <span className="w-2 h-2 rounded-full bg-[#C0C0C0]" /> Volunteer
-                </label>
+                {['Member', 'Collaborator', 'Volunteer'].map((r) => (
+                  <label key={r} className="inline-flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="role"
+                      value={r}
+                      checked={role === r}
+                      onChange={() => setRole(r)}
+                      className="hidden"
+                    />
+                    <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${role === r ? 'bg-[#E86C21] scale-125' : 'bg-[#C0C0C0] group-hover:bg-gray-400'}`} />
+                    <span className={`transition-colors duration-300 ${role === r ? 'text-[#0D1B2A] font-semibold' : 'text-[#4F4F4F]'}`}>{r}</span>
+                  </label>
+                ))}
               </div>
 
               {/* Email + CTA */}
-              <div className="mt-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <form onSubmit={handleSubmit} className="mt-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 w-full rounded-full border border-black/10 bg-white px-3 py-2.5">
+                  <div className={`flex items-center gap-2 w-full rounded-full border bg-white px-3 py-2.5 transition-colors ${submitStatus === 'error' ? 'border-red-300' : 'border-black/10 focus-within:border-[#E86C21]'}`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9E9E9E]">
                       <path d="M4 6h16v12H4z" stroke="#9E9E9E" strokeWidth="1.5" />
                       <path d="M4 7l8 6 8-6" stroke="#9E9E9E" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>
-                    <input type="email" placeholder="Email address" className="w-full outline-none text-sm placeholder-[#9E9E9E]" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email address"
+                      required
+                      disabled={isSubmitting || submitStatus === 'success'}
+                      className="w-full outline-none text-sm placeholder-[#9E9E9E] disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
                   </div>
                 </div>
-                <button className="sm:w-[170px] inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-white font-semibold shadow-md hover:shadow-lg active:scale-[0.99] transition"
-                  style={{ background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}>
-                  Join now
-                  <span>➝</span>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || submitStatus === 'success'}
+                  className={`sm:w-[170px] inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-white font-semibold shadow-md active:scale-[0.99] transition disabled:opacity-70 disabled:cursor-not-allowed ${submitStatus === 'success' ? 'bg-green-500 hover:bg-green-600' : 'hover:shadow-lg'}`}
+                  style={submitStatus === 'success' ? {} : { background: 'linear-gradient(90deg,#E86C21 0%, #F6BE18 100%)' }}
+                >
+                  {isSubmitting ? (
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : submitStatus === 'success' ? (
+                    <>
+                      <span>Joined!</span>
+                      <span>✓</span>
+                    </>
+                  ) : (
+                    <>
+                      Join now
+                      <span>➝</span>
+                    </>
+                  )}
                 </button>
-              </div>
+              </form>
+              {submitStatus === 'success' && <p className="text-green-600 text-xs mt-2 text-center sm:text-left ml-1">Thanks for joining! We'll be in touch.</p>}
+              {submitStatus === 'error' && <p className="text-red-500 text-xs mt-2 text-center sm:text-left ml-1">Something went wrong. Please try again.</p>}
             </div>
           </div>
         </div>

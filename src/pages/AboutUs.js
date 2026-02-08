@@ -285,9 +285,8 @@ const AboutUs = () => {
                 {
                   year: '2026 - Chapter 2.0',
                   text: "Now comes the next chapter.\nBigger systems. Better clarity. Deeper focus. But the same core.\nApnaaapan 2.0 isn't about becoming corporate. It's about becoming more intentional.\nMore trust. More people-first work. More space for curiosity, community, and things that last.\nFrom a small room in Pali to a growing collective across cities, Apnaaapan continues to build what it always has: Something that feels like your own.",
-                  image: '/images/Our_story2.webp',
-                  hoverImage: '/images/2026.png',
-                  isLogoHover: true
+                  image: '/images/2026.png',
+                  hoverImage: '/images/Our_story2.webp'
                 }
               ].map((item, idx) => (
                 <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center">
@@ -306,21 +305,36 @@ const AboutUs = () => {
                   {/* Right: tilted cards or image */}
                   <div className="md:col-span-5 mt-8 md:mt-0">
                     {item.image ? (
-                      <div className={`relative ${item.year.startsWith('2020') ? 'rounded-3xl overflow-hidden' : 'rounded-2xl overflow-hidden'} ${item.isCropped ? '' : 'shadow-lg'} group flex items-center justify-center ${item.isCropped ? 'h-64 md:h-72 lg:h-80' : ''} ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
-                        <img
-                          src={item.image}
-                          alt={item.year}
-                          className={`${item.isCropped ? `h-full w-auto mx-auto object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300 ${item.hoverImage ? 'group-hover:opacity-0' : ''}`}
-                        />
-                        {item.hoverImage && (
+                      item.hoverImage ? (
+                        // Stacked cards layout for items with 2 images
+                        <div className="relative w-full h-72 md:h-80 flex items-center justify-center group cursor-pointer perspective-1000">
+                          {/* Back Card - comes to front/focus on hover */}
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] bg-white p-2 rounded-2xl shadow-md border border-gray-100 transform -rotate-6 z-0 transition-all duration-500 ease-out group-hover:rotate-0 group-hover:scale-105 group-hover:z-20 group-hover:shadow-2xl">
+                            <img
+                              src={item.image}
+                              alt={item.year}
+                              className="w-full h-full object-cover rounded-xl"
+                            />
+                          </div>
+                          {/* Front Card - fades out/moves away on hover */}
+                          <div className="absolute top-1/2 left-1/2 -translate-x-[45%] -translate-y-[45%] w-[85%] h-[85%] bg-white p-2 rounded-2xl shadow-xl border border-gray-100 transform rotate-3 z-10 transition-all duration-500 ease-out group-hover:opacity-0 group-hover:translate-x-10 group-hover:rotate-12 group-hover:scale-90 pointer-events-none">
+                            <img
+                              src={item.hoverImage}
+                              alt={`${item.year} second`}
+                              className={`w-full h-full rounded-xl ${item.isLogoHover ? 'object-contain p-4' : 'object-cover'}`}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        // Single image layout (for 2020)
+                        <div className={`relative ${item.year.startsWith('2020') ? 'rounded-3xl overflow-hidden' : 'rounded-2xl overflow-hidden'} ${item.isCropped ? '' : 'shadow-lg'} group flex items-center justify-center ${item.isCropped ? 'h-64 md:h-72 lg:h-80' : ''} ${item.removeHoverShadow ? 'hover:shadow-none group-hover:shadow-none' : ''}`}>
                           <img
-                            src={item.hoverImage}
-                            alt={`${item.year} hover`}
-                            className={`absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-y-0 translate-y-full shadow-none ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'} ${item.isLogoHover ? 'object-contain' : 'object-cover'}`}
-                            style={{ maxHeight: '100%' }}
+                            src={item.image}
+                            alt={item.year}
+                            className={`${item.isCropped ? `h-full w-auto mx-auto object-contain ${item.year.startsWith('2020') ? 'rounded-3xl' : 'rounded-2xl'}` : 'w-full h-auto rounded-2xl'} transition-opacity duration-300`}
                           />
-                        )}
-                      </div>
+                        </div>
+                      )
                     ) : (
                       <div className="relative h-48">
                         <div className="absolute inset-x-6 top-0 h-28 bg-white rounded-xl shadow-xl rotate-[-4deg]"></div>
