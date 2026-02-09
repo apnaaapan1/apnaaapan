@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ClientFeedback from '../components/ClientFeedback';
 
+
 const serviceContent = {
   'social-media': {
     title: 'Social Media Marketing',
@@ -572,9 +573,11 @@ const Services = () => {
   const slug = path.startsWith('/services/') ? path.replace('/services/', '') : 'social-media';
   const svc = serviceContent[slug] || serviceContent['social-media'];
   const heroImages = {
-    'web-development': '/images/web_development.png',
-    'marketing': '/images/marketing.jpg',
-    'branding': '/images/Brand.webp',
+    'social-media': '/images/social_media_service.png',
+    'branding': '/images/branding_identity.png',
+    'design': '/images/design_creative.png',
+    'web-development': '/images/web_development_service.png',
+    'marketing': '/images/marketing_strategy.png',
   };
   const heroImage = heroImages[slug];
   const problems = problemContent[slug] || problemContent['social-media'];

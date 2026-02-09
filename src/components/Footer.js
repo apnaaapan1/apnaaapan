@@ -4,10 +4,10 @@ const Footer = () => {
   return (
     <footer className="bg-[#0B0B0B] text-white py-12 sm:py-16 px-4 sm:px-6 md:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-8 xl:gap-12">
 
           {/* Column 1 - Logo, contact and social media */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 xl:col-span-3">
             {/* Company Logo */}
             <div className="mb-4 sm:mb-6">
               <img
@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
 
           {/* Column 2 - Explore Services */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 xl:col-span-3">
             <h3 className="text-gray-400 font-semibold text-base sm:text-lg mb-4 sm:mb-6">Explore Services</h3>
             <ul className="space-y-2 sm:space-y-3">
               <li><a href="/services/branding" className="text-white hover:text-orange-400 transition-colors duration-200 text-sm sm:text-base">Branding & Identity</a></li>
@@ -79,7 +79,7 @@ const Footer = () => {
           </div>
 
           {/* Column 3 - Quick Link */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 xl:col-span-2">
             <h3 className="text-gray-400 font-semibold text-base sm:text-lg mb-4 sm:mb-6">Quick Link</h3>
             <ul className="space-y-2 sm:space-y-3">
               <li>
@@ -104,7 +104,7 @@ const Footer = () => {
           </div>
 
           {/* Column 4 - Info */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 xl:col-span-2">
             <h3 className="text-gray-400 font-semibold text-base sm:text-lg mb-4 sm:mb-6">Info</h3>
             <ul className="space-y-2 sm:space-y-3">
               <li><a href="/about-us" className="text-white hover:text-orange-400 transition-colors duration-200 text-sm sm:text-base">About us</a></li>
@@ -114,7 +114,7 @@ const Footer = () => {
           </div>
 
           {/* Column 5 - Book a call section */}
-          <div className="xl:col-span-1 flex flex-col items-center sm:items-start md:items-center xl:items-end">
+          <div className="xl:col-span-2 flex flex-col items-center sm:items-start md:items-center xl:items-end">
             {/* Book a Call Button */}
             <div className="mb-6 sm:mb-8 w-full sm:w-auto">
               <a
@@ -151,7 +151,8 @@ const Footer = () => {
           <div className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-0">
             © 2026 WorkPark Private Limited — All Rights Reserved
           </div>
-          <div className="text-gray-400 text-xs sm:text-sm">
+          <div className="text-gray-400 text-xs sm:text-sm flex gap-4">
+            <a href="/terms-and-conditions" className="hover:text-white transition-colors duration-200">Terms & Conditions</a>
             <a href="/privacy-policy" className="hover:text-white transition-colors duration-200">Privacy Policy</a>
           </div>
         </div>

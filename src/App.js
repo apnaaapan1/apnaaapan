@@ -21,6 +21,7 @@ import PartnerWithUs from './pages/PartnerWithUs';
 import WithApnaaapan from './pages/WithApnaaapan';
 import GalleryAll from './pages/GalleryAll';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminEvents from './pages/AdminEvents';
 import AdminBlogs from './pages/AdminBlogs';
@@ -71,6 +72,7 @@ function App() {
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
           <Route path="/gallery" element={<GalleryAll />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-conditions" element={<TermsConditions />} />
           <Route path="/with-apnaaapan" element={<WithApnaaapan />} />
           {/* Admin Panel: Dashboard + sections */}
           <Route path="/admin" element={<AdminDashboard />} />

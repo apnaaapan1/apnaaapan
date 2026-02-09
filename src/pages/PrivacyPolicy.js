@@ -9,7 +9,7 @@ const PrivacyPolicy = () => {
         <div className="min-h-screen bg-[#EFE7D5] py-16 px-4 sm:px-6 md:px-8">
             <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 sm:p-12 md:p-16 border border-[#e5e2d8]">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-4 border-b pb-6">
-                    Terms & Conditions
+                    Privacy Policy
                 </h1>
 
                 <div className="space-y-4 mb-10 text-gray-600 font-medium">
@@ -21,128 +21,159 @@ const PrivacyPolicy = () => {
 
                 <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed font-sans space-y-8">
                     <p className="text-lg">
-                        Welcome to <span className="text-orange-600 font-bold">Apnaaapan</span>. These Terms & Conditions (“Terms”) govern your access to and use of our website and services. By accessing our website, submitting inquiries, or engaging with our services, you agree to be bound by these Terms. If you do not agree, please do not use our website or services.
+                        <span className="text-orange-600 font-bold">Apnaaapan</span> (“we”, “our”, “us”) respects your privacy and is committed to protecting the personal information you share with us. This Privacy Policy explains how we collect, use, store, and protect your information when you visit our website or interact with our services.
+                    </p>
+                    <p>
+                        By accessing or using our website, submitting forms, or contacting us, you agree to the terms of this Privacy Policy.
                     </p>
 
                     <section>
                         <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">1. Introduction</h2>
                         <p>
-                            Apnaaapan, operated by <span className="font-semibold">Workpark Private Limited</span>, provides creative and digital marketing services including branding, social media marketing, performance marketing, web development, content creation, and lead generation.
+                            This Privacy Policy outlines how Apnaaapan, operated by Workpark Private Limited, collects and processes information from users who visit our website, submit inquiries, or engage with our marketing campaigns. Our website is primarily used for lead generation, client inquiries, and showcasing our services and portfolio.
                         </p>
                         <p>
-                            These Terms define the rules and conditions for using our website, engaging with our content, and communicating with us through forms, ads, WhatsApp, email, or any other channels.
+                            We comply with applicable data protection laws in India, including the Information Technology Act, 2000 and related rules, and follow globally accepted privacy best practices inspired by GDPR principles.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">2. Use of Website</h2>
-                        <p>You agree to use our website only for lawful purposes. You must not:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                            <li>Use the website for any illegal, harmful, or fraudulent activity</li>
-                            <li>Attempt to gain unauthorized access to our systems or data</li>
-                            <li>Copy, scrape, or misuse website content without permission</li>
-                            <li>Disrupt or interfere with the security or performance of the website</li>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">2. Information We Collect</h2>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Personal Information</h3>
+                        <p>We may collect personal details such as:</p>
+                        <ul className="list-disc pl-6 space-y-2 mb-4">
+                            <li>Name</li>
+                            <li>Email address</li>
+                            <li>Phone number</li>
+                            <li>Company name</li>
+                            <li>Job title</li>
+                            <li>Any information you submit through contact forms, WhatsApp inquiries, newsletter signups, or campaign landing pages</li>
                         </ul>
-                        <p>We reserve the right to restrict or terminate access to users who violate these Terms.</p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">3. Services & Engagement</h2>
-                        <p>
-                            Information on our website is provided for general informational purposes and does not constitute a binding offer. Actual service scope, timelines, deliverables, and pricing will be defined through formal proposals, agreements, or contracts shared separately.
-                        </p>
-                        <p>
-                            Submitting an inquiry or form does not guarantee acceptance of a project or engagement. We reserve the right to accept or decline any inquiry at our discretion.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">4. Intellectual Property</h2>
-                        <p>
-                            All content on this website, including text, graphics, logos, visuals, designs, videos, and branding elements, is the intellectual property of Apnaaapan or its licensors unless stated otherwise.
-                        </p>
-                        <p>
-                            You may not copy, reproduce, distribute, modify, or use any content without prior written permission.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">5. User Submissions</h2>
-                        <p>By submitting information, content, or materials to us (including via contact forms, emails, WhatsApp, or campaign forms), you confirm that:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                            <li>The information provided is accurate and lawful</li>
-                            <li>You have the right to share such information</li>
-                            <li>You grant us the right to use the information for responding to your inquiry and providing our services</li>
+                        <p>This data may be collected via:</p>
+                        <ul className="list-disc pl-6 space-y-2 mb-4">
+                            <li>Website contact forms</li>
+                            <li>Meta (Facebook/Instagram) lead forms</li>
+                            <li>Google Ads lead forms</li>
+                            <li>WhatsApp messages or calls</li>
+                            <li>Newsletter subscription forms</li>
                         </ul>
-                        <p>We are not responsible for the accuracy of information submitted by users.</p>
-                    </section>
 
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">6. Third-Party Links & Tools</h2>
-                        <p>
-                            Our website may contain links to third-party websites or use third-party tools (such as analytics platforms, ad platforms, payment gateways, or communication tools).
-                        </p>
-                        <p>
-                            We do not control these third-party platforms and are not responsible for their content, policies, or practices. Your interaction with third-party services is governed by their respective terms and policies.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">7. Data Collection & Communication Consent</h2>
-                        <p>By submitting your details through our website, Meta Ads, Google Ads, WhatsApp inquiries, or newsletter forms, you consent to:</p>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Non-Personal Information</h3>
+                        <p>We may automatically collect certain non-personal information such as:</p>
                         <ul className="list-disc pl-6 space-y-2">
-                            <li>Being contacted by Apnaaapan via phone, email, WhatsApp, or other communication channels</li>
-                            <li>Receiving information related to our services, proposals, offers, and updates</li>
+                            <li>IP address</li>
+                            <li>Browser type and device information</li>
+                            <li>Pages visited, time spent on site</li>
+                            <li>Referral sources</li>
+                            <li>Cookies and usage data</li>
                         </ul>
-                        <p>You may opt out of marketing communications at any time by contacting us or using provided unsubscribe options.</p>
+                        <p className="mt-2">This helps us understand how users interact with our website and improve performance.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">8. Limitation of Liability</h2>
-                        <p>To the maximum extent permitted by law, Apnaaapan and Workpark Private Limited shall not be liable for any direct, indirect, incidental, consequential, or special damages arising from:</p>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">3. How We Use Your Information</h2>
+                        <p>We use the information we collect to:</p>
                         <ul className="list-disc pl-6 space-y-2">
-                            <li>Use or inability to use the website</li>
-                            <li>Reliance on information provided on the website</li>
-                            <li>Any errors, omissions, or interruptions in website content or availability</li>
+                            <li>Respond to your inquiries and requests</li>
+                            <li>Contact you regarding our services</li>
+                            <li>Share proposals, quotations, and service information</li>
+                            <li>Improve our website, services, and marketing campaigns</li>
+                            <li>Send newsletters or updates (only if you opt in)</li>
+                            <li>Run targeted advertising and retargeting campaigns</li>
+                            <li>Maintain internal records and business communication</li>
                         </ul>
-                        <p>All services are provided on a best-effort basis unless otherwise specified in a written agreement.</p>
+                        <p className="mt-2">We do not sell your personal information to third parties.</p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">9. Indemnification</h2>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">4. Cookies & Tracking Technologies</h2>
+                        <p>Our website uses cookies and similar tracking technologies to:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>Enhance user experience</li>
+                            <li>Understand user behavior</li>
+                            <li>Track performance of marketing campaigns</li>
+                            <li>Measure website traffic and engagement</li>
+                        </ul>
+                        <p className="mt-2">You can control or disable cookies through your browser settings. Some features of the website may not function properly if cookies are disabled.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">5. Third-Party Services</h2>
+                        <p>We may use trusted third-party tools and platforms for analytics, advertising, communication, and payments, including but not limited to:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>Google Analytics</li>
+                            <li>Meta Ads (Facebook & Instagram)</li>
+                            <li>Google Ads</li>
+                            <li>Email marketing tools</li>
+                            <li>CRM and automation platforms</li>
+                            <li>Payment gateways (if applicable in future)</li>
+                        </ul>
+                        <p className="mt-2">These third-party providers may collect and process data in accordance with their own privacy policies. We encourage you to review their policies separately.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">6. Data Security</h2>
                         <p>
-                            You agree to indemnify and hold harmless Apnaaapan and Workpark Private Limited from any claims, damages, liabilities, or expenses arising out of your misuse of the website, violation of these Terms, or infringement of any rights of a third party.
+                            We implement reasonable technical and organizational measures to protect your personal data from unauthorized access, misuse, loss, or disclosure. While we strive to use commercially acceptable means to protect your information, no method of transmission over the internet is 100% secure.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">10. Termination of Access</h2>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">7. Data Retention Policy</h2>
+                        <p>We retain your personal information only for as long as necessary to:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>Fulfill the purposes outlined in this Privacy Policy</li>
+                            <li>Comply with legal, regulatory, or contractual obligations</li>
+                            <li>Resolve disputes and enforce agreements</li>
+                        </ul>
+                        <p className="mt-2">When data is no longer required, it is securely deleted or anonymized.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">8. User Rights</h2>
+                        <p>You have the right to:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>Access the personal data we hold about you</li>
+                            <li>Request correction of inaccurate or incomplete data</li>
+                            <li>Request deletion of your personal information</li>
+                            <li>Withdraw consent or opt out of marketing communications at any time</li>
+                            <li>Request information on how your data is processed</li>
+                        </ul>
+                        <p className="mt-2">To exercise your rights, please contact us using the details provided below.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">9. Sharing of Information</h2>
+                        <p>We may share your information with:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>Internal team members for service delivery</li>
+                            <li>Trusted partners or service providers who assist in operations (under confidentiality obligations)</li>
+                            <li>Legal or regulatory authorities when required by law</li>
+                        </ul>
+                        <p className="mt-2">We never sell or rent your personal data to third parties for marketing purposes.</p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">10. Children’s Privacy</h2>
                         <p>
-                            We reserve the right to suspend or terminate access to our website or services at any time, without prior notice, if we believe that a user has violated these Terms or engaged in unlawful or harmful activity.
+                            Our website and services are not intended for individuals under the age of 18. We do not knowingly collect personal information from minors. If you believe a child has shared personal data with us, please contact us and we will take appropriate steps to delete such information.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">11. Governing Law & Jurisdiction</h2>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">11. Changes to This Policy</h2>
                         <p>
-                            These Terms shall be governed by and interpreted in accordance with the laws of India, including the Information Technology Act, 2000 and applicable rules. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts in Jaipur, Rajasthan, India.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">12. Changes to These Terms</h2>
-                        <p>
-                            We may update these Terms from time to time to reflect changes in our services, business practices, or legal requirements. Any changes will be posted on this page with an updated effective date. Continued use of the website after changes implies acceptance of the revised Terms.
+                            We may update this Privacy Policy from time to time to reflect changes in our practices, services, or legal requirements. Any updates will be posted on this page with a revised effective date. We encourage you to review this policy periodically.
                         </p>
                     </section>
 
                     <section className="bg-gray-50 p-6 sm:p-8 rounded-2xl border border-gray-100">
-                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">13. Contact Information</h2>
-                        <p className="mb-4">For any questions or concerns regarding these Terms & Conditions, please contact:</p>
+                        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">12. Contact Information</h2>
+                        <p className="mb-4">If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, you can contact us at:</p>
                         <div className="space-y-2 text-gray-800 font-medium">
                             <p>Apnaaapan (Workpark Private Limited)</p>
                             <p className="flex items-center gap-2">
-                                <span>📧</span> <a href="mailto:grow@apnaaapan.com" className="text-orange-600 hover:underline">grow@apnaaapan.com</a>
+                                <span>📧</span> <a href="mailto:grow@apnaaapan.com" className="text-orange-600 hover:underline">Grow@apnaaapan.com</a>
                             </p>
                             <p className="flex items-center gap-2">
                                 <span>📞</span> <a href="tel:+919587773274" className="text-orange-600 hover:underline">+91-9587773274</a>
