@@ -247,7 +247,7 @@ const WithApnaaapan = () => {
             </p>
 
             <div className="mt-10">
-              <a href="#join" className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-white font-semibold shadow-lg hover:shadow-xl active:scale-[0.99] transition"
+              <a href="https://forms.gle/dt23nc2v1osaqG3m9" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-white font-semibold shadow-lg hover:shadow-xl active:scale-[0.99] transition"
                 style={{ background: 'linear-gradient(90deg, #E86C21 0%, #F8C31A 100%)' }}>
                 <span className="text-white">⭐</span>
                 <span>Be a Part</span>

@@ -21,7 +21,7 @@ module.exports = {
         'gradient-apna': 'linear-gradient(135deg, rgba(255, 248, 220, 0.8) 0%, rgba(230, 240, 250, 0.8) 100%)',
       },
       animation: {
-        'scroll': 'scroll 17s linear infinite',
+        'scroll': 'scroll 19s linear infinite',
       },
       keyframes: {
         scroll: {

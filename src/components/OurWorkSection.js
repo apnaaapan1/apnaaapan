@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 const companyLogos = [
-  { src: '/images/himee ride.png', alt: 'Himee Ride' },
-  { src: '/images/kavvya.png', alt: 'Kavvya' },
-  { src: '/images/safal.png', alt: 'Safal' },
-  { src: '/images/kap.png', alt: 'KAP' },
-  { src: '/images/utkrasht.png', alt: 'Utkrasht' },
   { src: "/images/clients_logos/1.png", alt: 'Logo 1' },
   { src: "/images/clients_logos/2.png", alt: 'Logo 2' },
   { src: "/images/clients_logos/3.png", alt: 'Logo 3' },
@@ -17,9 +12,13 @@ const companyLogos = [
   { src: "/images/clients_logos/9.png", alt: 'Logo 9' },
   { src: "/images/clients_logos/10.png", alt: 'Logo 10' },
   { src: "/images/clients_logos/11.png", alt: 'Logo 11' },
-  { src: "/images/clients_logos/14.png", alt: 'Logo 14' },
+  { src: "/images/clients_logos/12.png", alt: 'Logo 12' },
+  { src: "/images/clients_logos/13.png", alt: 'Logo 13' },
+  { src: '/images/himee ride.png', alt: 'Himee Ride' },
+  { src: '/images/safal.png', alt: 'Safal' },
+  { src: '/images/kap.png', alt: 'KAP' },
   { src: "/images/clients_logos/Logo.png", alt: 'Logo' },
-  { src: "/images/clients_logos/Logo - B.png", alt: 'Logo B' },
+  { src: "/images/clients_logos/LogoB.png", alt: 'Logo B' },
 ];
 
 const BG_COLORS = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
@@ -74,7 +73,7 @@ const OurWorkSection = () => {
     <section className="bg-[#EFE7D5] py-12 sm:py-16 px-3 sm:px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Trusted Companies Section */}
-        <div className="bg-[#faf8f3] rounded-lg sm:rounded-xl px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-center md:items-center justify-between mb-12 sm:mb-16 border border-[#e5e2d8]">
+        <div className="bg-white rounded-lg sm:rounded-xl px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-center md:items-center justify-between mb-12 sm:mb-16 border border-[#e5e2d8]">
           <div className="w-full md:w-1/3 text-center md:text-left text-gray-700 text-base sm:text-lg font-nexa-regular mb-4 md:mb-0">
             Trusted by fast-growing<br />companies around the world
           </div>
@@ -82,7 +81,7 @@ const OurWorkSection = () => {
             <div className="flex items-center animate-scroll w-max flex-nowrap gap-12 sm:gap-16">
               {/* First set of logos */}
               {companyLogos.map((logo, idx) => (
-                <div key={`first-${idx}`} className="w-[140px] sm:w-[160px] md:w-[180px] h-16 flex items-center justify-center">
+                <div key={`first-${idx}`} className="w-[161px] h-[54px] flex items-center justify-center">
                   <img
                     src={logo.src.replace("client's logos", "clients_logos")}
                     alt={logo.alt}
@@ -93,7 +92,7 @@ const OurWorkSection = () => {
               ))}
               {/* Duplicate set for seamless loop */}
               {companyLogos.map((logo, idx) => (
-                <div key={`second-${idx}`} className="w-[140px] sm:w-[160px] md:w-[180px] h-16 flex items-center justify-center">
+                <div key={`second-${idx}`} className="w-[161px] h-[54px] flex items-center justify-center">
                   <img
                     src={logo.src.replace("client's logos", "clients_logos")}
                     alt={logo.alt}

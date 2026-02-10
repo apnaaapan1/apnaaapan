@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ClientFeedback from '../components/ClientFeedback';
 
 
@@ -566,6 +567,7 @@ const faqContent = {
 };
 
 const Services = () => {
+  const navigate = useNavigate();
   const [expandedCards, setExpandedCards] = useState({});
 
   // Resolve dynamic service slug (default to social-media when not provided)
@@ -656,7 +658,10 @@ const Services = () => {
               {/* CTA Button */}
               <div className="pt-4">
                 <RevealOnScroll>
-                  <button className="bg-gradient-to-r from-[#F26B2A] to-[#FFC107] text-white px-8 py-4 rounded-full font-nexa-bold text-lg flex items-center space-x-3 hover:shadow-lg transition-all duration-200 hover:scale-105">
+                  <button
+                    onClick={() => navigate('/book-call')}
+                    className="bg-gradient-to-r from-[#F26B2A] to-[#FFC107] text-white px-8 py-4 rounded-full font-nexa-bold text-lg flex items-center space-x-3 hover:shadow-lg transition-all duration-200 hover:scale-105"
+                  >
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
@@ -764,7 +769,7 @@ const Services = () => {
 
 
           {/* Trusted Companies Section */}
-          <div className="bg-[#EFE7D5] rounded-xl px-6 py-4 flex flex-col md:flex-row items-center md:items-center justify-between mb-16 border border-[#e5e2d8]">
+          <div className="bg-white rounded-xl px-6 py-4 flex flex-col md:flex-row items-center md:items-center justify-between mb-16 border border-[#e5e2d8]">
             <div className="w-full md:w-1/3 text-left text-gray-700 text-lg font-nexa-regular mb-4 md:mb-0">
               Trusted by fast-growing<br />companies around the world
             </div>
@@ -772,63 +777,67 @@ const Services = () => {
               <div className="flex items-center animate-scroll w-max flex-nowrap gap-12 sm:gap-16">
                 {/* First set of logos */}
                 {[
+                  { src: "/images/clients_logos/1.png", alt: 'Logo 1' },
+                  { src: "/images/clients_logos/2.png", alt: 'Logo 2' },
+                  { src: "/images/clients_logos/13.png", alt: 'Logo 13' },
                   { src: '/images/himee ride.png', alt: 'Himee Ride' },
                   { src: '/images/kavvya.png', alt: 'Kavvya' },
                   { src: '/images/safal.png', alt: 'Safal' },
                   { src: '/images/kap.png', alt: 'KAP' },
                   { src: '/images/utkrasht.png', alt: 'Utkrasht' },
-                  { src: "/images/client's logos/1.png", alt: 'Logo 1' },
-                  { src: "/images/client's logos/2.png", alt: 'Logo 2' },
-                  { src: "/images/client's logos/3.png", alt: 'Logo 3' },
-                  { src: "/images/client's logos/4.png", alt: 'Logo 4' },
-                  { src: "/images/client's logos/5.png", alt: 'Logo 5' },
-                  { src: "/images/client's logos/6.png", alt: 'Logo 6' },
-                  { src: "/images/client's logos/7.png", alt: 'Logo 7' },
-                  { src: "/images/client's logos/8.png", alt: 'Logo 8' },
-                  { src: "/images/client's logos/9.png", alt: 'Logo 9' },
-                  { src: "/images/client's logos/10.png", alt: 'Logo 10' },
-                  { src: "/images/client's logos/11.png", alt: 'Logo 11' },
-                  { src: "/images/client's logos/14.png", alt: 'Logo 14' },
-                  { src: "/images/client's logos/Logo.png", alt: 'Logo' },
-                  { src: "/images/client's logos/Logo - B.png", alt: 'Logo B' },
+                  { src: "/images/clients_logos/3.png", alt: 'Logo 3' },
+                  { src: "/images/clients_logos/4.png", alt: 'Logo 4' },
+                  { src: "/images/clients_logos/5.png", alt: 'Logo 5' },
+                  { src: "/images/clients_logos/6.png", alt: 'Logo 6' },
+                  { src: "/images/clients_logos/7.png", alt: 'Logo 7' },
+                  { src: "/images/clients_logos/8.png", alt: 'Logo 8' },
+                  { src: "/images/clients_logos/9.png", alt: 'Logo 9' },
+                  { src: "/images/clients_logos/10.png", alt: 'Logo 10' },
+                  { src: "/images/clients_logos/11.png", alt: 'Logo 11' },
+                  { src: "/images/clients_logos/12.png", alt: 'Logo 12' },
+                  { src: "/images/clients_logos/Logo.png", alt: 'Logo' },
+                  { src: "/images/clients_logos/LogoB.png", alt: 'Logo B' },
                 ].map((logo, idx) => (
-                  <img
-                    key={`first-${idx}`}
-                    src={logo.src}
-                    alt={logo.alt}
-                    className="h-11 md:h-14 max-w-[180px] object-contain flex-shrink-0"
-                    style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
-                  />
+                  <div key={`first-${idx}`} className="w-[161px] h-[54px] flex items-center justify-center">
+                    <img
+                      src={logo.src}
+                      alt={logo.alt}
+                      className="w-full h-full object-contain"
+                      style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
+                    />
+                  </div>
                 ))}
                 {/* Duplicate set for seamless loop */}
                 {[
+                  { src: "/images/clients_logos/1.png", alt: 'Logo 1' },
+                  { src: "/images/clients_logos/2.png", alt: 'Logo 2' },
+                  { src: "/images/clients_logos/13.png", alt: 'Logo 13' },
                   { src: '/images/himee ride.png', alt: 'Himee Ride' },
                   { src: '/images/kavvya.png', alt: 'Kavvya' },
                   { src: '/images/safal.png', alt: 'Safal' },
                   { src: '/images/kap.png', alt: 'KAP' },
                   { src: '/images/utkrasht.png', alt: 'Utkrasht' },
-                  { src: "/images/client's logos/1.png", alt: 'Logo 1' },
-                  { src: "/images/client's logos/2.png", alt: 'Logo 2' },
-                  { src: "/images/client's logos/3.png", alt: 'Logo 3' },
-                  { src: "/images/client's logos/4.png", alt: 'Logo 4' },
-                  { src: "/images/client's logos/5.png", alt: 'Logo 5' },
-                  { src: "/images/client's logos/6.png", alt: 'Logo 6' },
-                  { src: "/images/client's logos/7.png", alt: 'Logo 7' },
-                  { src: "/images/client's logos/8.png", alt: 'Logo 8' },
-                  { src: "/images/client's logos/9.png", alt: 'Logo 9' },
-                  { src: "/images/client's logos/10.png", alt: 'Logo 10' },
-                  { src: "/images/client's logos/11.png", alt: 'Logo 11' },
-                  { src: "/images/client's logos/14.png", alt: 'Logo 14' },
-                  { src: "/images/client's logos/Logo.png", alt: 'Logo' },
-                  { src: "/images/client's logos/Logo - B.png", alt: 'Logo B' },
+                  { src: "/images/clients_logos/3.png", alt: 'Logo 3' },
+                  { src: "/images/clients_logos/4.png", alt: 'Logo 4' },
+                  { src: "/images/clients_logos/5.png", alt: 'Logo 5' },
+                  { src: "/images/clients_logos/6.png", alt: 'Logo 6' },
+                  { src: "/images/clients_logos/7.png", alt: 'Logo 7' },
+                  { src: "/images/clients_logos/8.png", alt: 'Logo 8' },
+                  { src: "/images/clients_logos/9.png", alt: 'Logo 9' },
+                  { src: "/images/clients_logos/10.png", alt: 'Logo 10' },
+                  { src: "/images/clients_logos/11.png", alt: 'Logo 11' },
+                  { src: "/images/clients_logos/12.png", alt: 'Logo 12' },
+                  { src: "/images/clients_logos/Logo.png", alt: 'Logo' },
+                  { src: "/images/clients_logos/LogoB.png", alt: 'Logo B' },
                 ].map((logo, idx) => (
-                  <img
-                    key={`second-${idx}`}
-                    src={logo.src}
-                    alt={logo.alt}
-                    className="h-11 md:h-14 max-w-[180px] object-contain flex-shrink-0"
-                    style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
-                  />
+                  <div key={`second-${idx}`} className="w-[161px] h-[54px] flex items-center justify-center">
+                    <img
+                      src={logo.src}
+                      alt={logo.alt}
+                      className="w-full h-full object-contain"
+                      style={{ filter: logo.alt === 'Himee Ride' ? 'none' : 'none' }}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

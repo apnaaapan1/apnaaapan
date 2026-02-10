@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
 
           {/* Column 2 - Explore Services */}
-          <div className="lg:col-span-1 xl:col-span-3">
+          <div className="lg:col-span-1 xl:col-span-2">
             <h3 className="text-gray-400 font-semibold text-base sm:text-lg mb-4 sm:mb-6">Explore Services</h3>
             <ul className="space-y-2 sm:space-y-3">
               <li><a href="/services/branding" className="text-white hover:text-orange-400 transition-colors duration-200 text-sm sm:text-base">Branding & Identity</a></li>
@@ -114,7 +114,7 @@ const Footer = () => {
           </div>
 
           {/* Column 5 - Book a call section */}
-          <div className="xl:col-span-2 flex flex-col items-center sm:items-start md:items-center xl:items-end">
+          <div className="xl:col-span-3 flex flex-col items-center sm:items-start md:items-center xl:items-end">
             {/* Book a Call Button */}
             <div className="mb-6 sm:mb-8 w-full sm:w-auto">
               <a
@@ -136,10 +136,10 @@ const Footer = () => {
 
             {/* Working Hours */}
             <div className="text-center sm:text-left md:text-center xl:text-right">
-              <p className="text-white text-xs sm:text-sm font-medium">
-                From 10 a.m. to 6:30 p.m.
+              <p className="text-white text-xs sm:text-sm font-medium whitespace-nowrap">
+                Timing: 10:00 AM to 06:30 PM
               </p>
-              <p className="text-gray-400 text-xs mt-1 italic">
+              <p className="text-gray-400 text-xs mt-1 italic whitespace-nowrap">
                 Mon-Sat
               </p>
             </div>
