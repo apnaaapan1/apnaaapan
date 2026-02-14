@@ -779,12 +779,6 @@ const Services = () => {
                 {[
                   { src: "/images/clients_logos/1.png", alt: 'Logo 1' },
                   { src: "/images/clients_logos/2.png", alt: 'Logo 2' },
-                  { src: "/images/clients_logos/13.png", alt: 'Logo 13' },
-                  { src: '/images/himee ride.png', alt: 'Himee Ride' },
-                  { src: '/images/kavvya.png', alt: 'Kavvya' },
-                  { src: '/images/safal.png', alt: 'Safal' },
-                  { src: '/images/kap.png', alt: 'KAP' },
-                  { src: '/images/utkrasht.png', alt: 'Utkrasht' },
                   { src: "/images/clients_logos/3.png", alt: 'Logo 3' },
                   { src: "/images/clients_logos/4.png", alt: 'Logo 4' },
                   { src: "/images/clients_logos/5.png", alt: 'Logo 5' },
@@ -795,6 +789,10 @@ const Services = () => {
                   { src: "/images/clients_logos/10.png", alt: 'Logo 10' },
                   { src: "/images/clients_logos/11.png", alt: 'Logo 11' },
                   { src: "/images/clients_logos/12.png", alt: 'Logo 12' },
+                  { src: "/images/clients_logos/13.png", alt: 'Logo 13' },
+                  { src: '/images/himee ride.png', alt: 'Himee Ride' },
+                  { src: '/images/safal.png', alt: 'Safal' },
+                  { src: '/images/kap.png', alt: 'KAP' },
                   { src: "/images/clients_logos/Logo.png", alt: 'Logo' },
                   { src: "/images/clients_logos/LogoB.png", alt: 'Logo B' },
                 ].map((logo, idx) => (

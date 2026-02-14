@@ -18,7 +18,7 @@ const companyLogos = [
   { src: '/images/safal.png', alt: 'Safal' },
   { src: '/images/kap.png', alt: 'KAP' },
   { src: "/images/clients_logos/Logo.png", alt: 'Logo' },
-  { src: "/images/clients_logos/LogoB.png", alt: 'Logo B' },
+  { src: "/images/clients_logos/logoB.png", alt: 'Logo B' },
 ];
 
 const BG_COLORS = ['bg-blue-500', 'bg-orange-500', 'bg-yellow-400', 'bg-purple-500', 'bg-green-500', 'bg-pink-500'];
