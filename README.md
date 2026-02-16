@@ -1,133 +1,83 @@
-# Apnaaapan
+# Apnaaapan - Healthcare Service Platform
 
-A modern React + Tailwind CSS website for Apnaaapan with multiple sections/pages, animations, and a serverless contact API. Optimized for deployment on Vercel.
+A comprehensive healthcare service platform connecting certified professionals with patients for home care services. Built with React and Tailwind CSS, featuring a robust Admin Panel for content management and integrated analytics.
 
-## Features
+## 🚀 Features
 
-- Responsive, mobile-first layout
-- Tailwind-powered design system and custom fonts (Dancing Script, Poppins)
-- Animated sections (GSAP, Framer Motion ready)
-- Client testimonials, services, process, work gallery
-- Simple page routing via URL path inspection
-- Contact form backend with MongoDB + email notifications
-- Vercel-ready serverless function at `api/contact.js`
+### Public Platform
+-   **Service Booking**: Examples include Critical Care, Nursing, Physiotherapy, and Elderly Care.
+-   **Responsive Design**: Mobile-first approach using Tailwind CSS.
+-   **Dynamic Content**: Blogs, Events, Team Members, and Client Reviews fetch from MongoDB.
+-   **Contact System**: Integrated inquiry forms with email notifications (Nodemailer) and database storage.
+-   **Analytics**: Google Tag Manager, Meta Pixel, and Google Analytics 4 integration.
 
-## Tech Stack
+### Admin Panel
+Secure dashboard for administrators to manage website content dynamically:
+-   **Dashboard**: Overview of recent activities and stats.
+-   **Blog Management**: Create, edit, and delete health articles.
+-   **Event Management**: Schedule and showcase upcoming healthcare camps/events.
+-   **Team Management**: Update profiles of doctors and staff.
+-   **Gallery Management**: Upload and organize photos of services/events.
+-   **Job Applications**: Review applications from "Work With Us".
+-   **Reviews**: Manage client testimonials.
 
-- React 18, react-scripts
-- Tailwind CSS 3, PostCSS, Autoprefixer
-- GSAP, Framer Motion
-- Express (optional local server), Vercel Serverless Functions
-- MongoDB (Atlas) + Nodemailer
+## 🛠 Tech Stack
 
-## Project Structure
+-   **Frontend**: React 18, Tailwind CSS, Framer Motion, GSAP
+-   **Backend**: Node.js, Express (Serverless Functions on Vercel)
+-   **Database**: MongoDB Atlas
+-   **Services**: Cloudinary (Image Hosting), Nodemailer (Emails)
 
-```
+## 📂 Project Structure
+
+```bash
 Apnaaapan/
-├── public/
-│   ├── index.html
-│   └── images/               # Static assets used by pages/components
+├── public/                 # Static assets (images, icons)
 ├── src/
-│   ├── App.js                # Entry component with simple path-based routing
-│   ├── index.js              # React DOM bootstrap
-│   ├── index.css             # Tailwind and global styles
-│   ├── components/           # UI sections (Header, Hero, Services, etc.)
-│   └── pages/                # Page components (AboutUs, Work, Blog, Contact, ...)
-├── api/
-│   └── contact.js            # Serverless endpoint for contact form (Vercel)
-├── server.js                 # Optional local Express server for /api when self-hosting
-├── env.example               # Environment variable template
-├── tailwind.config.js        # Tailwind configuration
-├── postcss.config.js         # PostCSS configuration
-├── vercel.json               # Vercel build and routing config
-└── package.json
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # Application Pages
+│   │   ├── Admin*.js       # Admin Panel modules (Protected)
+│   │   └── *.js            # Public pages (Home, Services, etc.)
+│   ├── api/                # API utility functions
+│   └── index.css           # Global styles and Tailwind directives
+├── api/                    # Vercel Serverless Functions (Backend)
+│   └── contact.js          # Contact form handler
+└── DEPLOYMENT_GUIDE.md     # Detailed deployment instructions
 ```
 
-## Scripts
+## 🔧 Getting Started
 
-```bash
-# Run React dev server (http://localhost:3000)
-npm start
+1.  **Clone the repository**
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Environment Setup**:
+    Copy `env.example` to `.env` and fill in your credentials:
+    -   `MONGODB_URI`: Your MongoDB connection string.
+    -   `EMAIL_USER` / `EMAIL_PASS`: For sending contact form emails.
+    -   `REACT_APP_GA_MEASUREMENT_ID`: Google Analytics ID.
+    -   `ADMIN_EMAIL` / `ADMIN_PASSWORD`: For Admin Panel access.
 
-# Build static assets to ./build
-npm run build
+4.  **Run Locally**:
+    ```bash
+    npm run dev
+    # Runs both the React app (localhost:3000) and the backend server (localhost:5000)
+    ```
 
-# Optional: run local API server (Express on http://localhost:5000)
-npm run server
+## 📦 Deployment
 
-# Optional: run client and local server together
-npm run dev
-```
+This project is optimized for deployment on **Vercel** or **Hostinger**.
 
-## Getting Started (Local)
+👉 **See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed step-by-step instructions.**
 
-1. Install Node.js (LTS recommended).
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy environment template and fill secrets:
-   ```bash
-   cp env.example .env
-   ```
-   Required variables (see details below): `MONGODB_URI`, `DATABASE_NAME`, `EMAIL_USER`, `EMAIL_PASS`, `RECIPIENT_EMAIL`.
-4. Start the React app:
-   ```bash
-   npm start
-   ```
-   Open http://localhost:3000
+## 📊 Analytics & Tracking
 
-Optional: If you want to test the API locally with Express, run in another terminal:
-```bash
-npm run server
-```
+The project includes pre-configured integrations for:
+-   **Google Tag Manager**: Managed via `public/index.html`.
+-   **Meta Pixel**: For Facebook ad tracking.
+-   **Google Analytics 4**: Page view and event tracking.
 
-## Environment Variables
+## 🛡️ License
 
-See `env.example` for full list. Summary:
-
-- `MONGODB_URI`: MongoDB Atlas connection string
-- `DATABASE_NAME`: Database name (default `apnapan_contacts`)
-- `EMAIL_USER`: Sender email (e.g., Gmail)
-- `EMAIL_PASS`: Email password or app password (for Gmail use App Password)
-- `RECIPIENT_EMAIL`: Destination address for contact form submissions
-
-For Gmail:
-- Enable 2FA
-- Create an App Password and use it in `EMAIL_PASS`
-
-## API Endpoints
-
-- `POST /api/contact` — stores submission in MongoDB and sends an email notification when email creds are configured.
-- `GET /api/health` — health check (available in local Express server).
-
-Notes:
-- When deployed to Vercel, `api/contact.js` runs as a Serverless Function. Configure environment variables in the Vercel project settings. See `vercel.json` for build and route config.
-- For self-hosting, `server.js` exposes similar functionality on port `5000` by default and serves the React build.
-
-## Deployment (Vercel)
-
-This project is configured for Vercel:
-
-- Static build produced by `npm run build` is served from `/build`.
-- Serverless functions live under `/api` (see `api/contact.js`).
-- `vercel.json` defines routes and environment variable bindings; set the actual values in Vercel project settings.
-
-Deploy steps:
-1. Push the repository to GitHub/GitLab/Bitbucket.
-2. Import the repo in Vercel.
-3. Add environment variables (`MONGODB_URI`, `DATABASE_NAME`, `EMAIL_USER`, `EMAIL_PASS`, `RECIPIENT_EMAIL`).
-4. Deploy. Client routes are handled to `index.html` per `vercel.json`.
-
-## Design Notes
-
-- Base background: `#EFE7D5`
-- Brand colors: orange `#F26B2A`, blue `#4A70B0`, yellow `#FFC107`, WhatsApp `#25D366`
-- Fonts: Dancing Script (handwriting), Poppins/Inter (content)
-- Tailwind utilities extended in `tailwind.config.js`
-
-## Troubleshooting
-
-- If emails are not being sent, verify `EMAIL_USER`/`EMAIL_PASS` and use an App Password for Gmail.
-- Ensure your IP has access to MongoDB Atlas or use the "Allow access from anywhere" option for testing.
-- For Vercel, confirm env vars are set in the project dashboard; local `.env` is not automatically uploaded.
+Private - All rights reserved.
