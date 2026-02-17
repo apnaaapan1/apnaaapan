@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
@@ -35,12 +36,13 @@ const HeroSection = () => {
             </p>
 
             {/* CTA Button - EXACTLY as in design image */}
-            <button className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-8 sm:px-10 md:px-12 lg:px-14 py-4 sm:py-5 md:py-6 rounded-full font-semibold text-base sm:text-lg md:text-xl lg:text-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-3 sm:space-x-4 mx-auto shadow-lg">
+            {/* CTA Button - EXACTLY as in design image */}
+            <Link to="/book-call" className="bg-gradient-to-r from-orange-500 to-yellow-400 text-white px-8 sm:px-10 md:px-12 lg:px-14 py-4 sm:py-5 md:py-6 rounded-full font-semibold text-base sm:text-lg md:text-xl lg:text-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-3 sm:space-x-4 mx-auto shadow-lg w-fit">
               <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
               </svg>
               <span>Book a Free Strategy Call</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
