@@ -1,11 +1,9 @@
-# Apnaaapan - Healthcare Service Platform
+# Apnaaapan 
 
-A comprehensive healthcare service platform connecting certified professionals with patients for home care services. Built with React and Tailwind CSS, featuring a robust Admin Panel for content management and integrated analytics.
 
 ## 🚀 Features
 
 ### Public Platform
--   **Service Booking**: Examples include Critical Care, Nursing, Physiotherapy, and Elderly Care.
 -   **Responsive Design**: Mobile-first approach using Tailwind CSS.
 -   **Dynamic Content**: Blogs, Events, Team Members, and Client Reviews fetch from MongoDB.
 -   **Contact System**: Integrated inquiry forms with email notifications (Nodemailer) and database storage.
@@ -15,8 +13,6 @@ A comprehensive healthcare service platform connecting certified professionals w
 Secure dashboard for administrators to manage website content dynamically:
 -   **Dashboard**: Overview of recent activities and stats.
 -   **Blog Management**: Create, edit, and delete health articles.
--   **Event Management**: Schedule and showcase upcoming healthcare camps/events.
--   **Team Management**: Update profiles of doctors and staff.
 -   **Gallery Management**: Upload and organize photos of services/events.
 -   **Job Applications**: Review applications from "Work With Us".
 -   **Reviews**: Manage client testimonials.
