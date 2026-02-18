@@ -24,7 +24,7 @@ const BookCall = () => {
       {/* Calendar Section */}
       <section className="px-3 sm:px-4 md:px-8 pb-12 sm:pb-16">
         <div className="max-w-5xl mx-auto">
-          <div className="w-full h-[650px] sm:h-[700px] md:h-[800px] bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="w-full h-[1050px] sm:h-[700px] md:h-[800px] bg-white rounded-2xl shadow-lg overflow-hidden">
             <iframe
               src="https://cal.com/apnaaapan/30min"
               title="Book a 30 min meeting with Apnaaapan"
@@ -32,7 +32,6 @@ const BookCall = () => {
               loading="lazy"
               allow="camera; microphone; fullscreen; display-capture; autoplay"
               style={{ overflow: 'hidden' }}
-              scrolling="no"
             ></iframe>
           </div>
         </div>
