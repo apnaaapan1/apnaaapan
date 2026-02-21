@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 // MongoDB Atlas connection
 // Note: If your MongoDB URI already includes the database name, DATABASE_NAME will override it
@@ -41,8 +42,8 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  // Increase limit to 10MB to allow larger photos; front-end will also validate
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  // Limit to 4MB to avoid Vercel timeouts and provide consistent UI experience
+  limits: { fileSize: 4 * 1024 * 1024 }, // 4MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -641,9 +642,9 @@ app.post('/api/upload-image', (req, res) => {
     if (err) {
       if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
         return res.status(413).json({
-          message: 'File too large. Max 10MB allowed.',
+          message: 'File too large. Please use images smaller than 4MB for best performance.',
           error: 'FILE_TOO_LARGE',
-          maxBytes: 10 * 1024 * 1024,
+          maxBytes: 4 * 1024 * 1024,
         });
       }
       return res.status(400).json({

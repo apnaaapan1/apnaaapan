@@ -54,11 +54,19 @@ export default function AdminTeam() {
             setError('');
             const headers = token ? { 'x-admin-token': token } : undefined;
             const res = await fetch(`${API_BASE}?includeDrafts=true`, { headers });
-            if (!res.ok) throw new Error('Failed to fetch team members');
-            const data = await res.json();
+
+            let data;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await res.json();
+            } else {
+                throw new Error(`Server error: ${res.status}`);
+            }
+
+            if (!res.ok) throw new Error(data.message || 'Failed to fetch team members');
             setTeam(data.team || []);
         } catch (err) {
-            setError('Unable to load team members.');
+            setError(err.message || 'Unable to load team members.');
         } finally {
             setLoading(false);
         }
@@ -78,7 +86,15 @@ export default function AdminTeam() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
-            const data = await res.json();
+
+            let data;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await res.json();
+            } else {
+                throw new Error(`Server error: ${res.status}`);
+            }
+
             if (!res.ok) throw new Error(data.message || 'Login failed');
             const token = data.token || '';
             setAdminToken(token);
@@ -106,6 +122,13 @@ export default function AdminTeam() {
     const handleImageUpload = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        // Client-side validation: Max 4MB (Vercel limit is 4.5MB)
+        if (file.size > 4 * 1024 * 1024) {
+            setError('Image is too large. For website performance and server limits, please use images smaller than 4MB.');
+            return;
+        }
+
         try {
             setUploading(true);
             setError('');
@@ -116,7 +139,16 @@ export default function AdminTeam() {
                 headers: { 'x-admin-token': adminToken },
                 body: formData,
             });
-            const data = await res.json();
+
+            let data;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await res.json();
+            } else {
+                // If not JSON, it might be a 413 or other HTML error
+                throw new Error(res.status === 413 ? 'The image file is too large for the server. Try a smaller image.' : `Server error: ${res.status}`);
+            }
+
             if (!res.ok) throw new Error(data.message || 'Upload failed');
             setForm((prev) => ({ ...prev, image: data.url }));
             setSuccess('Image uploaded successfully!');
@@ -166,7 +198,15 @@ export default function AdminTeam() {
                 headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
                 body: JSON.stringify(form),
             });
-            const data = await res.json();
+
+            let data;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await res.json();
+            } else {
+                throw new Error(`Server error: ${res.status}`);
+            }
+
             if (!res.ok) throw new Error(data.message || 'Failed to save team member');
             setSuccess(isUpdate ? 'Updated successfully.' : 'Created successfully.');
             setForm(initialFormState);
@@ -229,6 +269,10 @@ export default function AdminTeam() {
 
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Photo</label>
+                                    <p className="text-xs text-gray-500 mb-2">
+                                        <strong>Max Size: 4MB.</strong> Large images slow down your website.
+                                        If your image is too large, use a tool like <a href="https://tinypng.com" target="_blank" rel="noreferrer" className="text-[#4A70B0] hover:underline">TinyPNG</a> to compress it.
+                                    </p>
                                     {form.image && (
                                         <div className="mb-2">
                                             <img src={form.image} alt="Preview" className="w-32 h-32 object-cover rounded-lg" />

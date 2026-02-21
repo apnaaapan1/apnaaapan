@@ -113,7 +113,7 @@ export default function AdminWork() {
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { setError('Image size must be less than 10MB'); return; }
+    if (file.size > 4 * 1024 * 1024) { setError('Image is too large. For website performance and server limits, please use images smaller than 4MB.'); return; }
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) { setError('Only JPG, PNG, GIF, and WebP images are allowed'); return; }
     try {
@@ -126,7 +126,15 @@ export default function AdminWork() {
         headers: { 'x-admin-token': adminToken },
         body: formData,
       });
-      const data = await res.json();
+
+      let data;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        throw new Error(res.status === 413 ? 'The image file is too large for the server. Try a smaller image (under 4MB).' : `Server error: ${res.status}`);
+      }
+
       if (!res.ok) throw new Error(data.message || 'Upload failed');
       setForm((prev) => ({ ...prev, image: data.url }));
       setSuccess('Image uploaded successfully!');
@@ -192,7 +200,15 @@ export default function AdminWork() {
         headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
+
+      let data;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
       if (!res.ok) throw new Error(data.message || 'Request failed');
       setSuccess(isUpdate ? 'Work post updated successfully.' : 'Work post created successfully.');
       setForm(initialFormState); // Always reset form after success
@@ -224,8 +240,8 @@ export default function AdminWork() {
   return (
     <main className="bg-[#EFE7D5] min-h-screen">
       <section className="max-w-5xl mx-auto px-6 md:px-8 lg:px-10 py-20 md:py-24">
-        <Link 
-          to="/admin" 
+        <Link
+          to="/admin"
           className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-lg bg-[#EFE7D5] text-[#0D1B2A] text-sm font-medium hover:bg-[#e0d8c5] transition-colors border border-[#d4c9b0]"
         >
           ← Back to Dashboard
@@ -286,7 +302,7 @@ export default function AdminWork() {
                       <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleImageUpload} disabled={uploading} className="hidden" />
                       {uploading ? 'Uploading...' : 'Upload Image'}
                     </label>
-                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 10MB)</span>
+                    <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 4MB. Use <a href="https://tinypng.com" target="_blank" rel="noreferrer" className="text-[#4A70B0] hover:underline">TinyPNG</a> to compress)</span>
                   </div>
                   <input type="text" name="image" value={form.image} onChange={handleInputChange} placeholder="Or paste image URL here" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" required />
                   <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>

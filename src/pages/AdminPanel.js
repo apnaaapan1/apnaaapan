@@ -210,8 +210,8 @@ const AdminPanel = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size must be less than 5MB');
+    if (file.size > 4 * 1024 * 1024) {
+      setError('Image is too large. For website performance and server limits, please use images smaller than 4MB.');
       return;
     }
 
@@ -236,7 +236,13 @@ const AdminPanel = () => {
         body: formData,
       });
 
-      const data = await res.json();
+      let data;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        throw new Error(res.status === 413 ? 'The image file is too large for the server. Try a smaller image (under 4MB).' : `Server error: ${res.status}`);
+      }
 
       if (!res.ok) {
         throw new Error(data.message || 'Upload failed');
@@ -260,9 +266,9 @@ const AdminPanel = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size must be less than 5MB');
+    // Validate file size (4MB)
+    if (file.size > 4 * 1024 * 1024) {
+      setError('Image is too large. For website performance and server limits, please use images smaller than 4MB.');
       return;
     }
 
@@ -288,7 +294,13 @@ const AdminPanel = () => {
         body: formData,
       });
 
-      const data = await res.json();
+      let data;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        throw new Error(res.status === 413 ? 'The image file is too large for the server. Try a smaller image (under 4MB).' : `Server error: ${res.status}`);
+      }
 
       if (!res.ok) {
         throw new Error(data.message || 'Upload failed');
@@ -710,243 +722,242 @@ const AdminPanel = () => {
         </p>
 
         {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">
-              {workForm.id ? 'Edit Work Post' : 'Create New Work Post'}
-            </h2>
-            <button
-              type="button"
-              onClick={handleWorkNew}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              + New
-            </button>
-          </div>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">
+                {workForm.id ? 'Edit Work Post' : 'Create New Work Post'}
+              </h2>
+              <button
+                type="button"
+                onClick={handleWorkNew}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                + New
+              </button>
+            </div>
 
-          <form onSubmit={handleWorkSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleWorkSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={workForm.title}
+                    onChange={handleWorkInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={workForm.status}
+                    onChange={handleWorkInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  >
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
+                  Description
                 </label>
+                <textarea
+                  name="description"
+                  value={workForm.description}
+                  onChange={handleWorkInputChange}
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  placeholder="Short description for the project"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Project Image <span className="text-red-500">*</span>
+                </label>
+
+                {workForm.image && (
+                  <div className="mb-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center p-2">
+                    <img
+                      src={workForm.image}
+                      alt={workForm.alt || 'Project image'}
+                      className="max-w-full max-h-64 object-contain rounded-lg"
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3 mb-2">
+                  <label className="inline-flex items-center px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      onChange={handleWorkImageUpload}
+                      disabled={workUploading}
+                      className="hidden"
+                    />
+                    {workUploading ? 'Uploading...' : 'Upload Image'}
+                  </label>
+                  <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 4MB. Use <a href="https://tinypng.com" target="_blank" rel="noreferrer" className="text-[#4A70B0] hover:underline">TinyPNG</a> to compress)</span>
+                </div>
+
                 <input
                   type="text"
-                  name="title"
-                  value={workForm.title}
+                  name="image"
+                  value={workForm.image}
                   onChange={handleWorkInputChange}
+                  placeholder="Or paste image URL here"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  value={workForm.status}
-                  onChange={handleWorkInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={workForm.description}
-                onChange={handleWorkInputChange}
-                rows={4}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                placeholder="Short description for the project"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Project Image <span className="text-red-500">*</span>
-              </label>
-
-              {workForm.image && (
-                <div className="mb-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center p-2">
-                  <img
-                    src={workForm.image}
-                    alt={workForm.alt || 'Project image'}
-                    className="max-w-full max-h-64 object-contain rounded-lg"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+                  <input
+                    type="text"
+                    name="alt"
+                    value={workForm.alt}
+                    onChange={handleWorkInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
                   />
                 </div>
-              )}
-
-              <div className="flex items-center gap-3 mb-2">
-                <label className="inline-flex items-center px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Categories</label>
                   <input
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                    onChange={handleWorkImageUpload}
-                    disabled={workUploading}
-                    className="hidden"
+                    type="text"
+                    name="categoriesText"
+                    value={workForm.categoriesText}
+                    onChange={handleWorkInputChange}
+                    placeholder="e.g. Brand identity, UI/UX"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
                   />
-                  {workUploading ? 'Uploading...' : 'Upload Image'}
-                </label>
-                <span className="text-xs text-gray-500">JPG, PNG, GIF, WebP (Max 5MB)</span>
+                  <p className="text-xs text-gray-500 mt-1">Comma-separated list. Used for filtering on Work page.</p>
+                </div>
               </div>
 
-              <input
-                type="text"
-                name="image"
-                value={workForm.image}
-                onChange={handleWorkInputChange}
-                placeholder="Or paste image URL here"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
                 <input
                   type="text"
-                  name="alt"
-                  value={workForm.alt}
+                  name="tagsText"
+                  value={workForm.tagsText}
                   onChange={handleWorkInputChange}
+                  placeholder="e.g. Branding, UI, UX"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
                 />
+                <p className="text-xs text-gray-500 mt-1">Comma-separated list. Displayed as badges under each project.</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categories</label>
-                <input
-                  type="text"
-                  name="categoriesText"
-                  value={workForm.categoriesText}
-                  onChange={handleWorkInputChange}
-                  placeholder="e.g. Brand identity, UI/UX"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                />
-                <p className="text-xs text-gray-500 mt-1">Comma-separated list. Used for filtering on Work page.</p>
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-              <input
-                type="text"
-                name="tagsText"
-                value={workForm.tagsText}
-                onChange={handleWorkInputChange}
-                placeholder="e.g. Branding, UI, UX"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-              />
-              <p className="text-xs text-gray-500 mt-1">Comma-separated list. Displayed as badges under each project.</p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={workSaving}
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            >
-              {workSaving ? 'Saving...' : workForm.id ? 'Update Work Post' : 'Create Work Post'}
-            </button>
-          </form>
-        </div>
+              <button
+                type="submit"
+                disabled={workSaving}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {workSaving ? 'Saving...' : workForm.id ? 'Update Work Post' : 'Create Work Post'}
+              </button>
+            </form>
+          </div>
         )}
 
         {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Work Posts</h2>
-            <button
-              type="button"
-              onClick={() => fetchWork()}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              Refresh
-            </button>
-          </div>
-
-          {workLoading ? (
-            <p className="text-sm text-gray-600">Loading work posts...</p>
-          ) : workPosts.length === 0 ? (
-            <p className="text-sm text-gray-600">No work posts found yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {workPosts.map((wp) => (
-                <div
-                  key={wp.id}
-                  className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-[#0D1B2A]">{wp.title}</h3>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                          wp.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}
-                      >
-                        {wp.status}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500">{(wp.categories || []).join(', ')}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleWorkEdit(wp)}
-                      className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleWorkDelete(wp.id)}
-                      className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Work Posts</h2>
+              <button
+                type="button"
+                onClick={() => fetchWork()}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                Refresh
+              </button>
             </div>
-          )}
-        </div>
+
+            {workLoading ? (
+              <p className="text-sm text-gray-600">Loading work posts...</p>
+            ) : workPosts.length === 0 ? (
+              <p className="text-sm text-gray-600">No work posts found yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {workPosts.map((wp) => (
+                  <div
+                    key={wp.id}
+                    className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-[#0D1B2A]">{wp.title}</h3>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${wp.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                            }`}
+                        >
+                          {wp.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500">{(wp.categories || []).join(', ')}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleWorkEdit(wp)}
+                        className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleWorkDelete(wp.id)}
+                        className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {!isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mb-8">
-          <h2 className="text-lg font-semibold text-[#0D1B2A] mb-3">Admin Login</h2>
-          <div className="flex flex-col gap-3 w-full md:w-2/3">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Admin email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-            />
-            <button
-              type="button"
-              onClick={() => handleLogin()}
-              className="px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] transition-colors disabled:opacity-60 disabled:cursor-not-allowed self-start"
-              disabled={authChecking}
-            >
-              {authChecking ? 'Logging in...' : 'Login'}
-            </button>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mb-8">
+            <h2 className="text-lg font-semibold text-[#0D1B2A] mb-3">Admin Login</h2>
+            <div className="flex flex-col gap-3 w-full md:w-2/3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Admin email"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Admin password"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+              />
+              <button
+                type="button"
+                onClick={() => handleLogin()}
+                className="px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] transition-colors disabled:opacity-60 disabled:cursor-not-allowed self-start"
+                disabled={authChecking}
+              >
+                {authChecking ? 'Logging in...' : 'Login'}
+              </button>
+            </div>
           </div>
-        </div>
         )}
 
         {error && (
@@ -961,374 +972,372 @@ const AdminPanel = () => {
         )}
 
         {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">
-              {form.id ? 'Edit Blog' : 'Create New Blog'}
-            </h2>
-            <button
-              type="button"
-              onClick={handleNew}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              + New
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={form.title}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Slug (URL) <span className="text-gray-500 font-normal">(Optional)</span>
-                </label>
-                <input
-                  type="text"
-                  name="slug"
-                  value={form.slug}
-                  onChange={handleInputChange}
-                  placeholder="e.g. the-power-of-social-media-for-your-brand"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                />
-              </div>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">
+                {form.id ? 'Edit Blog' : 'Create New Blog'}
+              </h2>
+              <button
+                type="button"
+                onClick={handleNew}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                + New
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Read Time
-                </label>
-                <input
-                  type="text"
-                  name="readTime"
-                  value={form.readTime}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  value={form.status}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Hero Image <span className="text-red-500">*</span>
-              </label>
-              
-              {/* Image Preview */}
-              {form.heroImage && (
-                <div className="mb-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center p-2">
-                  <img 
-                    src={form.heroImage} 
-                    alt="Hero preview" 
-                    className="max-w-full max-h-64 object-contain rounded-lg"
-                  />
-                </div>
-              )}
-
-              {/* Upload Button */}
-              <div className="flex items-center gap-3 mb-2">
-                <label className="inline-flex items-center px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
                   <input
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                    onChange={handleImageUpload}
-                    disabled={uploading}
-                    className="hidden"
+                    type="text"
+                    name="title"
+                    value={form.title}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                    required
                   />
-                  {uploading ? 'Uploading...' : 'Upload Image'}
-                </label>
-                <span className="text-xs text-gray-500">
-                  JPG, PNG, GIF, WebP (Max 5MB)
-                </span>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Slug (URL) <span className="text-gray-500 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="slug"
+                    value={form.slug}
+                    onChange={handleInputChange}
+                    placeholder="e.g. the-power-of-social-media-for-your-brand"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  />
+                </div>
               </div>
 
-              {/* Manual URL Input */}
-              <input
-                type="text"
-                name="heroImage"
-                value={form.heroImage}
-                onChange={handleInputChange}
-                placeholder="Or paste image URL here"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Upload an image or paste a URL from Cloudinary/CDN (Required)
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Content (paragraphs)
-              </label>
-              <textarea
-                name="contentText"
-                value={form.contentText}
-                onChange={handleInputChange}
-                rows={8}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                placeholder="Write each paragraph separated by a blank line."
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Paragraphs are split by line breaks. On the site they will render as separate
-                paragraphs.
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            >
-              {saving ? 'Saving...' : form.id ? 'Update Blog' : 'Create Blog'}
-            </button>
-          </form>
-        </div>
-        )}
-
-        {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Blogs</h2>
-            <button
-              type="button"
-              onClick={() => fetchBlogs()}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              Refresh
-            </button>
-          </div>
-
-          {loading ? (
-            <p className="text-sm text-gray-600">Loading blogs...</p>
-          ) : blogs.length === 0 ? (
-            <p className="text-sm text-gray-600">No blogs found yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {blogs.map((blog) => (
-                <div
-                  key={blog.id}
-                  className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-[#0D1B2A]">
-                        {blog.title}
-                      </h3>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                          blog.status === 'published'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700'
-                        }`}
-                      >
-                        {blog.status}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      /blog/{blog.slug} · {blog.readTime || '—'}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(blog)}
-                      className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(blog.id)}
-                      className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Read Time
+                  </label>
+                  <input
+                    type="text"
+                    name="readTime"
+                    value={form.readTime}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  />
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-        )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={form.status}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  >
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
 
-        {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">
-              {positionForm.id ? 'Edit Position' : 'Create New Position'}
-            </h2>
-            <button
-              type="button"
-              onClick={handlePositionNew}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              + New
-            </button>
-          </div>
-
-          <form onSubmit={handlePositionSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
+                  Hero Image <span className="text-red-500">*</span>
                 </label>
+
+                {/* Image Preview */}
+                {form.heroImage && (
+                  <div className="mb-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center p-2">
+                    <img
+                      src={form.heroImage}
+                      alt="Hero preview"
+                      className="max-w-full max-h-64 object-contain rounded-lg"
+                    />
+                  </div>
+                )}
+
+                {/* Upload Button */}
+                <div className="flex items-center gap-3 mb-2">
+                  <label className="inline-flex items-center px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                    {uploading ? 'Uploading...' : 'Upload Image'}
+                  </label>
+                  <span className="text-xs text-gray-500">
+                    JPG, PNG, GIF, WebP (Max 4MB. Use <a href="https://tinypng.com" target="_blank" rel="noreferrer" className="text-[#4A70B0] hover:underline">TinyPNG</a> to compress)
+                  </span>
+                </div>
+
+                {/* Manual URL Input */}
                 <input
                   type="text"
-                  name="title"
-                  value={positionForm.title}
-                  onChange={handlePositionInputChange}
+                  name="heroImage"
+                  value={form.heroImage}
+                  onChange={handleInputChange}
+                  placeholder="Or paste image URL here"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Upload an image or paste a URL from Cloudinary/CDN (Required)
+                </p>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
+                  Content (paragraphs)
                 </label>
-                <select
-                  name="status"
-                  value={positionForm.status}
-                  onChange={handlePositionInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                >
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
+                <textarea
+                  name="contentText"
+                  value={form.contentText}
+                  onChange={handleInputChange}
+                  rows={8}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  placeholder="Write each paragraph separated by a blank line."
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Paragraphs are split by line breaks. On the site they will render as separate
+                  paragraphs.
+                </p>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={positionForm.description}
-                onChange={handlePositionInputChange}
-                rows={4}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-                placeholder="Brief summary for this role"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Apply URL
-              </label>
-              <input
-                type="text"
-                name="applyUrl"
-                value={positionForm.applyUrl}
-                onChange={handlePositionInputChange}
-                placeholder="https:// or mailto: link"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Add a direct apply link (ATS, form, or mailto). Left empty will default to mailto:hr@apnaaapan.com.
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={positionSaving}
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-            >
-              {positionSaving ? 'Saving...' : positionForm.id ? 'Update Position' : 'Create Position'}
-            </button>
-          </form>
-        </div>
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {saving ? 'Saving...' : form.id ? 'Update Blog' : 'Create Blog'}
+              </button>
+            </form>
+          </div>
         )}
 
         {isAuthenticated && (
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Positions</h2>
-            <button
-              type="button"
-              onClick={() => fetchPositions()}
-              className="text-sm text-[#4A70B0] hover:underline"
-            >
-              Refresh
-            </button>
-          </div>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Blogs</h2>
+              <button
+                type="button"
+                onClick={() => fetchBlogs()}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                Refresh
+              </button>
+            </div>
 
-          {positionsLoading ? (
-            <p className="text-sm text-gray-600">Loading positions...</p>
-          ) : positions.length === 0 ? (
-            <p className="text-sm text-gray-600">No positions found yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {positions.map((position) => (
-                <div
-                  key={position.id}
-                  className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-[#0D1B2A]">
-                        {position.title}
-                      </h3>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                          position.status === 'published'
+            {loading ? (
+              <p className="text-sm text-gray-600">Loading blogs...</p>
+            ) : blogs.length === 0 ? (
+              <p className="text-sm text-gray-600">No blogs found yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {blogs.map((blog) => (
+                  <div
+                    key={blog.id}
+                    className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-[#0D1B2A]">
+                          {blog.title}
+                        </h3>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${blog.status === 'published'
                             ? 'bg-green-100 text-green-700'
                             : 'bg-yellow-100 text-yellow-700'
-                        }`}
-                      >
-                        {position.status}
-                      </span>
+                            }`}
+                        >
+                          {blog.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        /blog/{blog.slug} · {blog.readTime || '—'}
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-500">
-                      {position.applyUrl || 'mailto:hr@apnaaapan.com'}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(blog)}
+                        className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(blog.id)}
+                        className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handlePositionEdit(position)}
-                      className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handlePositionDelete(position.id)}
-                      className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {isAuthenticated && (
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">
+                {positionForm.id ? 'Edit Position' : 'Create New Position'}
+              </h2>
+              <button
+                type="button"
+                onClick={handlePositionNew}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                + New
+              </button>
             </div>
-          )}
-        </div>
+
+            <form onSubmit={handlePositionSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={positionForm.title}
+                    onChange={handlePositionInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={positionForm.status}
+                    onChange={handlePositionInputChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  >
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={positionForm.description}
+                  onChange={handlePositionInputChange}
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  placeholder="Brief summary for this role"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Apply URL
+                </label>
+                <input
+                  type="text"
+                  name="applyUrl"
+                  value={positionForm.applyUrl}
+                  onChange={handlePositionInputChange}
+                  placeholder="https:// or mailto: link"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Add a direct apply link (ATS, form, or mailto). Left empty will default to mailto:hr@apnaaapan.com.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={positionSaving}
+                className="inline-flex items-center px-5 py-2.5 rounded-lg bg-[#F26B2A] text-white text-sm font-semibold hover:bg-[#d85c22] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {positionSaving ? 'Saving...' : positionForm.id ? 'Update Position' : 'Create Position'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {isAuthenticated && (
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#0D1B2A]">Existing Positions</h2>
+              <button
+                type="button"
+                onClick={() => fetchPositions()}
+                className="text-sm text-[#4A70B0] hover:underline"
+              >
+                Refresh
+              </button>
+            </div>
+
+            {positionsLoading ? (
+              <p className="text-sm text-gray-600">Loading positions...</p>
+            ) : positions.length === 0 ? (
+              <p className="text-sm text-gray-600">No positions found yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {positions.map((position) => (
+                  <div
+                    key={position.id}
+                    className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 rounded-lg px-3 py-3 gap-2"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-[#0D1B2A]">
+                          {position.title}
+                        </h3>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${position.status === 'published'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                            }`}
+                        >
+                          {position.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        {position.applyUrl || 'mailto:hr@apnaaapan.com'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handlePositionEdit(position)}
+                        className="text-xs px-3 py-1 rounded-lg border border-gray-300 text-[#0D1B2A] hover:bg-gray-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePositionDelete(position.id)}
+                        className="text-xs px-3 py-1 rounded-lg border border-red-300 text-red-700 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </section>
     </main>
