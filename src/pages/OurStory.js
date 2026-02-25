@@ -265,7 +265,7 @@ const OurStory = () => {
             return (
               <div
                 key={member.id || index}
-                className="relative rounded-2xl overflow-hidden h-72 md:h-80 lg:h-96 transition-all duration-300 hover:scale-105 cursor-pointer group"
+                className="relative rounded-2xl overflow-hidden h-[480px] sm:h-80 lg:h-96 transition-all duration-300 hover:scale-105 cursor-pointer group"
                 style={{
                   background: 'linear-gradient(135deg, #FF6B35 0%, #F7931E 25%, #FFD700 50%, #87CEEB 75%, #4682B4 100%)',
                   padding: '6px'

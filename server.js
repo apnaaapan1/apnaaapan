@@ -35,15 +35,15 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-  timeout: 60000 // 60 seconds timeout
+  timeout: 120000 // 120 seconds timeout
 });
 
 // Multer configuration for handling file uploads (memory storage)
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  // Limit to 4MB to avoid Vercel timeouts and provide consistent UI experience
-  limits: { fileSize: 4 * 1024 * 1024 }, // 4MB limit
+  // Limit to 10MB to avoid Vercel timeouts and provide consistent UI experience
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -220,7 +220,7 @@ function sanitizePositionInput(body) {
 }
 
 function sanitizeWorkInput(body) {
-  const { title, description, image, alt, categories, tags, status } = body || {};
+  const { title, description, image, logo, alt, categories, tags, status } = body || {};
   const safeCategories = Array.isArray(categories)
     ? categories.map((c) => (typeof c === 'string' ? c.trim() : '')).filter(Boolean)
     : [];
@@ -232,6 +232,7 @@ function sanitizeWorkInput(body) {
     title: typeof title === 'string' ? title.trim() : '',
     description: typeof description === 'string' ? description.trim() : '',
     image: typeof image === 'string' ? image.trim() : '',
+    logo: typeof logo === 'string' ? logo.trim() : '',
     alt: typeof alt === 'string' ? alt.trim() : '',
     categories: safeCategories,
     tags: safeTags,
@@ -697,14 +698,15 @@ app.post('/api/upload-image', (req, res) => {
         publicId: result.public_id,
       });
     } catch (error) {
+      console.error('CLOUDINARY UPLOAD ERROR:', error);
       let errorMsg = 'Failed to upload image';
-      if (error.message && error.message.includes('Timeout')) {
-        errorMsg = 'Upload timeout - please try again or use a smaller image.';
+      if (error.message && (error.message.includes('Timeout') || error.message.includes('timeout'))) {
+        errorMsg = 'Upload timeout - the image server took too long. Please try again or use a smaller/compressed image.';
       }
       return res.status(500).json({
         message: errorMsg,
         error: 'UPLOAD_ERROR',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        details: error.message || 'Unknown error during upload',
       });
     }
   });
@@ -998,6 +1000,7 @@ app.get('/api/work', async (req, res) => {
         title: doc.title,
         description: doc.description,
         image: doc.image,
+        logo: doc.logo || '',
         alt: doc.alt,
         categories: doc.categories || [],
         tags: doc.tags || [],
@@ -1080,6 +1083,7 @@ app.put('/api/work', async (req, res) => {
         title: work.title,
         description: work.description,
         image: work.image,
+        logo: work.logo,
         alt: work.alt,
         categories: work.categories,
         tags: work.tags,

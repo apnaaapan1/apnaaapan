@@ -54,7 +54,7 @@ const OurWorkSection = () => {
             hasButton: true,
             hasDescription: false,
             hoverImage: project.image,
-            clientLogo: '/images/safal.png', // Default logo, you can customize this
+            clientLogo: project.logo || '/images/safal.png', // Dynamic logo with fallback
             topBgColor: BG_COLORS[index % BG_COLORS.length] // Cycle through colors
           }));
           setProjectCards(topSixPosts);

@@ -8,7 +8,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-  timeout: 60000,
+  timeout: 120000,
 });
 
 function isAdmin(req) {
@@ -89,7 +89,7 @@ module.exports = (req, res) => {
       // Upload to Cloudinary with timeout handling
       const uploadPromise = new Promise((resolve, reject) => {
         let timeoutId;
-        
+
         try {
           timeoutId = setTimeout(() => {
             reject(new Error('Upload timeout - image took too long to upload'));
@@ -110,12 +110,12 @@ module.exports = (req, res) => {
               }
             }
           );
-          
+
           uploadStream.on('error', (e) => {
             clearTimeout(timeoutId);
             reject(e);
           });
-          
+
           uploadStream.end(req.file.buffer);
         } catch (err) {
           clearTimeout(timeoutId);
@@ -133,7 +133,7 @@ module.exports = (req, res) => {
     } catch (error) {
       console.error('Upload error:', error);
       const errorMsg = error?.message || 'Failed to upload image';
-      
+
       return res.status(500).json({
         message: errorMsg,
         error: 'UPLOAD_ERROR',

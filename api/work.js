@@ -63,6 +63,7 @@ module.exports = async (req, res) => {
           title: doc.title,
           description: doc.description,
           image: doc.image,
+          logo: doc.logo || '',
           alt: doc.alt,
           categories: doc.categories || [],
           tags: doc.tags || [],
@@ -80,7 +81,7 @@ module.exports = async (req, res) => {
 
     // POST - Create work post
     if (req.method === 'POST') {
-      const { title, description, image, alt, categories, tags, status } = req.body || {};
+      const { title, description, image, logo, alt, categories, tags, status } = req.body || {};
 
       if (!title) {
         return res.status(400).json({ message: 'Title is required', error: 'MISSING_TITLE' });
@@ -94,6 +95,7 @@ module.exports = async (req, res) => {
         title: title.trim(),
         description: (description || '').trim(),
         image: image.trim(),
+        logo: (logo || '').trim(),
         alt: (alt || '').trim(),
         categories: Array.isArray(categories) ? categories : [],
         tags: Array.isArray(tags) ? tags : [],
@@ -110,7 +112,7 @@ module.exports = async (req, res) => {
 
     // PUT - Update work post
     if (req.method === 'PUT') {
-      const { id, title, description, image, alt, categories, tags, status } = req.body || {};
+      const { id, title, description, image, logo, alt, categories, tags, status } = req.body || {};
 
       if (!id) {
         return res.status(400).json({ message: 'Work post id is required', error: 'MISSING_ID' });
@@ -124,6 +126,7 @@ module.exports = async (req, res) => {
       if (title !== undefined) updateData.title = title.trim();
       if (description !== undefined) updateData.description = description.trim();
       if (image !== undefined) updateData.image = image.trim();
+      if (logo !== undefined) updateData.logo = (logo || '').trim();
       if (alt !== undefined) updateData.alt = alt.trim();
       if (categories !== undefined) updateData.categories = Array.isArray(categories) ? categories : [];
       if (tags !== undefined) updateData.tags = Array.isArray(tags) ? tags : [];

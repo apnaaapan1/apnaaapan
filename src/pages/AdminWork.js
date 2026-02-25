@@ -17,6 +17,7 @@ const initialFormState = {
   title: '',
   description: '',
   image: '',
+  logo: '',
   alt: '',
   categoriesText: '',
   tagsText: '',
@@ -36,6 +37,7 @@ export default function AdminWork() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecking, setAuthChecking] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
 
   const fetchWork = useCallback(async (tokenForHeader) => {
     const token = tokenForHeader || adminToken;
@@ -146,6 +148,42 @@ export default function AdminWork() {
     }
   };
 
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 4 * 1024 * 1024) { setError('Logo image is too large. Please use images smaller than 4MB.'); return; }
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) { setError('Only JPG, PNG, GIF, and WebP images are allowed'); return; }
+    try {
+      setLogoUploading(true);
+      setError('');
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch(API_UPLOAD_IMAGE, {
+        method: 'POST',
+        headers: { 'x-admin-token': adminToken },
+        body: formData,
+      });
+
+      let data;
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await res.json();
+      } else {
+        throw new Error(res.status === 413 ? 'The logo file is too large for the server.' : `Server error: ${res.status}`);
+      }
+
+      if (!res.ok) throw new Error(data.message || 'Upload failed');
+      setForm((prev) => ({ ...prev, logo: data.url }));
+      setSuccess('Logo uploaded successfully!');
+    } catch (err) {
+      console.error('Logo upload error:', err);
+      setError(err.message || 'Failed to upload logo.');
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -157,6 +195,7 @@ export default function AdminWork() {
       title: wp.title || '',
       description: wp.description || '',
       image: wp.image || '',
+      logo: wp.logo || '',
       alt: wp.alt || '',
       categoriesText: Array.isArray(wp.categories) ? wp.categories.join(', ') : '',
       tagsText: Array.isArray(wp.tags) ? wp.tags.join(', ') : '',
@@ -187,6 +226,7 @@ export default function AdminWork() {
       title: form.title,
       description: form.description,
       image: form.image,
+      logo: form.logo,
       alt: form.alt,
       categories,
       tags,
@@ -306,6 +346,22 @@ export default function AdminWork() {
                   </div>
                   <input type="text" name="image" value={form.image} onChange={handleInputChange} placeholder="Or paste image URL here" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" required />
                   <p className="text-xs text-gray-500 mt-1">Upload an image or paste a URL from Cloudinary/CDN (Required)</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Client Logo (For Home Page)</label>
+                  {form.logo && (
+                    <div className="mb-3 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center p-2">
+                      <img src={form.logo} alt="Client logo" className="max-w-full max-h-32 object-contain rounded-lg" />
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 mb-2">
+                    <label className="inline-flex items-center px-4 py-2 rounded-lg bg-[#4A70B0] text-white text-sm font-medium hover:bg-[#3b5d92] cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                      <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleLogoUpload} disabled={logoUploading} className="hidden" />
+                      {logoUploading ? 'Uploading...' : 'Upload Logo'}
+                    </label>
+                  </div>
+                  <input type="text" name="logo" value={form.logo} onChange={handleInputChange} placeholder="Or paste logo URL here" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" />
+                  <p className="text-xs text-gray-500 mt-1">Upload a logo or paste a URL. This logo will appear on the Home Page cards.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
