@@ -241,13 +241,23 @@ function sanitizeWorkInput(body) {
 }
 
 function sanitizeTeamInput(body) {
-  const { name, role, linkedin, image, status } = body || {};
+  const { name, role, linkedin, image, order, status } = body || {};
+
+  // Parse order: if it's explicitly a number or a string that parses to a number, use it. Otherwise 0.
+  let parsedOrder = 0;
+  if (order !== undefined && order !== null && order !== '') {
+    parsedOrder = Number(order);
+    if (isNaN(parsedOrder)) {
+      parsedOrder = 0;
+    }
+  }
 
   return {
     name: typeof name === 'string' ? name.trim() : '',
     role: typeof role === 'string' ? role.trim() : '',
     linkedin: typeof linkedin === 'string' ? linkedin.trim() : '',
     image: typeof image === 'string' ? image.trim() : '',
+    order: parsedOrder,
     status: status === 'draft' ? 'draft' : 'published',
   };
 }
@@ -1893,7 +1903,7 @@ app.get('/api/team', async (req, res) => {
       filter.status = 'published';
     }
 
-    const docs = await collection.find(filter).toArray();
+    const docs = await collection.find(filter).sort({ order: 1, createdAt: -1 }).toArray();
 
     return res.status(200).json({
       team: docs.map((doc) => ({
@@ -1902,6 +1912,7 @@ app.get('/api/team', async (req, res) => {
         role: doc.role,
         linkedin: doc.linkedin,
         image: doc.image,
+        order: doc.order,
         status: doc.status,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
@@ -1971,6 +1982,7 @@ app.put('/api/team', async (req, res) => {
         role: member.role,
         linkedin: member.linkedin,
         image: member.image,
+        order: member.order,
         status: member.status,
         updatedAt: new Date(),
       },

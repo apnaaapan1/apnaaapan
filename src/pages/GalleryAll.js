@@ -73,7 +73,7 @@ export default function GalleryAll() {
         ) : images.length ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {images.map((img, idx) => (
-              <div key={img._id || idx} className="relative group rounded-xl border border-black/20 bg-white shadow-sm overflow-hidden">
+              <div key={img._id || idx} className="relative group rounded-xl border border-black/20 bg-white/70 shadow-sm overflow-hidden h-[220px] sm:h-[240px]">
                 <img
                   src={img.imageUrl}
                   alt={`Gallery ${idx + 1}`}

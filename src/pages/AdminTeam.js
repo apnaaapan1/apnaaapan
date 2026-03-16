@@ -18,6 +18,7 @@ const initialFormState = {
     role: '',
     linkedin: '',
     image: '',
+    order: 0,
     status: 'published',
 };
 
@@ -171,6 +172,7 @@ export default function AdminTeam() {
             role: member.role || '',
             linkedin: member.linkedin || '',
             image: member.image || '',
+            order: member.order || 0,
             status: member.status || 'published',
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -265,7 +267,10 @@ export default function AdminTeam() {
                                     <input type="text" name="name" value={form.name} onChange={handleInputChange} placeholder="Name" className="border p-2 rounded w-full" required />
                                     <input type="text" name="role" value={form.role} onChange={handleInputChange} placeholder="Role" className="border p-2 rounded w-full" required />
                                 </div>
-                                <input type="text" name="linkedin" value={form.linkedin} onChange={handleInputChange} placeholder="LinkedIn URL" className="border p-2 rounded w-full" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" name="linkedin" value={form.linkedin} onChange={handleInputChange} placeholder="LinkedIn URL" className="border p-2 rounded w-full" />
+                                    <input type="number" name="order" value={form.order} onChange={handleInputChange} placeholder="Order (e.g., 1 for first)" className="border p-2 rounded w-full" />
+                                </div>
 
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Photo</label>
@@ -303,7 +308,8 @@ export default function AdminTeam() {
                                         <div key={member.id} className="border rounded-xl p-4 flex flex-col items-center text-center">
                                             <img src={member.image || '/images/file 1.png'} alt={member.name} className="w-24 h-24 object-cover rounded-full mb-3" />
                                             <h3 className="font-bold">{member.name}</h3>
-                                            <p className="text-sm text-gray-600 mb-3">{member.role}</p>
+                                            <p className="text-sm text-gray-600 mb-1">{member.role}</p>
+                                            <p className="text-xs text-gray-500 mb-3">Order: {member.order || 0}</p>
                                             <div className="flex gap-2">
                                                 <button onClick={() => handleEdit(member)} className="text-xs border px-3 py-1 rounded hover:bg-gray-50">Edit</button>
                                                 <button onClick={() => handleDelete(member.id)} className="text-xs border border-red-200 text-red-600 px-3 py-1 rounded hover:bg-red-50">Delete</button>

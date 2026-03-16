@@ -486,18 +486,11 @@ const WithApnaaapan = () => {
                   <div key={i} className="rounded-xl border border-black/30 bg-gray-200 animate-pulse h-[220px] sm:h-[240px]"></div>
                 ))
               ) : (
-                Array.from({ length: 8 }).map((_, i) => {
-                  const img = galleryImages[i];
-                  return (
-                    <div key={i} className="rounded-xl border border-black/30 bg-white/70 shadow-sm overflow-hidden h-[220px] sm:h-[240px]">
-                      {img ? (
-                        <img src={img.imageUrl} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200"></div>
-                      )}
-                    </div>
-                  );
-                })
+                galleryImages.map((img, i) => (
+                  <div key={img._id || i} className="rounded-xl border border-black/30 bg-white/70 shadow-sm overflow-hidden h-[220px] sm:h-[240px]">
+                    <img src={img.imageUrl} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+                  </div>
+                ))
               )}
             </div>
           </div>
