@@ -40,13 +40,22 @@ function isAdmin(req) {
 }
 
 function sanitizeTeamInput(body) {
-    const { name, role, linkedin, image, status } = body || {};
+    const { name, role, linkedin, image, order, status } = body || {};
+
+    let parsedOrder = 0;
+    if (order !== undefined && order !== null && order !== '') {
+        parsedOrder = Number(order);
+        if (isNaN(parsedOrder)) {
+            parsedOrder = 0;
+        }
+    }
 
     return {
         name: typeof name === 'string' ? name.trim() : '',
         role: typeof role === 'string' ? role.trim() : '',
         linkedin: typeof linkedin === 'string' ? linkedin.trim() : '',
         image: typeof image === 'string' ? image.trim() : '',
+        order: parsedOrder,
         status: status === 'draft' ? 'draft' : 'published',
     };
 }
@@ -78,6 +87,7 @@ module.exports = async function handler(req, res) {
 
             const docs = await collection
                 .find(filter)
+                .sort({ order: 1, createdAt: -1 })
                 .toArray();
 
             return res.status(200).json({
@@ -87,6 +97,7 @@ module.exports = async function handler(req, res) {
                     role: doc.role,
                     linkedin: doc.linkedin,
                     image: doc.image,
+                    order: doc.order,
                     status: doc.status,
                     createdAt: doc.createdAt,
                     updatedAt: doc.updatedAt,
@@ -163,6 +174,7 @@ module.exports = async function handler(req, res) {
                     role: member.role,
                     linkedin: member.linkedin,
                     image: member.image,
+                    order: member.order,
                     status: member.status,
                     updatedAt: new Date(),
                 },
