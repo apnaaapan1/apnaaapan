@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import OurWorkSection from './components/OurWorkSection';
@@ -30,6 +30,10 @@ import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
 import AdminGallery from './pages/AdminGallery';
 import AdminTeam from './pages/AdminTeam';
+import Videos from './pages/Videos';
+import AdminVideos from './pages/AdminVideos';
+import GraphicPortfolio from './pages/GraphicPortfolio';
+import AdminGraphicPortfolio from './pages/AdminGraphicPortfolio';
 import usePageTracking from './hooks/usePageTracking';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -83,6 +87,13 @@ function App() {
           <Route path="/admin/gallery" element={<AdminGallery />} />
           <Route path="/admin/events" element={<AdminEvents />} />
           <Route path="/admin/team" element={<AdminTeam />} />
+          <Route path="/portfolio" element={<Videos />} />
+          <Route path="/admin/portfolio" element={<AdminVideos />} />
+          <Route path="/graphic-portfolio" element={<GraphicPortfolio />} />
+          <Route path="/admin/graphic-portfolio" element={<AdminGraphicPortfolio />} />
+          {/* Backward-compatible aliases */}
+          <Route path="/videos" element={<Navigate to="/portfolio" replace />} />
+          <Route path="/admin/videos" element={<Navigate to="/admin/portfolio" replace />} />
         </Routes>
         <Footer />
       </div>

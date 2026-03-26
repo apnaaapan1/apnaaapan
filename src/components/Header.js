@@ -9,8 +9,10 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [showHeader, setShowHeader] = useState(true);
+  const [isWorkDropdownOpen, setIsWorkDropdownOpen] = useState(false);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
+  const workDropdownCloseTimeoutRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -36,6 +38,14 @@ const Header = () => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (workDropdownCloseTimeoutRef.current) {
+        clearTimeout(workDropdownCloseTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Function to handle logo click - redirect to home page
@@ -66,57 +76,112 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-8 relative">
           {/* Our Story (simple link, submenu removed) */}
           <div className="relative">
-            <Link 
-              to="/our-story" 
-              className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
+            <Link
+              to="/our-story"
+              className={`font-dm-sans-medium text-sm transition-colors duration-200 relative group ${
                 currentPath === '/our-story' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
               }`}
             >
               <span className="inline-flex items-center gap-1">
                 <span>Our Story</span>
               </span>
-              {currentPath === '/our-story' && (
-                <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
-              )}
+              <div
+                className={`absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full transition-opacity duration-200 ${
+                  currentPath === '/our-story'
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100'
+                }`}
+              />
             </Link>
           </div>
 
-          {/* Work (simple link, submenu removed) */}
-          <Link 
-            to="/work" 
-            className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
-              currentPath === '/work' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
-            }`}
+          {/* Work (hover dropdown) */}
+          <div
+            className="relative"
+            onMouseEnter={() => {
+              if (workDropdownCloseTimeoutRef.current) {
+                clearTimeout(workDropdownCloseTimeoutRef.current);
+                workDropdownCloseTimeoutRef.current = null;
+              }
+              setIsWorkDropdownOpen(true);
+            }}
+            onMouseLeave={() => {
+              // Delay prevents the menu from disappearing while moving/clicking
+              workDropdownCloseTimeoutRef.current = setTimeout(() => {
+                setIsWorkDropdownOpen(false);
+              }, 120);
+            }}
           >
-            Work
-            {currentPath === '/work' && (
-              <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
-            )}
-          </Link>
+            <Link
+              to="/work"
+              className={`font-dm-sans-medium text-sm transition-colors duration-200 relative group ${
+                currentPath === '/work' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
+              }`}
+            >
+              Work
+              <div
+                className={`absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full transition-opacity duration-200 ${
+                  currentPath === '/work'
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100'
+                }`}
+              />
+            </Link>
+
+            {/* Dropdown shown on hover */}
+            <div
+              className={`absolute left-0 top-[calc(100%+10px)] border border-gray-200 rounded-lg shadow-xl z-50 min-w-[180px] overflow-hidden ${
+                isWorkDropdownOpen ? 'block' : 'hidden'
+              }`}
+              style={{ backgroundColor: '#EFE7D5', pointerEvents: isWorkDropdownOpen ? 'auto' : 'none' }}
+            >
+              <Link
+                to="/portfolio"
+                onClick={() => setIsWorkDropdownOpen(false)}
+                className="block px-4 py-3 text-sm text-[#0D1B2A] hover:bg-white/70 hover:text-[#F26B2A] transition-colors duration-150"
+              >
+                Portfolio
+              </Link>
+              <div className="h-px bg-gray-200/60" />
+              <Link
+                to="/graphic-portfolio"
+                onClick={() => setIsWorkDropdownOpen(false)}
+                className="block px-4 py-3 text-sm text-[#0D1B2A] hover:bg-white/70 hover:text-[#F26B2A] transition-colors duration-150"
+              >
+                Graphic Portfolio
+              </Link>
+            </div>
+          </div>
 
           <Link 
             to="/contact" 
-            className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
+            className={`font-dm-sans-medium text-sm transition-colors duration-200 relative group ${
               currentPath === '/contact' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
             }`}
           >
             Contact Us
-            {/* Active indicator line */}
-            {currentPath === '/contact' && (
-              <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
-            )}
+            <div
+              className={`absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full transition-opacity duration-200 ${
+                currentPath === '/contact'
+                  ? 'opacity-100'
+                  : 'opacity-0 group-hover:opacity-100'
+              }`}
+            />
           </Link>
           <Link 
             to="/with-apnaaapan" 
-            className={`font-dm-sans-medium text-sm transition-colors duration-200 relative ${
+            className={`font-dm-sans-medium text-sm transition-colors duration-200 relative group ${
               currentPath === '/with-apnaaapan' ? 'text-[#0D1B2A]' : 'text-[#5B5B5B]'
             }`}
           >
             With.Apnaaapan
-            {/* Active indicator line */}
-            {currentPath === '/with-apnaaapan' && (
-              <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full"></div>
-            )}
+            <div
+              className={`absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-full transition-opacity duration-200 ${
+                currentPath === '/with-apnaaapan'
+                  ? 'opacity-100'
+                  : 'opacity-0 group-hover:opacity-100'
+              }`}
+            />
           </Link>
         </div>
         

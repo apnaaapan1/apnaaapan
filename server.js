@@ -7,6 +7,13 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
+// Video upload APIs (signed direct-to-Cloudinary flow)
+// Mounted here so local development (localhost:5000) can call the same endpoints.
+const cloudinaryVideoSignatureHandler = require('./api/cloudinary-video-signature');
+const videosHandler = require('./api/videos');
+const cloudinaryGraphicSignatureHandler = require('./api/cloudinary-graphic-signature');
+const graphicsHandler = require('./api/graphics');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -2028,6 +2035,14 @@ app.delete('/api/team', async (req, res) => {
 });
 
 // Health check endpoint
+// ============================================
+// Videos APIs (admin + public)
+// ============================================
+app.all('/api/videos', videosHandler);
+app.all('/api/cloudinary-video-signature', cloudinaryVideoSignatureHandler);
+app.all('/api/graphics', graphicsHandler);
+app.all('/api/cloudinary-graphic-signature', cloudinaryGraphicSignatureHandler);
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',

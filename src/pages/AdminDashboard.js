@@ -176,6 +176,32 @@ export default function AdminDashboard() {
             </Link>
 
             <Link
+              to="/admin/portfolio"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Portfolio</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">
+                Upload and manage Cloudinary-hosted portfolio videos.
+              </p>
+            </Link>
+
+            <Link
+              to="/admin/graphic-portfolio"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Graphic Portfolio</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">
+                Upload and manage Cloudinary-hosted graphics.
+              </p>
+            </Link>
+
+            <Link
               to="/admin/gallery"
               className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
             >
