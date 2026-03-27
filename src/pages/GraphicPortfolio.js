@@ -93,24 +93,24 @@ export default function GraphicPortfolio() {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-2 sm:gap-3">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="h-44 sm:h-52 rounded-xl border border-black/20 bg-gray-200 animate-pulse" />
+              <div key={i} className="mb-2 sm:mb-3 break-inside-avoid h-44 sm:h-52 rounded-xl border border-black/20 bg-gray-200 animate-pulse" />
             ))}
           </div>
         ) : graphics.length ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-2 sm:gap-3">
             {graphics.map((g, idx) => (
               <article
                 key={g.id || idx}
-                className="rounded-xl border border-black/10 bg-white/70 shadow-sm overflow-hidden"
+                className="mb-2 sm:mb-3 break-inside-avoid rounded-xl border border-black/10 bg-white/70 shadow-sm overflow-hidden"
               >
-                <div className="p-2 sm:p-3">
+                <div className="p-1">
                   <div className="rounded-lg overflow-hidden bg-white border border-black/10">
                     <img
                       src={g.imageUrl}
                       alt={g.title || `Graphic ${idx + 1}`}
-                      className="w-full h-auto object-contain bg-white"
+                      className="w-full h-auto block"
                       loading="lazy"
                     />
                   </div>

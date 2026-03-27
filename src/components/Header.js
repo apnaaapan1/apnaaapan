@@ -10,6 +10,7 @@ const Header = () => {
 
   const [showHeader, setShowHeader] = useState(true);
   const [isWorkDropdownOpen, setIsWorkDropdownOpen] = useState(false);
+  const [isMobileWorkDropdownOpen, setIsMobileWorkDropdownOpen] = useState(false);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
   const workDropdownCloseTimeoutRef = useRef(null);
@@ -227,8 +228,51 @@ const Header = () => {
           {/* Our Story (simple link) */}
           <Link to="/our-story" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Our Story</Link>
 
-          {/* Work (simple link on mobile, submenu removed) */}
-          <Link to="/work" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Work</Link>
+          {/* Work (with dropdown on mobile) */}
+          <div>
+            <button
+              onClick={() => setIsMobileWorkDropdownOpen(!isMobileWorkDropdownOpen)}
+              className="w-full text-left py-3 text-[#3B3B3B] font-dm-sans-medium"
+            >
+              Work
+            </button>
+            
+            {/* Work Submenu */}
+            {isMobileWorkDropdownOpen && (
+              <div className="pl-4 space-y-1 bg-white/50 rounded border border-gray-200/50">
+                <Link
+                  to="/work"
+                  className="block py-2.5 text-sm text-[#0D1B2A] font-dm-sans-medium"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsMobileWorkDropdownOpen(false);
+                  }}
+                >
+                  All Work
+                </Link>
+                <Link
+                  to="/portfolio"
+                  className="block py-2.5 text-sm text-[#0D1B2A] font-dm-sans-medium"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsMobileWorkDropdownOpen(false);
+                  }}
+                >
+                  Portfolio
+                </Link>
+                <Link
+                  to="/graphic-portfolio"
+                  className="block py-2.5 text-sm text-[#0D1B2A] font-dm-sans-medium"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsMobileWorkDropdownOpen(false);
+                  }}
+                >
+                  Graphic Portfolio
+                </Link>
+              </div>
+            )}
+          </div>
 
           <Link to="/contact" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>Contact Us</Link>
           <Link to="/with-apnaaapan" className="block py-3 text-[#3B3B3B] font-dm-sans-medium" onClick={() => setIsMobileMenuOpen(false)}>With.Apnaaapan</Link>

@@ -82,16 +82,16 @@ export default function Videos() {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 max-w-7xl mx-auto">
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 max-w-7xl mx-auto">
+            {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-black/20 bg-gray-200 animate-pulse overflow-hidden"
+                className="aspect-[9/16] rounded-2xl border border-black/20 bg-gray-200 animate-pulse overflow-hidden"
               />
             ))}
           </div>
         ) : videos.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 max-w-7xl mx-auto">
             {videos.map((v, idx) => (
               <article
                 key={v.id || idx}
