@@ -40,9 +40,39 @@ export default function GraphicPortfolio() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#EFE7D5] px-4 sm:px-6 lg:px-8 py-16">
-      <div className="max-w-7xl mx-auto">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-10">
+    <main className="min-h-screen bg-[#EFE7D5]">
+      {/* Our Recent Graphics Section */}
+      <section className="relative px-4 md:px-8 py-16 md:py-32">
+        {/* Background decorative lines */}
+        <div className="absolute left-0 top-0 w-full h-full pointer-events-none">
+          <div className="absolute left-8 top-0 w-px h-full bg-gray-300">
+            <div className="absolute left-0 top-0 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-300"></div>
+          </div>
+          <div className="absolute right-8 top-0 w-px h-full bg-gray-300">
+            <div className="absolute right-0 top-0 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-300"></div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold mb-4 md:mb-8 leading-tight">
+            <span className="text-[#1a365d]">Our recent</span>{' '}
+            <span className="bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent">
+              graphics
+            </span>
+          </h1>
+          
+          {/* Subtitle */}
+          <div className="text-sm sm:text-base md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto space-y-2 md:space-y-4">
+            <p>Creative designs crafted with precision and purpose.</p>
+            <p>Visual storytelling. Brand identity. Design excellence.</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-10 hidden">
           <div>
             <h1
               className="font-serif text-[#0D1B2A]"
@@ -75,20 +105,15 @@ export default function GraphicPortfolio() {
                 key={g.id || idx}
                 className="rounded-xl border border-black/10 bg-white/70 shadow-sm overflow-hidden"
               >
-                <div className="p-3">
+                <div className="p-2 sm:p-3">
                   <div className="rounded-lg overflow-hidden bg-white border border-black/10">
                     <img
                       src={g.imageUrl}
                       alt={g.title || `Graphic ${idx + 1}`}
-                      className="w-full h-44 sm:h-52 object-contain bg-white"
+                      className="w-full h-auto object-contain bg-white"
                       loading="lazy"
                     />
                   </div>
-                  {g.title && (
-                    <h2 className="mt-3 text-sm font-semibold text-[#0D1B2A] line-clamp-2">
-                      {g.title}
-                    </h2>
-                  )}
                 </div>
               </article>
             ))}

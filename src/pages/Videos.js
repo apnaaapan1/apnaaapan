@@ -43,8 +43,38 @@ export default function Videos() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#EFE7D5] px-4 sm:px-6 lg:px-6 py-12">
-      <div className="max-w-7xl mx-auto">
+    <main className="min-h-screen bg-[#EFE7D5]">
+      {/* Our Recent Videos Section */}
+      <section className="relative px-4 md:px-8 py-16 md:py-32">
+        {/* Background decorative lines */}
+        <div className="absolute left-0 top-0 w-full h-full pointer-events-none">
+          <div className="absolute left-8 top-0 w-px h-full bg-gray-300">
+            <div className="absolute left-0 top-0 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-300"></div>
+          </div>
+          <div className="absolute right-8 top-0 w-px h-full bg-gray-300">
+            <div className="absolute right-0 top-0 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-300"></div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold mb-4 md:mb-8 leading-tight">
+            <span className="text-[#1a365d]">Our recent</span>{' '}
+            <span className="bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent">
+              portfolio
+            </span>
+          </h1>
+          
+          {/* Subtitle */}
+          <div className="text-sm sm:text-base md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto space-y-2 md:space-y-4">
+            <p>Creative content that brings our projects to life.</p>
+            <p>Behind the scenes. Real results. Engaging stories.</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-12">
         {error && (
           <div className="mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
