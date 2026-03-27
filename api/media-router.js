@@ -128,7 +128,7 @@ async function handleVideoSignature(req, res) {
     CLOUDINARY_API_SECRET
   );
 
-  const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+  const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
 
   return res.status(200).json({
     upload_url: uploadUrl,
@@ -137,7 +137,6 @@ async function handleVideoSignature(req, res) {
     timestamp,
     signature,
     folder: uploadFolder,
-    resource_type: 'video',
     public_id: finalPublicId,
   });
 }
