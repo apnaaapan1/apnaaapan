@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const getApiUrl = (endpoint) => {
   if (process.env.NODE_ENV === 'production') {
@@ -11,6 +11,34 @@ export default function Videos() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [unmutedVideos, setUnmutedVideos] = useState(new Set());
+  const videoRefs = useRef({});
+
+  const handleVideoClick = (videoId) => {
+    setUnmutedVideos((prev) => {
+      const next = new Set(prev);
+      if (next.has(videoId)) {
+        next.delete(videoId);
+      } else {
+        next.add(videoId);
+      }
+      return next;
+    });
+    
+    // Update the actual video element's muted property
+    if (videoRefs.current[videoId]) {
+      videoRefs.current[videoId].muted = !videoRefs.current[videoId].muted;
+    }
+  };
+
+  const keepVideoPlaying = (videoId) => {
+    const el = videoRefs.current[videoId];
+    if (!el) return;
+    const p = el.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {});
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -82,7 +110,7 @@ export default function Videos() {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4 max-w-7xl mx-auto">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
@@ -91,13 +119,13 @@ export default function Videos() {
             ))}
           </div>
         ) : videos.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4 max-w-7xl mx-auto">
             {videos.map((v, idx) => (
               <article
                 key={v.id || idx}
                 className="bg-white/70 backdrop-blur rounded-2xl shadow-sm border border-black/10 overflow-hidden"
               >
-                <div className="p-3">
+                <div className="p-2.5">
                   {/* Instagram-like vertical frame (no cropping) */}
                   <div className="aspect-[9/16] rounded-xl overflow-hidden bg-black border border-black/10">
                     <video
@@ -106,6 +134,14 @@ export default function Videos() {
                       className="w-full h-full object-contain bg-black"
                       preload="metadata"
                       playsInline
+                      autoPlay
+                      loop
+                      muted={!unmutedVideos.has(v.id || idx)}
+                      ref={(el) => {
+                        if (el) videoRefs.current[v.id || idx] = el;
+                      }}
+                      onClick={() => handleVideoClick(v.id || idx)}
+                      onPause={() => keepVideoPlaying(v.id || idx)}
                     />
                   </div>
                 </div>
