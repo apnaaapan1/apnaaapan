@@ -9,6 +9,33 @@ const DATABASE_NAME = process.env.DATABASE_NAME || 'apnaaapan_user';
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL;
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+
+async function verifyRecaptchaToken(token, remoteIp) {
+  if (!RECAPTCHA_SECRET_KEY) {
+    return false;
+  }
+
+  const params = new URLSearchParams();
+  params.append('secret', RECAPTCHA_SECRET_KEY);
+  params.append('response', token);
+  if (remoteIp) {
+    params.append('remoteip', remoteIp);
+  }
+
+  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  const data = await response.json();
+  return Boolean(data.success);
+}
 
 module.exports = async function handler(req, res) {
   // CORS headers
@@ -38,7 +65,23 @@ module.exports = async function handler(req, res) {
   let client = null;
 
   try {
-    const { firstName, lastName, email, phoneNumber, question } = req.body;
+    const { firstName, lastName, email, phoneNumber, question, captchaToken } = req.body;
+
+    if (!captchaToken) {
+      return res.status(400).json({
+        message: 'CAPTCHA verification failed',
+        error: 'CAPTCHA_REQUIRED'
+      });
+    }
+
+    const remoteIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const isCaptchaValid = await verifyRecaptchaToken(captchaToken, remoteIp);
+    if (!isCaptchaValid) {
+      return res.status(400).json({
+        message: 'CAPTCHA verification failed',
+        error: 'CAPTCHA_FAILED'
+      });
+    }
 
     // Validate required fields
     if (!firstName || !lastName || !email || !phoneNumber || !question) {

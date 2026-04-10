@@ -114,7 +114,7 @@ export default function Videos() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-[9/16] rounded-2xl border border-black/20 bg-gray-200 animate-pulse overflow-hidden"
+                className="aspect-[9/16] rounded-2xl bg-gray-200 animate-pulse overflow-hidden"
               />
             ))}
           </div>
@@ -123,11 +123,11 @@ export default function Videos() {
             {videos.map((v, idx) => (
               <article
                 key={v.id || idx}
-                className="bg-white/70 backdrop-blur rounded-2xl shadow-sm border border-black/10 overflow-hidden"
+                className="bg-white/70 backdrop-blur rounded-2xl shadow-sm overflow-hidden"
               >
                 <div className="p-2.5">
                   {/* Instagram-like vertical frame (no cropping) */}
-                  <div className="aspect-[9/16] rounded-xl overflow-hidden bg-black border border-black/10">
+                  <div className="aspect-[9/16] rounded-xl overflow-hidden bg-black">
                     <video
                       controls
                       src={v.videoUrl}

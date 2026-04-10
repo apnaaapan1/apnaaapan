@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,10 @@ const Contact = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [errorMessage, setErrorMessage] = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaScale, setCaptchaScale] = useState(1);
+  const recaptchaRef = useRef(null);
+  const captchaContainerRef = useRef(null);
 
   // Auto-dismiss success message after 5 seconds with countdown
   useEffect(() => {
@@ -36,6 +41,20 @@ const Contact = () => {
     }
   }, [submitStatus]);
 
+  // Keep reCAPTCHA width aligned with full-width form controls by scaling to container width.
+  useEffect(() => {
+    const updateCaptchaScale = () => {
+      if (!captchaContainerRef.current) return;
+      const containerWidth = captchaContainerRef.current.offsetWidth || 304;
+      const nextScale = Math.min(1, containerWidth / 304);
+      setCaptchaScale(nextScale);
+    };
+
+    updateCaptchaScale();
+    window.addEventListener('resize', updateCaptchaScale);
+    return () => window.removeEventListener('resize', updateCaptchaScale);
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -51,6 +70,11 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!captchaToken) {
+      alert('Please complete the CAPTCHA');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
     setErrorMessage('');
@@ -66,7 +90,10 @@ const Contact = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          captchaToken
+        }),
       });
 
       // Check if response is ok before parsing JSON
@@ -96,6 +123,10 @@ const Contact = () => {
           phoneNumber: '',
           question: ''
         });
+        setCaptchaToken('');
+        if (recaptchaRef.current) {
+          recaptchaRef.current.reset();
+        }
       } else {
         setSubmitStatus('error');
         setErrorMessage(result.message || 'An error occurred while submitting the form');
@@ -120,10 +151,13 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#EFE7D5] py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-20">
-          {/* Left Section - Connect With Us */}
-          <div className="space-y-12 animate-fadeIn" style={{ animationDelay: '50ms' }}>
-            <div className="animate-fadeIn" style={{ animationDelay: '100ms' }}>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-stretch pb-8 lg:pb-16">
+          {/* Left Section - Connect With Us, contact info, and map (map grows to match form height on lg+) */}
+          <div
+            className="flex flex-col lg:h-full lg:min-h-0 gap-10 lg:gap-12 animate-fadeIn"
+            style={{ animationDelay: '50ms' }}
+          >
+            <div className="shrink-0 animate-fadeIn" style={{ animationDelay: '100ms' }}>
               <h2 className="text-3xl md:text-4xl font-bold text-[#0D1B2A] mb-6" style={{ fontFamily: 'MADE Avenue PERSONAL USE' }}>
                 Connect With <span className="text-[#FFC107]">Us</span>
               </h2>
@@ -132,26 +166,45 @@ const Contact = () => {
               </p>
             </div>
 
-            <div className="space-y-12">
-              {/* Contact Us Section */}
-              <div className="animate-fadeIn" style={{ animationDelay: '180ms' }}>
-                <h3 className="text-xl font-semibold text-[#0D1B2A] mb-6" style={{ fontFamily: 'nexaRegular' }}>
-                  Contact Us
-                </h3>
-                <div className="flex flex-col space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Email - grow@apnaaapan.com</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                    <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Phone - +91 9548954859</span>
-                  </div>
+            <div className="shrink-0 animate-fadeIn" style={{ animationDelay: '180ms' }}>
+              <h3 className="text-xl font-semibold text-[#0D1B2A] mb-6" style={{ fontFamily: 'nexaRegular' }}>
+                Contact Us
+              </h3>
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Email - grow@apnaaapan.com</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-[#F26B2A]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                  </svg>
+                  <span className="text-[#5B5B5B]" style={{ fontFamily: 'nexaRegular' }}>Phone - +91 9548954859</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Location map — fills remaining column height to align with form (desktop) */}
+            <div className="flex flex-col flex-1 min-h-0 animate-fadeIn" style={{ animationDelay: '220ms' }}>
+              <h3 className="text-xl font-semibold text-[#0D1B2A] mb-4 shrink-0" style={{ fontFamily: 'nexaRegular' }}>
+                Location
+              </h3>
+              <div className="bg-white rounded-3xl p-2 shadow-lg border border-gray-100 flex flex-col flex-1 min-h-[280px] lg:min-h-0">
+                <div className="relative w-full flex-1 min-h-[260px] lg:min-h-0 rounded-2xl overflow-hidden">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.532287863523!2d75.7510016!3d26.8230173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396dc9bba3d418b3%3A0x255297e811febb39!2sApnaaapan!5e0!3m2!1sen!2sin!4v1775821264879!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Apnaaapan — location on map"
+                    className="absolute inset-0 w-full h-full"
+                  />
                 </div>
               </div>
             </div>
@@ -176,7 +229,7 @@ const Contact = () => {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
                     placeholder="Enter your first name"
                     required
                     style={{ fontFamily: 'nexaRegular' }}
@@ -192,7 +245,7 @@ const Contact = () => {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
                     placeholder="Enter your last name"
                     required
                     style={{ fontFamily: 'nexaRegular' }}
@@ -218,7 +271,7 @@ const Contact = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
                     placeholder="Enter your email address"
                     required
                     style={{ fontFamily: 'nexaRegular' }}
@@ -241,7 +294,7 @@ const Contact = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200"
                     placeholder="Enter your phone number"
                     required
                     style={{ fontFamily: 'nexaRegular' }}
@@ -260,7 +313,7 @@ const Contact = () => {
                   value={formData.question}
                   onChange={handleInputChange}
                   rows="4"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F26B2A] focus:border-transparent transition-all duration-200 resize-none"
                   placeholder="Tell us about your project or question..."
                   required
                   style={{ fontFamily: 'nexaRegular' }}
@@ -317,10 +370,28 @@ const Contact = () => {
                 </div>
               )}
 
+              <div ref={captchaContainerRef} className="w-full">
+                <div
+                  style={{
+                    transform: `scale(${captchaScale})`,
+                    transformOrigin: 'left top',
+                    width: '304px',
+                    height: `${78 * captchaScale}px`
+                  }}
+                >
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY || ''}
+                    onChange={(token) => setCaptchaToken(token || '')}
+                    onExpired={() => setCaptchaToken('')}
+                  />
+                </div>
+              </div>
+
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !captchaToken}
                 className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isSubmitting
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-500 to-yellow-400 text-white hover:shadow-lg hover:scale-[1.02] focus:ring-orange-500'
@@ -348,26 +419,6 @@ const Contact = () => {
                 <a href="/privacy" className="text-[#F26B2A] hover:underline">Privacy Policy</a>.
               </p>
             </form>
-          </div>
-        </div>
-
-        {/* Google Maps Section */}
-        <div className="mt-20 mb-20 animate-fadeIn" style={{ animationDelay: '280ms' }}>
-          <div className="bg-white rounded-3xl p-2 shadow-lg border border-gray-100">
-            <div className="relative h-[600px] w-full rounded-2xl overflow-hidden">
-              {/* Google Maps iframe - Replace with your actual Google Maps embed code */}
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d222.53600439212462!2d75.7502111!3d26.8216239!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396dcbeea82eeba9%3A0xff55686426875b37!2sAxis%20Bank%20Branch!5e0!3m2!1sen!2sin!4v1770488560581!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Apnaaapan Office Location"
-                className="w-full h-full"
-              ></iframe>
-            </div>
           </div>
         </div>
       </div>
