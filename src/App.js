@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection';
 import OurWorkSection from './components/OurWorkSection';
 import OurWinningProcess from './components/OurWinningProcess';
 import ClientFeedback from './components/ClientFeedback';
+import UgcScrollHeading from './components/UgcScrollHeading';
 import OurServices from './components/OurServices';
 import BookingSection from './components/BookingSection';
 import Footer from './components/Footer';
@@ -56,7 +57,8 @@ function App() {
                 <OurWorkSection />
                 <OurWinningProcess />
                 <ClientFeedback />
-                <OurServices />
+                <UgcScrollHeading />
+                <OurServices enableScrollAnimation={false} />
                 <BookingSection />
               </>
             }

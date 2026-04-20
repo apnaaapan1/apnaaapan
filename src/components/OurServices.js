@@ -1,9 +1,25 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
+
+const scrollStaticServicesRow = (container, direction) => {
+  if (!container) return;
+  const first = container.firstElementChild;
+  if (!first) return;
+  const style = window.getComputedStyle(first);
+  const marginX =
+    (parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0);
+  const step = first.getBoundingClientRect().width + marginX;
+  const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+  const next = Math.min(
+    maxScroll,
+    Math.max(0, container.scrollLeft + direction * step)
+  );
+  container.scrollTo({ left: next, behavior: 'smooth' });
+};
 
 const services = [
   {
@@ -69,12 +85,34 @@ const services = [
   }
 ];
 
-const OurServices = ({ showHeader = true, items }) => {
+const CARD_COLUMN_CLASS =
+  'mx-2 flex w-[280px] flex-shrink-0 sm:mx-3 sm:w-[320px] md:mx-4 md:w-[380px] lg:w-[450px]';
+
+const GPU_CARD_WRAPPER_STYLE = {
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+  transform: 'translateZ(0)',
+  WebkitTransform: 'translateZ(0)',
+  WebkitBackfaceVisibility: 'hidden',
+  contain: 'layout style paint',
+};
+
+const OurServices = ({ showHeader = true, items, enableScrollAnimation = true }) => {
   const wrapperRef = useRef(null);
   const cardsRef = useRef([]);
   const itemsToRender = items && items.length ? items : services;
 
+  const handleStaticArrowClick = useCallback(
+    (direction) => {
+      if (enableScrollAnimation) return;
+      scrollStaticServicesRow(wrapperRef.current, direction);
+    },
+    [enableScrollAnimation]
+  );
+
   useEffect(() => {
+    if (!enableScrollAnimation) return undefined;
+
     const wrapper = wrapperRef.current;
     const cards = cardsRef.current;
 
@@ -188,12 +226,94 @@ const OurServices = ({ showHeader = true, items }) => {
       scrollTrigger.kill();
       tl.kill();
     };
-  }, [itemsToRender]);
+  }, [itemsToRender, enableScrollAnimation]);
 
+  const isCompactCards = !enableScrollAnimation;
+
+  /* Home: reference proportions (~1.5× height vs width), not too small */
+  const cardColumnClassForMode = isCompactCards
+    ? 'mx-2.5 flex w-[262px] flex-shrink-0 sm:mx-3 sm:w-[286px] md:mx-3.5 md:w-[304px] lg:w-[320px]'
+    : CARD_COLUMN_CLASS;
+
+  const cardShellClass =
+    'bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-300 group relative overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl h-[320px] sm:h-[380px] md:h-[420px] lg:h-[480px] xl:h-[560px]';
+
+  const hoverOverlayRounded = 'rounded-3xl';
+
+  const serviceCardColumns = itemsToRender.map((service, index) => (
+    <div
+      key={service.id}
+      ref={(el) => {
+        cardsRef.current[index] = el;
+      }}
+      className={cardColumnClassForMode}
+      style={enableScrollAnimation ? GPU_CARD_WRAPPER_STYLE : undefined}
+    >
+      {isCompactCards ? (
+        <div className="group relative w-full cursor-pointer overflow-hidden rounded-2xl border border-[#1a2236] bg-white shadow-sm transition-all duration-500 hover:shadow-md aspect-[2/3]">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
+          <div className="relative z-10 flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-5 sm:p-6 md:p-7">
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-sm font-semibold tracking-wide text-orange-500 transition-colors duration-300 group-hover:text-white">
+                ({service.id})
+              </span>
+              <svg
+                className="h-4 w-4 shrink-0 text-[#1a2236] transition-colors duration-300 group-hover:text-white sm:h-[18px] sm:w-[18px]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.75}
+                  d="M4.5 19.5L19.5 4.5M19.5 4.5H10.5M19.5 4.5V13.5"
+                />
+              </svg>
+            </div>
+            <h3 className="mt-4 font-serif text-[1.35rem] font-bold leading-[1.15] text-[#1a2236] transition-colors duration-300 group-hover:text-white sm:mt-5 sm:text-[1.5rem] md:text-[1.78rem]">
+              {service.title}
+            </h3>
+            <p className="mt-4 text-[0.9375rem] leading-relaxed text-[#22223b] transition-colors duration-300 group-hover:text-white sm:mt-5 sm:text-[1.02rem] md:text-[1.0625rem]">
+              {service.description}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className={cardShellClass}>
+          <div
+            className={`absolute inset-0 bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out ${hoverOverlayRounded}`}
+          />
+          <div className="relative z-10 flex h-full flex-col">
+            <div className="flex-1">
+              <span className="text-orange-500 font-bold text-base sm:text-lg mb-4 sm:mb-6 block tracking-wider group-hover:text-white transition-colors duration-300">
+                ({service.id})
+              </span>
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-serif font-bold text-[#1a2236] mb-3 sm:mb-4 md:mb-6 group-hover:text-white transition-colors duration-300 leading-tight">
+                {service.title}
+              </h3>
+              <p className="text-[#22223b] leading-relaxed text-xs sm:text-sm md:text-base group-hover:text-white transition-colors duration-300">
+                {service.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  ));
 
   return (
-    <section className="bg-[#EFE7D5] pt-4 sm:pt-8 md:pt-14 lg:pt-20 pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-3 sm:px-4 md:px-8 overflow-x-hidden">
-      <div className="max-w-7xl mx-auto overflow-x-hidden">
+    <section
+      className={`bg-[#EFE7D5] pt-4 sm:pt-8 md:pt-14 lg:pt-20 pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-3 sm:px-4 md:px-8 ${
+        enableScrollAnimation ? 'overflow-x-hidden' : 'overflow-x-visible'
+      }`}
+    >
+      <div
+        className={`max-w-7xl mx-auto ${
+          enableScrollAnimation ? 'overflow-x-hidden' : ''
+        }`}
+      >
         {/* Header Section */}
         {showHeader && (
           <div className="flex flex-col lg:flex-row items-center justify-between mb-3 sm:mb-6 md:mb-8 lg:mb-12 xl:mb-20">
@@ -225,57 +345,54 @@ const OurServices = ({ showHeader = true, items }) => {
         )}
       </div>
 
-      {/* Services Cards with GSAP ScrollTrigger horizontal scroll */}
-      <div
-        ref={wrapperRef}
-        className="wrapper flex flex-nowrap items-center"
-        style={{
-          height: window.innerWidth < 768 ? '80vh' : '90vh',
-          willChange: 'transform',
-          backfaceVisibility: 'hidden',
-          perspective: '1000px',
-          transform: 'translateZ(0)', // Force hardware acceleration
-          WebkitTransform: 'translateZ(0)',
-          WebkitBackfaceVisibility: 'hidden',
-          contain: 'layout style paint' // Optimize rendering performance
-        }}
-      >
-        {itemsToRender.map((service, index) => (
-          <div
-            key={service.id}
-            ref={el => cardsRef.current[index] = el}
-            className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] lg:w-[450px] mx-2 sm:mx-3 md:mx-4"
-            style={{
-              willChange: 'transform',
-              backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
-              WebkitTransform: 'translateZ(0)',
-              WebkitBackfaceVisibility: 'hidden',
-              contain: 'layout style paint' // Optimize rendering performance
-            }}
+      {/* Services Cards — horizontal ScrollTrigger on most pages; plain row + arrows on home */}
+      {enableScrollAnimation ? (
+        <div
+          ref={wrapperRef}
+          className="wrapper flex w-full max-w-full flex-nowrap items-center"
+          style={{
+            height: window.innerWidth < 768 ? '80vh' : '90vh',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
+            perspective: '1000px',
+            transform: 'translateZ(0)',
+            WebkitTransform: 'translateZ(0)',
+            WebkitBackfaceVisibility: 'hidden',
+            contain: 'layout style paint',
+          }}
+        >
+          {serviceCardColumns}
+        </div>
+      ) : (
+        <div className="relative w-full max-w-full px-10 sm:px-12 md:px-14">
+          <button
+            type="button"
+            onClick={() => handleStaticArrowClick(-1)}
+            className="pointer-events-auto absolute left-0 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#1a2236]/15 bg-white/95 text-[#1a2236] shadow-md transition hover:bg-white hover:shadow-lg sm:h-11 sm:w-11"
+            aria-label="Previous service"
           >
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-300 group relative overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl h-[320px] sm:h-[380px] md:h-[420px] lg:h-[480px] xl:h-[560px]">
-              {/* Hover Background Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-3xl"></div>
-
-              {/* Content Container */}
-              <div className="relative z-10 flex flex-col h-full">
-                <div className="flex-1">
-                  <span className="text-orange-500 font-bold text-base sm:text-lg mb-4 sm:mb-6 block tracking-wider group-hover:text-white transition-colors duration-300">
-                    ({service.id})
-                  </span>
-                  <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-serif font-bold text-[#1a2236] mb-3 sm:mb-4 md:mb-6 group-hover:text-white transition-colors duration-300 leading-tight">
-                    {service.title}
-                  </h3>
-                  <p className="text-[#22223b] leading-relaxed text-xs sm:text-sm md:text-base group-hover:text-white transition-colors duration-300">
-                    {service.description}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleStaticArrowClick(1)}
+            className="pointer-events-auto absolute right-0 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#1a2236]/15 bg-white/95 text-[#1a2236] shadow-md transition hover:bg-white hover:shadow-lg sm:h-11 sm:w-11"
+            aria-label="Next service"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          <div
+            ref={wrapperRef}
+            className="hide-scrollbar flex w-full max-w-full flex-nowrap items-center overflow-x-auto overflow-y-visible py-6 sm:py-10 scroll-smooth"
+          >
+            {serviceCardColumns}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
     </section>
   );
