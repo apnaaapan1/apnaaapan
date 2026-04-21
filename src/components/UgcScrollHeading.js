@@ -14,7 +14,7 @@ const getApiUrl = (endpoint) => {
 };
 
 const LINE_CLASS =
-  'relative z-10 pointer-events-none select-none whitespace-nowrap text-[clamp(4.25rem,19vw,13.5rem)] font-black uppercase leading-[0.95] tracking-tight';
+  'relative z-10 pointer-events-none select-none whitespace-nowrap text-[clamp(2.5rem,14vw,4.8rem)] sm:text-[clamp(4.25rem,19vw,13.5rem)] font-black uppercase leading-[0.95] tracking-tight';
 
 /**
  * Portfolio grid order (Videos page): 1st, 3rd, 9th, 8th, 14th, 15th, 13th — 0-based API indices.
@@ -134,7 +134,7 @@ const UgcScrollHeading = () => {
       const cols = isNarrow ? 2 : n;
       const rows = isNarrow ? Math.ceil(n / 2) : 1;
       const padX = Math.max(12, w * 0.045);
-      const padY = Math.max(96, h * 0.13);
+      const padY = isNarrow ? Math.max(136, h * 0.2) : Math.max(96, h * 0.13);
       const innerW = Math.max(0, w - 2 * padX);
       const innerH = Math.max(0, h - 2 * padY);
       const cellW = innerW / cols;
@@ -301,7 +301,7 @@ const UgcScrollHeading = () => {
           })}
         </div>
 
-        <div className="pointer-events-auto absolute bottom-3 left-1/2 z-30 -translate-x-1/2 sm:bottom-4 md:bottom-5">
+        <div className="pointer-events-auto absolute bottom-7 left-1/2 z-30 -translate-x-1/2 sm:bottom-4 md:bottom-5">
           <Link
             to="/portfolio"
             className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-yellow-400 px-7 py-3 text-sm font-semibold text-white shadow-md transition hover:scale-105 hover:shadow-lg sm:px-10 sm:py-3.5 sm:text-base md:px-11 md:py-4"

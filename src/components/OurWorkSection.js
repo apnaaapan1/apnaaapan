@@ -121,17 +121,17 @@ const OurWorkSection = () => {
 
         {/* Project Grid */}
         {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">{projectCards.map((card, index) => (
-            <div key={index} className="group relative bg-[#faf8f3] rounded-lg sm:rounded-xl p-4 sm:p-6 md:p-8 border border-gray-200 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-xl min-h-[350px] sm:min-h-[400px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">{projectCards.map((card, index) => (
+            <div key={index} className="group relative flex flex-col bg-[#faf8f3] rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-200 overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-xl min-h-[350px] sm:min-h-[400px]">
               {/* Full Card Background Color - Appears on hover */}
-              <div className={`absolute inset-0 ${card.topBgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-xl`}></div>
+              <div className={`absolute inset-0 ${card.topBgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out rounded-2xl`}></div>
 
               {/* Hover Image - Slides up from bottom and covers 75% with rounded top */}
-              <div className="absolute bottom-0 left-0 right-0 h-3/4 bg-cover bg-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out rounded-t-xl overflow-hidden">
+              <div className="absolute bottom-0 left-0 right-0 h-3/4 bg-cover bg-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out rounded-t-2xl overflow-hidden">
                 <img
                   src={card.hoverImage}
                   alt={`${card.title} project`}
-                  className="w-full h-full object-cover rounded-t-xl"
+                  className="w-full h-full object-cover rounded-t-2xl"
                   style={{ objectPosition: 'center 20%' }}
                 />
               </div>
@@ -166,8 +166,8 @@ const OurWorkSection = () => {
                 </button>
               </div>
 
-              {/* Original Card Content - Hidden on hover */}
-              <div className="relative z-10 group-hover:opacity-0 transition-opacity duration-300">
+              {/* Default state: title, tags, CTA + brand logo in lower area — fades on group-hover */}
+              <div className="relative z-10 flex flex-1 flex-col min-h-0 group-hover:opacity-0 transition-opacity duration-300">
                 {/* Card Title */}
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                   {card.title}
@@ -190,7 +190,7 @@ const OurWorkSection = () => {
                     when an unknown printer took a galley of t...
                   </p>
                 ) : card.hasButton ? (
-                  <button className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors duration-200">
+                  <button type="button" className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors duration-200 shrink-0">
                     <svg
                       className="w-4 h-4 sm:w-5 sm:h-5 text-white transform rotate-45"
                       fill="none"
@@ -206,6 +206,16 @@ const OurWorkSection = () => {
                     </svg>
                   </button>
                 ) : null}
+
+                {/* Brand logo — fills idle space below; hidden on group-hover with parent opacity */}
+                <div className="mt-auto flex flex-1 flex-col items-center justify-center pt-6 sm:pt-8 pb-1 min-h-[120px] sm:min-h-[140px]">
+                  <img
+                    src={card.clientLogo}
+                    alt={`${card.title} brand logo`}
+                    className="max-h-[100px] sm:max-h-[120px] w-[85%] max-w-[200px] object-contain opacity-[0.92]"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
           ))}

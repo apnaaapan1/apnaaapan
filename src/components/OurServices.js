@@ -252,7 +252,7 @@ const OurServices = ({ showHeader = true, items, enableScrollAnimation = true })
       {isCompactCards ? (
         <div className="group relative w-full cursor-pointer overflow-hidden rounded-2xl border border-[#1a2236] bg-white shadow-sm transition-all duration-500 hover:shadow-md aspect-[2/3]">
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-orange-600 to-yellow-500 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
-          <div className="relative z-10 flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain p-5 sm:p-6 md:p-7">
+          <div className="relative z-10 flex h-full min-h-0 flex-col p-5 sm:p-6 md:p-7">
             <div className="flex items-start justify-between gap-3">
               <span className="text-sm font-semibold tracking-wide text-orange-500 transition-colors duration-300 group-hover:text-white">
                 ({service.id})
