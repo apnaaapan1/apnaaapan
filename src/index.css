@@ -44,7 +44,11 @@ code {
   font-weight: 400;
 }
 
-/* Hide scrollbar for webkit browsers */
+/* Hide scrollbar visually; overflow scroll still works */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

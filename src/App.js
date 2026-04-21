@@ -2,9 +2,9 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
-import OurWorkSection from './components/OurWorkSection';
 import OurWinningProcess from './components/OurWinningProcess';
 import ClientFeedback from './components/ClientFeedback';
+import UgcScrollHeading from './components/UgcScrollHeading';
 import OurServices from './components/OurServices';
 import BookingSection from './components/BookingSection';
 import Footer from './components/Footer';
@@ -53,10 +53,10 @@ function App() {
             element={
               <>
                 <HeroSection />
-                <OurWorkSection />
                 <OurWinningProcess />
                 <ClientFeedback />
-                <OurServices />
+                <UgcScrollHeading />
+                <OurServices enableScrollAnimation={false} />
                 <BookingSection />
               </>
             }
