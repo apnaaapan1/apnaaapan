@@ -1,4 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { brands } from '../brandsData';
+
+/**
+ * If a work post title matches a brand in `brandsData`, return its case-study slug (`/work/:slug`).
+ * Optional API field `caseStudySlug` overrides when present.
+ */
+function caseStudySlugForProject(project) {
+  const explicit = typeof project.caseStudySlug === 'string' ? project.caseStudySlug.trim() : '';
+  if (explicit) return explicit;
+
+  const rawTitle = project?.title || '';
+  const title = rawTitle.trim().toLowerCase();
+  if (!title) return null;
+
+  const compact = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  for (const b of brands) {
+    const slug = b.slug.toLowerCase();
+    if (title === slug || title.replace(/\s+/g, '-') === slug) return b.slug;
+    if (compact(rawTitle) === compact(b.name)) return b.slug;
+    if (title.includes(b.name.toLowerCase())) return b.slug;
+  }
+
+  return null;
+}
 
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -135,33 +161,52 @@ const Work = () => {
             {loading && (
               <div className="col-span-1 md:col-span-2 text-center text-gray-600">Loading...</div>
             )}
-            {!loading && filteredProjects.map((project) => (
-              <div key={project.id} className="animate-fadeIn">
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                  <div className="aspect-video bg-gray-200 relative overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.alt || project.title} 
-                      className="w-full h-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-110"
-                    />
+            {!loading &&
+              filteredProjects.map((project) => {
+                const caseSlug = caseStudySlugForProject(project);
+                const cardInner = (
+                  <>
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                      <div className="aspect-video bg-gray-200 relative overflow-hidden">
+                        <img
+                          src={project.image}
+                          alt={project.alt || project.title}
+                          className="w-full h-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-110"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 md:mb-2">{project.title}</h3>
+                      <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">{project.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {(project.tags || []).map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                );
+
+                return (
+                  <div key={project.id} className="animate-fadeIn">
+                    {caseSlug ? (
+                      <Link
+                        to={`/work/${caseSlug}`}
+                        className="block rounded-2xl text-inherit no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+                      >
+                        {cardInner}
+                      </Link>
+                    ) : (
+                      cardInner
+                    )}
                   </div>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 md:mb-2">{project.title}</h3>
-                  <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">{project.description}</p>
-                                       <div className="flex flex-wrap gap-2">
-                       {(project.tags || []).map((tag, index) => (
-                         <span 
-                           key={index}
-                           className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full"
-                         >
-                           {tag}
-                         </span>
-                       ))}
-                     </div>
-                </div>
-              </div>
-            ))}
+                );
+              })}
           </div>
 
           {/* No projects message */}
