@@ -25,7 +25,9 @@ function viewBlock(y) {
 export default function BrandCaseStudyPerformanceMarketing({ brandName, performanceMarketing, viewportY = 30 }) {
   const vb = viewBlock(viewportY);
   const items = Array.isArray(performanceMarketing)
-    ? performanceMarketing.filter(Boolean).slice(0, MAX_IMAGES)
+    ? performanceMarketing
+        .filter((it) => it && String(it.src || '').trim() !== '')
+        .slice(0, MAX_IMAGES)
     : [];
 
   if (items.length === 0) {

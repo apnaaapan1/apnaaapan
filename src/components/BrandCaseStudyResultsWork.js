@@ -59,41 +59,58 @@ export default function BrandCaseStudyResultsWorkSection({
   const resultsRef = useRef(null);
   const resultsInView = useInView(resultsRef, { once: true, margin: '-80px' });
 
+  const resultItems = Array.isArray(results)
+    ? results.filter(
+        (r) =>
+          r &&
+          (String(r.value || '').trim() !== '' || String(r.label || '').trim() !== '')
+      )
+    : [];
+
+  const performanceItems = Array.isArray(performanceMarketing)
+    ? performanceMarketing
+        .filter((it) => it && String(it.src || '').trim() !== '')
+        .slice(0, 4)
+    : [];
+  const ctaBgClass =
+    performanceItems.length > 0 ? 'bg-[#FDFAF5]' : 'bg-[#F5F0E8]';
+
   return (
     <div className="w-full">
-      {/* Results */}
-      <section
-        ref={resultsRef}
-        className={`relative w-full bg-[#F5F0E8] ${sectionPad}`}
-        aria-labelledby="case-study-results-heading"
-      >
-        <div className={container}>
-          <motion.p id="case-study-results-heading" className={labelClass} {...vb}>
-            The Results
-          </motion.p>
-          <motion.p
-            className="mt-4 md:mt-5 max-w-2xl font-sans text-base md:text-lg text-[#2d2d2d]/75 leading-relaxed"
-            initial={vb.initial}
-            whileInView={vb.whileInView}
-            viewport={vb.viewport}
-            transition={{ ...vb.transition, delay: 0.05 }}
-          >
-            Here&apos;s what we achieved together.
-          </motion.p>
+      {resultItems.length > 0 ? (
+        <section
+          ref={resultsRef}
+          className={`relative w-full bg-[#F5F0E8] ${sectionPad}`}
+          aria-labelledby="case-study-results-heading"
+        >
+          <div className={container}>
+            <motion.p id="case-study-results-heading" className={labelClass} {...vb}>
+              The Results
+            </motion.p>
+            <motion.p
+              className="mt-4 md:mt-5 max-w-2xl font-sans text-base md:text-lg text-[#2d2d2d]/75 leading-relaxed"
+              initial={vb.initial}
+              whileInView={vb.whileInView}
+              viewport={vb.viewport}
+              transition={{ ...vb.transition, delay: 0.05 }}
+            >
+              Here&apos;s what we achieved together.
+            </motion.p>
 
-          <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-4">
-            {results.map((r, i) => (
-              <MetricCard
-                key={`${r.label}-${r.value}`}
-                metric={r}
-                index={i}
-                enabled={resultsInView}
-                viewportY={viewportY}
-              />
-            ))}
+            <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-4">
+              {resultItems.map((r, i) => (
+                <MetricCard
+                  key={`${r.label}-${r.value}-${i}`}
+                  metric={r}
+                  index={i}
+                  enabled={resultsInView}
+                  viewportY={viewportY}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <BrandCaseStudyVideosSection brandName={brandName} videos={videos} viewportY={viewportY} />
 
@@ -110,7 +127,7 @@ export default function BrandCaseStudyResultsWorkSection({
       />
 
       <section
-        className="relative w-full border-t border-[#D4CFC6] bg-[#FAF9F6] py-12 md:py-16 lg:py-20"
+        className={`relative w-full ${ctaBgClass} py-12 md:py-16 lg:py-20`}
         aria-labelledby="case-study-cta-heading"
       >
         <div className={container}>

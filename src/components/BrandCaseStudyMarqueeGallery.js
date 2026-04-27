@@ -22,10 +22,16 @@ function viewBlock(y) {
  *
  * `marqueeGallery`: { row1: [{ src, alt }], row2: [{ src, alt }] }
  */
+function hasImageSrc(item) {
+  return item && String(item.src || '').trim() !== '';
+}
+
 export default function BrandCaseStudyMarqueeGallery({ brandName, marqueeGallery, viewportY = 30 }) {
   const vb = viewBlock(viewportY);
-  const row1 = Array.isArray(marqueeGallery?.row1) ? marqueeGallery.row1.filter(Boolean) : [];
-  const row2 = Array.isArray(marqueeGallery?.row2) ? marqueeGallery.row2.filter(Boolean) : [];
+  const row1Raw = Array.isArray(marqueeGallery?.row1) ? marqueeGallery.row1.filter(Boolean) : [];
+  const row2Raw = Array.isArray(marqueeGallery?.row2) ? marqueeGallery.row2.filter(Boolean) : [];
+  const row1 = row1Raw.filter(hasImageSrc);
+  const row2 = row2Raw.filter(hasImageSrc);
 
   if (row1.length === 0 && row2.length === 0) {
     return null;

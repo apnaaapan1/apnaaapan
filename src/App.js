@@ -29,6 +29,7 @@ import AdminBlogs from './pages/AdminBlogs';
 import AdminReviews from './pages/AdminReviews';
 import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
+import AdminCaseStudies from './pages/AdminCaseStudies';
 import AdminGallery from './pages/AdminGallery';
 import AdminTeam from './pages/AdminTeam';
 import Videos from './pages/Videos';
@@ -91,6 +92,7 @@ function App() {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/positions" element={<AdminPositions />} />
           <Route path="/admin/work" element={<AdminWork />} />
+          <Route path="/admin/case-studies" element={<AdminCaseStudies />} />
           <Route path="/admin/gallery" element={<AdminGallery />} />
           <Route path="/admin/events" element={<AdminEvents />} />
           <Route path="/admin/team" element={<AdminTeam />} />

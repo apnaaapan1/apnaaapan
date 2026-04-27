@@ -24,11 +24,20 @@ const MAX_VIDEOS = 9;
 
 /**
  * Case study — up to 9 videos, 3 per row on md+ (same card + 9:16 frame as `/portfolio`).
- * Each item: { embedUrl } or { src }, optional { title }.
+ * Each item: { src } (Cloudinary / direct file) or legacy { embedUrl }, optional { title }.
  */
+function hasPlayableVideo(item) {
+  if (!item) return false;
+  return (
+    String(item.embedUrl || '').trim() !== '' || String(item.src || '').trim() !== ''
+  );
+}
+
 export default function BrandCaseStudyVideosSection({ brandName, videos = [], viewportY = 30 }) {
   const vb = viewBlock(viewportY);
-  const list = Array.isArray(videos) ? videos.filter(Boolean).slice(0, MAX_VIDEOS) : [];
+  const list = Array.isArray(videos)
+    ? videos.filter(hasPlayableVideo).slice(0, MAX_VIDEOS)
+    : [];
 
   if (list.length === 0) {
     return null;
@@ -58,7 +67,7 @@ export default function BrandCaseStudyVideosSection({ brandName, videos = [], vi
             const title = item.title || `Video ${i + 1}`;
             return (
               <motion.article
-                key={`${item.embedUrl || item.src || i}-${i}`}
+                key={`${item.src || item.embedUrl || i}-${i}`}
                 initial={vb.initial}
                 whileInView={vb.whileInView}
                 viewport={vb.viewport}
@@ -69,7 +78,16 @@ export default function BrandCaseStudyVideosSection({ brandName, videos = [], vi
                   <div
                     className={`${portfolioAspectInner} flex items-center justify-center`}
                   >
-                    {item.embedUrl ? (
+                    {item.src ? (
+                      <video
+                        title={title}
+                        controls
+                        src={item.src}
+                        className="h-full w-full object-contain bg-black"
+                        preload="metadata"
+                        playsInline
+                      />
+                    ) : item.embedUrl ? (
                       <div className="aspect-video w-full max-h-full shrink-0">
                         <iframe
                           title={title}
@@ -80,19 +98,9 @@ export default function BrandCaseStudyVideosSection({ brandName, videos = [], vi
                           loading="lazy"
                         />
                       </div>
-                    ) : item.src ? (
-                      <video
-                        title={title}
-                        controls
-                        src={item.src}
-                        className="h-full w-full object-contain bg-black"
-                        preload="metadata"
-                        playsInline
-                      />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center p-4 text-center text-sm text-gray-400">
-                        Add <code className="mx-1 rounded bg-white/10 px-1 text-xs">embedUrl</code> or{' '}
-                        <code className="mx-1 rounded bg-white/10 px-1 text-xs">src</code> in brands data
+                        Add a video URL in the case study admin.
                       </div>
                     )}
                   </div>

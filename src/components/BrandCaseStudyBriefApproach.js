@@ -33,6 +33,14 @@ function normalizeBrief(brief) {
  */
 export function BrandCaseStudyBriefSection({ brief, brandName, viewportY = 30 }) {
   const { intro, bullets } = normalizeBrief(brief);
+  const introText = typeof intro === 'string' ? intro.trim() : '';
+  const bulletItems = (Array.isArray(bullets) ? bullets : [])
+    .map((b) => (typeof b === 'string' ? b.trim() : ''))
+    .filter(Boolean);
+  if (!introText && bulletItems.length === 0) {
+    return null;
+  }
+
   const vb = viewBlock(viewportY);
 
   return (
@@ -48,13 +56,13 @@ export function BrandCaseStudyBriefSection({ brief, brandName, viewportY = 30 })
         </div>
 
         <div className="mt-8 md:mt-10 max-w-[680px]">
-          {intro ? (
-            <p className="font-sans text-[18px] md:text-[20px] leading-[1.7] text-[#2d2d2d]">{intro}</p>
+          {introText ? (
+            <p className="font-sans text-[18px] md:text-[20px] leading-[1.7] text-[#2d2d2d]">{introText}</p>
           ) : null}
 
-          {bullets.length > 0 ? (
+          {bulletItems.length > 0 ? (
             <ul className="mt-6 md:mt-8 space-y-4 md:space-y-5 list-none p-0 m-0">
-              {bullets.map((point, i) => (
+              {bulletItems.map((point, i) => (
                 <li key={i} className="flex gap-3.5 text-left items-start">
                   <span
                     className="font-sans text-[#F5A623] font-normal leading-[1.7] mt-[2px] shrink-0 select-none"
@@ -97,6 +105,16 @@ function normalizeApproach(approach) {
  */
 export function BrandCaseStudyApproachSection({ approach, brandName, viewportY = 30 }) {
   const { intro, points } = normalizeApproach(approach);
+  const introText = typeof intro === 'string' ? intro.trim() : '';
+  const approachPoints = (Array.isArray(points) ? points : []).filter(
+    (p) =>
+      p &&
+      (String(p.title || '').trim() !== '' || String(p.description || '').trim() !== '')
+  );
+  if (!introText && approachPoints.length === 0) {
+    return null;
+  }
+
   const vb = viewBlock(viewportY);
 
   return (
@@ -109,7 +127,7 @@ export function BrandCaseStudyApproachSection({ approach, brandName, viewportY =
           Our Approach
         </motion.p>
 
-        {intro ? (
+        {introText ? (
           <motion.p
             className="mt-6 md:mt-8 max-w-3xl font-sans text-[18px] md:text-[20px] leading-[1.7] text-[#2d2d2d]"
             initial={vb.initial}
@@ -117,13 +135,13 @@ export function BrandCaseStudyApproachSection({ approach, brandName, viewportY =
             viewport={vb.viewport}
             transition={{ ...vb.transition, delay: 0.1 }}
           >
-            {intro}
+            {introText}
           </motion.p>
         ) : null}
 
-        {points.length > 0 ? (
+        {approachPoints.length > 0 ? (
           <ul className="mt-10 md:mt-12 lg:mt-14 list-none m-0 p-0 max-w-3xl space-y-10 md:space-y-12 lg:space-y-14">
-            {points.map((item, i) => (
+            {approachPoints.map((item, i) => (
               <motion.li
                 key={`${item.title}-${i}`}
                 initial={vb.initial}

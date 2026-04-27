@@ -176,6 +176,19 @@ export default function AdminDashboard() {
             </Link>
 
             <Link
+              to="/admin/case-studies"
+              className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold text-[#0D1B2A]">Manage Case Studies</h3>
+                <span className="text-[#4A70B0] group-hover:underline">Open</span>
+              </div>
+              <p className="text-sm text-gray-600">
+                Add full brand case study pages (all sections). Published case studies load from the database only.
+              </p>
+            </Link>
+
+            <Link
               to="/admin/portfolio"
               className="group bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all"
             >

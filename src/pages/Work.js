@@ -1,26 +1,36 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { brands } from '../brandsData';
+
+/** Matches GET /api/case-studies/by-slug/:slug and admin case-study slug sanitization */
+function headingTextToCaseStudySlug(raw) {
+  const slugRaw = String(raw || '').trim().toLowerCase();
+  if (!slugRaw) return null;
+  const s = slugRaw
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  return s || null;
+}
 
 /**
- * If a work post title matches a brand in `brandsData`, return its case-study slug (`/work/:slug`).
- * Optional API field `caseStudySlug` overrides when present.
+ * Resolves `/work/:slug` for a work card:
+ * - Optional `caseStudySlug` from API (normalized)
+ * - Else work card title normalized to slug must match a published case study slug
  */
-function caseStudySlugForProject(project) {
-  const explicit = typeof project.caseStudySlug === 'string' ? project.caseStudySlug.trim() : '';
+function caseStudySlugForProject(project, publishedSlugSet) {
+  const explicit = headingTextToCaseStudySlug(
+    typeof project.caseStudySlug === 'string' ? project.caseStudySlug : ''
+  );
   if (explicit) return explicit;
 
   const rawTitle = project?.title || '';
   const title = rawTitle.trim().toLowerCase();
   if (!title) return null;
 
-  const compact = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  for (const b of brands) {
-    const slug = b.slug.toLowerCase();
-    if (title === slug || title.replace(/\s+/g, '-') === slug) return b.slug;
-    if (compact(rawTitle) === compact(b.name)) return b.slug;
-    if (title.includes(b.name.toLowerCase())) return b.slug;
+  const fromTitle = headingTextToCaseStudySlug(rawTitle);
+  if (fromTitle && publishedSlugSet && publishedSlugSet.has(fromTitle)) {
+    return fromTitle;
   }
 
   return null;
@@ -29,6 +39,7 @@ function caseStudySlugForProject(project) {
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [projects, setProjects] = useState([]);
+  const [publishedCaseStudySlugs, setPublishedCaseStudySlugs] = useState(() => new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -42,18 +53,36 @@ const Work = () => {
 
   useEffect(() => {
     let mounted = true;
-    const fetchWork = async () => {
+    const load = async () => {
       try {
         setLoading(true);
         setError('');
-        const res = await fetch(getApiUrl('/api/work'));
-        if (!res.ok) {
+        const [workRes, csRes] = await Promise.all([
+          fetch(getApiUrl('/api/work')),
+          fetch(getApiUrl('/api/case-studies')),
+        ]);
+        if (!workRes.ok) {
           throw new Error('Failed to load work posts');
         }
-        const data = await res.json();
+        const data = await workRes.json();
         if (mounted) {
           setProjects(Array.isArray(data.work) ? data.work : []);
         }
+
+        const slugSet = new Set();
+        try {
+          if (csRes.ok) {
+            const csData = await csRes.json();
+            const list = Array.isArray(csData.caseStudies) ? csData.caseStudies : [];
+            list.forEach((cs) => {
+              const sl = cs && typeof cs.slug === 'string' ? cs.slug.trim().toLowerCase() : '';
+              if (sl) slugSet.add(sl);
+            });
+          }
+        } catch {
+          /* ignore case-study index; title-based links stay off */
+        }
+        if (mounted) setPublishedCaseStudySlugs(slugSet);
       } catch (e) {
         if (mounted) {
           setError(e.message || 'Unable to fetch work posts');
@@ -62,8 +91,10 @@ const Work = () => {
         if (mounted) setLoading(false);
       }
     };
-    fetchWork();
-    return () => { mounted = false; };
+    load();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Helper to normalize category values for uniqueness/filtering
@@ -163,7 +194,7 @@ const Work = () => {
             )}
             {!loading &&
               filteredProjects.map((project) => {
-                const caseSlug = caseStudySlugForProject(project);
+                const caseSlug = caseStudySlugForProject(project, publishedCaseStudySlugs);
                 const cardInner = (
                   <>
                     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
