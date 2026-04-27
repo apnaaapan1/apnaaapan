@@ -508,7 +508,7 @@ export default function AdminCaseStudies() {
         <p className="text-sm text-gray-600 mb-6">
           Create and edit full case study pages (hero, brief, approach, results, videos, gallery, performance). Live URL:{' '}
           <code className="text-xs bg-white/80 px-1 rounded">/work/your-slug</code>
-          . Entries here override the same slug in static code when published. Image and video uploads use signed URLs so
+          . Content is stored in the database and served by the API in production. Image and video uploads use signed URLs so
           files go directly to Cloudinary (same as graphic portfolio and portfolio videos), not through Vercel.
         </p>
 
