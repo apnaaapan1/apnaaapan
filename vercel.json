@@ -24,6 +24,14 @@
       "destination": "/api/media-router?route=cloudinary-graphic-signature"
     },
     {
+      "source": "/api/case-studies/by-slug/(.*)",
+      "destination": "/api/case-studies?__bySlug=1&slug=$1"
+    },
+    {
+      "source": "/api/upload-image",
+      "destination": "/api/media-router?route=upload-image"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },

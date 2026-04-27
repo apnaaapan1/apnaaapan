@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 const { MongoClient, ObjectId } = require('mongodb');
 
 require('dotenv').config();
@@ -64,6 +65,16 @@ function sendCors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token, x-admin-secret');
 }
 
+const uploadImageMulter = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.'));
+  },
+});
+
 function resolveRoute(req) {
   // For Vercel rewrites we pass ?route=...
   const queryRoute = req.query?.route;
@@ -79,6 +90,7 @@ function resolveRoute(req) {
   if (p.endsWith('/api/cloudinary-graphic-signature') || p === '/api/cloudinary-graphic-signature') {
     return 'cloudinary-graphic-signature';
   }
+  if (p.endsWith('/api/upload-image') || p === '/api/upload-image') return 'upload-image';
   return '';
 }
 
@@ -353,6 +365,91 @@ async function handleGraphicsDb(req, res) {
   return res.status(405).json({ message: 'Method not allowed', error: 'METHOD_NOT_ALLOWED' });
 }
 
+/** Was api/upload-image.js; folded into this router to stay under Vercel Hobby 12 functions. */
+function handleUploadImage(req, res) {
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token, x-admin-secret');
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed', error: 'METHOD_NOT_ALLOWED' });
+  }
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    timeout: 120000,
+  });
+
+  return uploadImageMulter.single('image')(req, res, async (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          message: 'File too large. Max 10MB allowed.',
+          error: 'FILE_TOO_LARGE',
+        });
+      }
+      return res.status(400).json({
+        message: err.message || 'Upload error',
+        error: 'UPLOAD_MULTER_ERROR',
+      });
+    }
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No image file provided', error: 'NO_FILE' });
+      }
+      if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+        return res.status(500).json({ message: 'Cloudinary is not configured', error: 'CLOUDINARY_NOT_CONFIGURED' });
+      }
+
+      const result = await new Promise((resolve, reject) => {
+        let timeoutId;
+        try {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Upload timeout - image took too long to upload'));
+          }, 280000);
+
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'apnaaapan_work', resource_type: 'auto', timeout: 300000 },
+            (error, uploadResult) => {
+              clearTimeout(timeoutId);
+              if (error) reject(error);
+              else resolve(uploadResult);
+            }
+          );
+          uploadStream.on('error', (e) => {
+            clearTimeout(timeoutId);
+            reject(e);
+          });
+          uploadStream.end(req.file.buffer);
+        } catch (e) {
+          clearTimeout(timeoutId);
+          reject(e);
+        }
+      });
+
+      return res.status(200).json({
+        message: 'Image uploaded successfully',
+        url: result.secure_url,
+        publicId: result.public_id,
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      return res.status(500).json({
+        message: error?.message || 'Failed to upload image',
+        error: 'UPLOAD_ERROR',
+        details: error?.http_code ? `Cloudinary error ${error.http_code}` : undefined,
+      });
+    }
+  });
+}
+
 module.exports = async function handler(req, res) {
   sendCors(res);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
@@ -369,6 +466,7 @@ module.exports = async function handler(req, res) {
     if (route === 'cloudinary-graphic-signature') return handleGraphicSignature(req, res);
     if (route === 'videos') return handleVideosDb(req, res);
     if (route === 'graphics') return handleGraphicsDb(req, res);
+    if (route === 'upload-image') return handleUploadImage(req, res);
 
     return res.status(404).json({ message: 'Unknown route', error: 'UNKNOWN_ROUTE' });
   } catch (err) {

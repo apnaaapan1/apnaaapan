@@ -1,10 +1,16 @@
+/**
+ * Single Vercel serverless function for all /api/case-studies* routes (Hobby plan 12-function limit).
+ * - List + CRUD: GET/POST/PUT/DELETE on /api/case-studies
+ * - By slug: /api/case-studies/by-slug/:slug is rewritten in vercel.json to ?__bySlug=1&slug=...
+ */
 const {
   getCaseStudiesCollection,
   isAdmin,
   sanitizeCaseStudyInput,
   serializeCaseStudyDoc,
+  normalizePathSlug,
   ObjectId,
-} = require('../../lib/caseStudyApiShared');
+} = require('../lib/caseStudyApiShared');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -14,6 +20,34 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  /* Rewritten: /api/case-studies/by-slug/my-slug -> /api/case-studies?__bySlug=1&slug=my-slug */
+  if (String(req.query.__bySlug) === '1') {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ message: 'Method not allowed' });
+    }
+    try {
+      const raw = req.query?.slug != null ? req.query.slug : '';
+      const slug = normalizePathSlug(
+        Array.isArray(raw) ? raw[0] : raw
+      );
+      if (!slug) {
+        return res.status(400).json({ message: 'Invalid slug', error: 'INVALID_SLUG' });
+      }
+      const collection = await getCaseStudiesCollection();
+      const doc = await collection.findOne({ slug, status: 'published' });
+      if (!doc) {
+        return res.status(404).json({ message: 'Case study not found', error: 'NOT_FOUND' });
+      }
+      return res.status(200).json({ caseStudy: serializeCaseStudyDoc(doc) });
+    } catch (error) {
+      console.error('CASE STUDIES by-slug error:', error);
+      return res.status(500).json({
+        message: 'Failed to fetch case study',
+        error: 'CASE_STUDY_GET_ERROR',
+      });
+    }
   }
 
   try {
