@@ -32,6 +32,15 @@ function isAdmin(req) {
   return headerSecret === ADMIN_SECRET;
 }
 
+function normalizeCaseStudySlugValue(input) {
+  const slugRaw = typeof input === 'string' ? input.trim().toLowerCase() : '';
+  return slugRaw
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -68,6 +77,7 @@ module.exports = async (req, res) => {
           categories: doc.categories || [],
           tags: doc.tags || [],
           status: doc.status,
+          caseStudySlug: doc.caseStudySlug || '',
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
         })),
@@ -81,7 +91,7 @@ module.exports = async (req, res) => {
 
     // POST - Create work post
     if (req.method === 'POST') {
-      const { title, description, image, logo, alt, categories, tags, status } = req.body || {};
+      const { title, description, image, logo, alt, categories, tags, status, caseStudySlug } = req.body || {};
 
       if (!title) {
         return res.status(400).json({ message: 'Title is required', error: 'MISSING_TITLE' });
@@ -100,6 +110,7 @@ module.exports = async (req, res) => {
         categories: Array.isArray(categories) ? categories : [],
         tags: Array.isArray(tags) ? tags : [],
         status: status || 'published',
+        caseStudySlug: normalizeCaseStudySlugValue(caseStudySlug),
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -112,7 +123,7 @@ module.exports = async (req, res) => {
 
     // PUT - Update work post
     if (req.method === 'PUT') {
-      const { id, title, description, image, logo, alt, categories, tags, status } = req.body || {};
+      const { id, title, description, image, logo, alt, categories, tags, status, caseStudySlug } = req.body || {};
 
       if (!id) {
         return res.status(400).json({ message: 'Work post id is required', error: 'MISSING_ID' });
@@ -131,6 +142,7 @@ module.exports = async (req, res) => {
       if (categories !== undefined) updateData.categories = Array.isArray(categories) ? categories : [];
       if (tags !== undefined) updateData.tags = Array.isArray(tags) ? tags : [];
       if (status !== undefined) updateData.status = status;
+      if (caseStudySlug !== undefined) updateData.caseStudySlug = normalizeCaseStudySlugValue(caseStudySlug);
 
       const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 

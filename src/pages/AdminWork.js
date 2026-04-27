@@ -15,6 +15,7 @@ const API_UPLOAD_IMAGE = getApiUrl('/api/upload-image');
 const initialFormState = {
   id: '',
   title: '',
+  caseStudySlug: '',
   description: '',
   image: '',
   logo: '',
@@ -193,6 +194,7 @@ export default function AdminWork() {
     setForm({
       id: wp.id,
       title: wp.title || '',
+      caseStudySlug: wp.caseStudySlug || '',
       description: wp.description || '',
       image: wp.image || '',
       logo: wp.logo || '',
@@ -224,6 +226,7 @@ export default function AdminWork() {
     const payload = {
       id: form.id || undefined,
       title: form.title,
+      caseStudySlug: form.caseStudySlug.trim(),
       description: form.description,
       image: form.image,
       logo: form.logo,
@@ -317,6 +320,10 @@ export default function AdminWork() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                     <input type="text" name="title" value={form.title} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]" required />
+                    <p className="text-xs text-gray-500 mt-1">
+                      If this matches the case study slug (e.g. title <code className="text-gray-600">My Brand</code> →{' '}
+                      <code className="text-gray-600">my-brand</code>), the card links to that case study. Otherwise set the field below.
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -325,6 +332,20 @@ export default function AdminWork() {
                       <option value="draft">Draft</option>
                     </select>
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Case study slug (optional)</label>
+                  <input
+                    type="text"
+                    name="caseStudySlug"
+                    value={form.caseStudySlug}
+                    onChange={handleInputChange}
+                    placeholder="e.g. my-brand (same as Manage Case Studies)"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4A70B0]"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    When empty, the Work page links the card only if the title normalizes to the same slug as a published case study. When set, the card always links to this slug.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>

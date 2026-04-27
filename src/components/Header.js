@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ progressBarOffset = false }) => {
   // Get current path using React Router
   const location = useLocation();
   const navigate = useNavigate();
@@ -61,7 +61,9 @@ const Header = () => {
   };
 
   return (
-    <header className={`bg-[#EFE7D5] border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50 transition-transform duration-200 ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header
+      className={`bg-[#EFE7D5] fixed left-0 right-0 z-50 transition-transform duration-200 ${progressBarOffset ? 'top-[3px]' : 'top-0'} ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}
+    >
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
         {/* Logo - Clickable */}
         <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>

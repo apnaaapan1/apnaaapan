@@ -166,6 +166,27 @@ async function getTeamDb() {
   };
 }
 
+// Case studies (brand case study pages) — same Mongo client
+async function getCaseStudiesDb() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  if (!blogsDbClient) {
+    blogsDbClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+    });
+    await blogsDbClient.connect();
+  }
+
+  const db = blogsDbClient.db(DATABASE_NAME);
+  return {
+    db,
+    collection: db.collection('case_studies'),
+  };
+}
+
 function isAdmin(req) {
   if (!ADMIN_SECRET) return false;
   const headerSecret =
@@ -224,14 +245,26 @@ function sanitizePositionInput(body) {
   };
 }
 
+/** Same rules as URL param normalization in GET /api/case-studies/by-slug/:slug */
+function normalizeCaseStudySlugValue(input) {
+  const slugRaw = typeof input === 'string' ? input.trim().toLowerCase() : '';
+  return slugRaw
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function sanitizeWorkInput(body) {
-  const { title, description, image, logo, alt, categories, tags, status } = body || {};
+  const { title, description, image, logo, alt, categories, tags, status, caseStudySlug } = body || {};
   const safeCategories = Array.isArray(categories)
     ? categories.map((c) => (typeof c === 'string' ? c.trim() : '')).filter(Boolean)
     : [];
   const safeTags = Array.isArray(tags)
     ? tags.map((t) => (typeof t === 'string' ? t.trim() : '')).filter(Boolean)
     : [];
+
+  const csSlug = normalizeCaseStudySlugValue(caseStudySlug);
 
   return {
     title: typeof title === 'string' ? title.trim() : '',
@@ -242,6 +275,132 @@ function sanitizeWorkInput(body) {
     categories: safeCategories,
     tags: safeTags,
     status: status === 'draft' ? 'draft' : 'published',
+    caseStudySlug: csSlug,
+  };
+}
+
+function normalizeCaseStudyImageSlot(item) {
+  if (!item || typeof item !== 'object') return { src: null, alt: '' };
+  const raw = item.src;
+  const s = typeof raw === 'string' && raw.trim() ? raw.trim() : null;
+  const alt = typeof item.alt === 'string' ? item.alt.trim() : '';
+  return { src: s, alt: alt || '' };
+}
+
+function sanitizeCaseStudyInput(body) {
+  const b = body || {};
+  const slug = normalizeCaseStudySlugValue(b.slug);
+
+  const name = typeof b.name === 'string' ? b.name.trim() : '';
+  const tagline = typeof b.tagline === 'string' ? b.tagline.trim() : '';
+  const logoRaw = typeof b.logo === 'string' ? b.logo.trim() : '';
+  const logo = logoRaw || null;
+
+  const tags = Array.isArray(b.tags)
+    ? b.tags.map((t) => (typeof t === 'string' ? t.trim() : '')).filter(Boolean)
+    : [];
+
+  const brief =
+    b.brief && typeof b.brief === 'object'
+      ? {
+          intro: typeof b.brief.intro === 'string' ? b.brief.intro.trim() : '',
+          bullets: Array.isArray(b.brief.bullets)
+            ? b.brief.bullets.map((x) => (typeof x === 'string' ? x.trim() : '')).filter(Boolean)
+            : [],
+        }
+      : { intro: '', bullets: [] };
+
+  const approach =
+    b.approach && typeof b.approach === 'object'
+      ? {
+          intro: typeof b.approach.intro === 'string' ? b.approach.intro.trim() : '',
+          points: Array.isArray(b.approach.points)
+            ? b.approach.points
+                .filter((p) => p && typeof p === 'object')
+                .map((p) => ({
+                  title: typeof p.title === 'string' ? p.title.trim() : '',
+                  description: typeof p.description === 'string' ? p.description.trim() : '',
+                }))
+                .filter((p) => p.title || p.description)
+            : [],
+        }
+      : { intro: '', points: [] };
+
+  const results = Array.isArray(b.results)
+    ? b.results
+        .filter((r) => r && typeof r === 'object')
+        .slice(0, 12)
+        .map((r) => ({
+          value: typeof r.value === 'string' ? r.value.trim() : '',
+          label: typeof r.label === 'string' ? r.label.trim() : '',
+          description: typeof r.description === 'string' ? r.description.trim() : '',
+        }))
+    : [];
+
+  const videos = Array.isArray(b.videos)
+    ? b.videos
+        .filter((v) => v && typeof v === 'object')
+        .slice(0, 9)
+        .map((v) => ({
+          title: typeof v.title === 'string' ? v.title.trim() : '',
+          embedUrl: typeof v.embedUrl === 'string' ? v.embedUrl.trim() : '',
+          src: typeof v.src === 'string' ? v.src.trim() : '',
+        }))
+        .filter((v) => v.embedUrl || v.src)
+    : [];
+
+  const mg = b.marqueeGallery && typeof b.marqueeGallery === 'object' ? b.marqueeGallery : {};
+  const row1 = Array.isArray(mg.row1) ? mg.row1.map(normalizeCaseStudyImageSlot) : [];
+  const row2 = Array.isArray(mg.row2) ? mg.row2.map(normalizeCaseStudyImageSlot) : [];
+
+  const performanceMarketing = Array.isArray(b.performanceMarketing)
+    ? b.performanceMarketing.map(normalizeCaseStudyImageSlot).slice(0, 4)
+    : [];
+
+  let heroImages = Array.isArray(b.heroImages)
+    ? b.heroImages.map(normalizeCaseStudyImageSlot).slice(0, 12)
+    : [];
+  while (heroImages.length < 6) {
+    heroImages.push({ src: null, alt: '' });
+  }
+
+  const status = b.status === 'draft' ? 'draft' : 'published';
+
+  return {
+    slug,
+    name,
+    tagline,
+    logo,
+    tags,
+    heroImages,
+    brief,
+    approach,
+    results,
+    videos,
+    marqueeGallery: { row1, row2 },
+    performanceMarketing,
+    status,
+  };
+}
+
+function serializeCaseStudyDoc(doc) {
+  return {
+    id: doc._id.toString(),
+    slug: doc.slug,
+    name: doc.name,
+    logo: doc.logo ?? null,
+    tags: doc.tags || [],
+    tagline: doc.tagline || '',
+    heroImages: doc.heroImages || [],
+    brief: doc.brief || { intro: '', bullets: [] },
+    approach: doc.approach || { intro: '', points: [] },
+    results: doc.results || [],
+    videos: doc.videos || [],
+    marqueeGallery: doc.marqueeGallery || { row1: [], row2: [] },
+    performanceMarketing: doc.performanceMarketing || [],
+    status: doc.status || 'published',
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
   };
 }
 
@@ -1061,6 +1220,7 @@ app.get('/api/work', async (req, res) => {
         categories: doc.categories || [],
         tags: doc.tags || [],
         status: doc.status,
+        caseStudySlug: doc.caseStudySlug || '',
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
       })),
@@ -1144,6 +1304,7 @@ app.put('/api/work', async (req, res) => {
         categories: work.categories,
         tags: work.tags,
         status: work.status,
+        caseStudySlug: work.caseStudySlug,
         updatedAt: new Date(),
       },
     };
@@ -1207,6 +1368,208 @@ app.delete('/api/work', async (req, res) => {
     return res.status(500).json({
       message: 'Failed to delete work post',
       error: 'WORK_DELETE_ERROR',
+    });
+  }
+});
+
+// ——— Case studies API (public read + admin CRUD) ———
+app.get('/api/case-studies', async (req, res) => {
+  try {
+    const { collection } = await getCaseStudiesDb();
+    const adminList = isAdmin(req) && req.query.includeDrafts === 'true';
+    const filter = adminList ? {} : { status: 'published' };
+    const docs = await collection.find(filter).sort({ updatedAt: -1 }).toArray();
+    return res.status(200).json({
+      caseStudies: docs.map(serializeCaseStudyDoc),
+    });
+  } catch (error) {
+    console.error('CASE STUDIES API GET error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch case studies',
+      error: 'CASE_STUDIES_GET_ERROR',
+    });
+  }
+});
+
+app.get('/api/case-studies/by-slug/:slug', async (req, res) => {
+  try {
+    const raw = req.params.slug || '';
+    const slug = String(raw)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    if (!slug) {
+      return res.status(400).json({
+        message: 'Invalid slug',
+        error: 'INVALID_SLUG',
+      });
+    }
+    const { collection } = await getCaseStudiesDb();
+    const doc = await collection.findOne({ slug, status: 'published' });
+    if (!doc) {
+      return res.status(404).json({
+        message: 'Case study not found',
+        error: 'NOT_FOUND',
+      });
+    }
+    return res.status(200).json({ caseStudy: serializeCaseStudyDoc(doc) });
+  } catch (error) {
+    console.error('CASE STUDIES API GET by slug error:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch case study',
+      error: 'CASE_STUDY_GET_ERROR',
+    });
+  }
+});
+
+app.post('/api/case-studies', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const data = sanitizeCaseStudyInput(req.body);
+    if (!data.slug || !data.name) {
+      return res.status(400).json({
+        message: 'Slug and name are required',
+        error: 'MISSING_FIELDS',
+      });
+    }
+
+    const { collection } = await getCaseStudiesDb();
+    const existing = await collection.findOne({ slug: data.slug });
+    if (existing) {
+      return res.status(400).json({
+        message: 'A case study with this slug already exists',
+        error: 'DUPLICATE_SLUG',
+      });
+    }
+
+    const now = new Date();
+    const doc = {
+      ...data,
+      createdAt: now,
+      updatedAt: now,
+    };
+    const result = await collection.insertOne(doc);
+    return res.status(201).json({
+      message: 'Case study created successfully',
+      id: result.insertedId.toString(),
+    });
+  } catch (error) {
+    console.error('CASE STUDIES API POST error:', error);
+    return res.status(500).json({
+      message: 'Failed to create case study',
+      error: 'CASE_STUDY_CREATE_ERROR',
+    });
+  }
+});
+
+app.put('/api/case-studies', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { id } = req.body || {};
+    if (!id) {
+      return res.status(400).json({
+        message: 'Case study id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const data = sanitizeCaseStudyInput(req.body);
+    if (!data.slug || !data.name) {
+      return res.status(400).json({
+        message: 'Slug and name are required',
+        error: 'MISSING_FIELDS',
+      });
+    }
+
+    const { collection } = await getCaseStudiesDb();
+    const oid = new ObjectId(id);
+    const slugTaken = await collection.findOne({
+      slug: data.slug,
+      _id: { $ne: oid },
+    });
+    if (slugTaken) {
+      return res.status(400).json({
+        message: 'Another case study already uses this slug',
+        error: 'DUPLICATE_SLUG',
+      });
+    }
+
+    const update = {
+      $set: {
+        ...data,
+        updatedAt: new Date(),
+      },
+    };
+
+    const result = await collection.updateOne({ _id: oid }, update);
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        message: 'Case study not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Case study updated successfully',
+    });
+  } catch (error) {
+    console.error('CASE STUDIES API PUT error:', error);
+    return res.status(500).json({
+      message: 'Failed to update case study',
+      error: 'CASE_STUDY_UPDATE_ERROR',
+    });
+  }
+});
+
+app.delete('/api/case-studies', async (req, res) => {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      message: 'Unauthorized: missing or invalid admin secret',
+      error: 'UNAUTHORIZED',
+    });
+  }
+
+  try {
+    const { id } = req.body || {};
+    if (!id) {
+      return res.status(400).json({
+        message: 'Case study id is required',
+        error: 'MISSING_ID',
+      });
+    }
+
+    const { collection } = await getCaseStudiesDb();
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: 'Case study not found',
+        error: 'NOT_FOUND',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Case study deleted successfully',
+    });
+  } catch (error) {
+    console.error('CASE STUDIES API DELETE error:', error);
+    return res.status(500).json({
+      message: 'Failed to delete case study',
+      error: 'CASE_STUDY_DELETE_ERROR',
     });
   }
 });

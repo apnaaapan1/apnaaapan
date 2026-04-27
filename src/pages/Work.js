@@ -1,8 +1,45 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+/** Matches GET /api/case-studies/by-slug/:slug and admin case-study slug sanitization */
+function headingTextToCaseStudySlug(raw) {
+  const slugRaw = String(raw || '').trim().toLowerCase();
+  if (!slugRaw) return null;
+  const s = slugRaw
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  return s || null;
+}
+
+/**
+ * Resolves `/work/:slug` for a work card:
+ * - Optional `caseStudySlug` from API (normalized)
+ * - Else work card title normalized to slug must match a published case study slug
+ */
+function caseStudySlugForProject(project, publishedSlugSet) {
+  const explicit = headingTextToCaseStudySlug(
+    typeof project.caseStudySlug === 'string' ? project.caseStudySlug : ''
+  );
+  if (explicit) return explicit;
+
+  const rawTitle = project?.title || '';
+  const title = rawTitle.trim().toLowerCase();
+  if (!title) return null;
+
+  const fromTitle = headingTextToCaseStudySlug(rawTitle);
+  if (fromTitle && publishedSlugSet && publishedSlugSet.has(fromTitle)) {
+    return fromTitle;
+  }
+
+  return null;
+}
 
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [projects, setProjects] = useState([]);
+  const [publishedCaseStudySlugs, setPublishedCaseStudySlugs] = useState(() => new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,18 +53,36 @@ const Work = () => {
 
   useEffect(() => {
     let mounted = true;
-    const fetchWork = async () => {
+    const load = async () => {
       try {
         setLoading(true);
         setError('');
-        const res = await fetch(getApiUrl('/api/work'));
-        if (!res.ok) {
+        const [workRes, csRes] = await Promise.all([
+          fetch(getApiUrl('/api/work')),
+          fetch(getApiUrl('/api/case-studies')),
+        ]);
+        if (!workRes.ok) {
           throw new Error('Failed to load work posts');
         }
-        const data = await res.json();
+        const data = await workRes.json();
         if (mounted) {
           setProjects(Array.isArray(data.work) ? data.work : []);
         }
+
+        const slugSet = new Set();
+        try {
+          if (csRes.ok) {
+            const csData = await csRes.json();
+            const list = Array.isArray(csData.caseStudies) ? csData.caseStudies : [];
+            list.forEach((cs) => {
+              const sl = cs && typeof cs.slug === 'string' ? cs.slug.trim().toLowerCase() : '';
+              if (sl) slugSet.add(sl);
+            });
+          }
+        } catch {
+          /* ignore case-study index; title-based links stay off */
+        }
+        if (mounted) setPublishedCaseStudySlugs(slugSet);
       } catch (e) {
         if (mounted) {
           setError(e.message || 'Unable to fetch work posts');
@@ -36,8 +91,10 @@ const Work = () => {
         if (mounted) setLoading(false);
       }
     };
-    fetchWork();
-    return () => { mounted = false; };
+    load();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Helper to normalize category values for uniqueness/filtering
@@ -135,33 +192,52 @@ const Work = () => {
             {loading && (
               <div className="col-span-1 md:col-span-2 text-center text-gray-600">Loading...</div>
             )}
-            {!loading && filteredProjects.map((project) => (
-              <div key={project.id} className="animate-fadeIn">
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                  <div className="aspect-video bg-gray-200 relative overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={project.alt || project.title} 
-                      className="w-full h-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-110"
-                    />
+            {!loading &&
+              filteredProjects.map((project) => {
+                const caseSlug = caseStudySlugForProject(project, publishedCaseStudySlugs);
+                const cardInner = (
+                  <>
+                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                      <div className="aspect-video bg-gray-200 relative overflow-hidden">
+                        <img
+                          src={project.image}
+                          alt={project.alt || project.title}
+                          className="w-full h-full object-cover transform transition-transform duration-500 ease-out group-hover:scale-110"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 md:mb-2">{project.title}</h3>
+                      <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">{project.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {(project.tags || []).map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                );
+
+                return (
+                  <div key={project.id} className="animate-fadeIn">
+                    {caseSlug ? (
+                      <Link
+                        to={`/work/${caseSlug}`}
+                        className="block rounded-2xl text-inherit no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+                      >
+                        {cardInner}
+                      </Link>
+                    ) : (
+                      cardInner
+                    )}
                   </div>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 md:mb-2">{project.title}</h3>
-                  <p className="text-gray-600 text-sm md:text-base mb-3 md:mb-4">{project.description}</p>
-                                       <div className="flex flex-wrap gap-2">
-                       {(project.tags || []).map((tag, index) => (
-                         <span 
-                           key={index}
-                           className="px-3 py-1 bg-orange-500 text-white text-xs rounded-full"
-                         >
-                           {tag}
-                         </span>
-                       ))}
-                     </div>
-                </div>
-              </div>
-            ))}
+                );
+              })}
           </div>
 
           {/* No projects message */}

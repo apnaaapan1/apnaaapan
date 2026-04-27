@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import OurWinningProcess from './components/OurWinningProcess';
@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import OurStory from './pages/OurStory';
 import AboutUs from './pages/AboutUs';
 import Work from './pages/Work';
+import BrandCaseStudyPage from './pages/work/[slug].jsx';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import Contact from './pages/Contact';
@@ -28,6 +29,7 @@ import AdminBlogs from './pages/AdminBlogs';
 import AdminReviews from './pages/AdminReviews';
 import AdminPositions from './pages/AdminPositions';
 import AdminWork from './pages/AdminWork';
+import AdminCaseStudies from './pages/AdminCaseStudies';
 import AdminGallery from './pages/AdminGallery';
 import AdminTeam from './pages/AdminTeam';
 import Videos from './pages/Videos';
@@ -36,15 +38,20 @@ import GraphicPortfolio from './pages/GraphicPortfolio';
 import AdminGraphicPortfolio from './pages/AdminGraphicPortfolio';
 import usePageTracking from './hooks/usePageTracking';
 import ScrollToTop from './components/ScrollToTop';
+import CaseStudyScrollProgress from './components/CaseStudyScrollProgress';
 
 function App() {
+  const location = useLocation();
+  const isCaseStudyPage = /^\/work\/[^/]+$/.test(location.pathname);
+
   // Track page views on route changes
   usePageTracking();
 
   return (
     <div className="min-h-screen bg-[#EFE7D5]">
       <ScrollToTop />
-      <Header />
+      {isCaseStudyPage ? <CaseStudyScrollProgress /> : null}
+      <Header progressBarOffset={isCaseStudyPage} />
       <div className="pt-14 sm:pt-16 md:pt-20">
         <Routes>
           {/* Home Page */}
@@ -66,6 +73,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/our-story" element={<OurStory />} />
           <Route path="/work" element={<Work />} />
+          <Route path="/work/:slug" element={<BrandCaseStudyPage />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
@@ -84,6 +92,7 @@ function App() {
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/positions" element={<AdminPositions />} />
           <Route path="/admin/work" element={<AdminWork />} />
+          <Route path="/admin/case-studies" element={<AdminCaseStudies />} />
           <Route path="/admin/gallery" element={<AdminGallery />} />
           <Route path="/admin/events" element={<AdminEvents />} />
           <Route path="/admin/team" element={<AdminTeam />} />
